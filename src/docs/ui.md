@@ -1,12 +1,12 @@
-# **Instruction Guide for Web App Pages and Modals(Diasync)**
+# **Instruction Guide for Web App Pages and Modals (Diasync)**
 
 This document outlines the structural and functional breakdown of the UI/UX components for a diaspora-to-Kenya health services platform. Use it as a detailed LLM prompt later to generate code or UI mocks.
 
 ---
 
-### 1. Global Navigation Structure
+## 1. Global Navigation Structure
 
-#### 1.1 Top Navbar (Persistent)
+### 1.1 Top Navbar (Persistent)
 
 - **Left Section:**
   - Platform logo
@@ -23,289 +23,282 @@ This document outlines the structural and functional breakdown of the UI/UX comp
     - Logout
   - If unauthenticated: show Login and Register buttons
 
-#### 1.2 Left Sidebar Navigation (Role-Specific, Persistent)
+### 1.2 Left Sidebar Navigation (Main Health Platform Navigation)
 
-- Conditionally rendered based on user role
+**Current 14-Section Navigation Structure:**
 
-- **Remote Booker (Diaspora User):**
-  - Dashboard
-  - Provider Directory
-  - My Bookings
-  - My Orders (Pharmacy)
-  - Dispatch Ambulance
-  - Manage Dependents
-  - Payment History
-  - Settings
-  - Support Center
+1. **Dashboard** - Main overview page
 
-- **Provider Admin (Hospital/Pharmacy/Ambulance):**
-  - Dashboard Overview
-  - Facility Profile
-  - Staff Management
-  - Schedule/Availability
-  - Appointment Management
-  - Pharmacy Orders
-  - Ambulance Requests
-  - Financials & Payouts
-  - Compliance Documents
-  - Chat
+2. **Bookings** (8 sub-items):
+   - Upcoming
+   - Active
+   - Requests
+   - Completed
+   - Cancelled
+   - Add
+   - Reschedule
+   - History
 
-- **Provider Staff (Doctor, Pharmacist):**
-  - My Appointments
-  - My Availability
-  - My Profile
-  - Messages (Chat)
-  - Earnings Summary
+3. **Meetings** (7 sub-items):
+   - Live
+   - History
+   - Upcoming
+   - Scheduled
+   - Completed
+   - Recordings
+   - Transcripts
 
-- **Platform Administrator:**
-  - Global Dashboard
-  - User Management
-  - Provider Onboarding & Verification Queue
-  - Complaints Management
-  - Audit Logs
-  - Content Moderation
-  - Feature Toggles
+4. **Providers** (9 sub-items):
+   - Directory
+   - Doctors
+   - Hospitals
+   - Clinics
+   - Specialists
+   - Favorites
+   - Reviews
+   - Search
+   - Compare
 
-#### 1.3 Right Sidebar Chat Panel (Expandable/Collapsible)
+5. **Pharmacy** (7 sub-items):
+   - Orders
+   - Prescriptions
+   - Delivery
+   - History
+   - Cart
+   - Search
+   - Refills
 
-- Real-time chat system
-- Filter threads by booking, pharmacy order, ambulance request
-- Display recipient or provider name, status, and recent message preview
-- Open message thread displays:
-  - Message timeline
-  - Send box with text input and attachment option
-  - Typing indicator, message status (sent, read)
+6. **Ambulance** (7 sub-items):
+   - Dispatch
+   - Requests
+   - En Route
+   - On Scene
+   - Transport
+   - Completed
+   - Emergency
 
----
+7. **Payments** (7 sub-items):
+   - Failed
+   - History
+   - Refunds
+   - Methods
+   - Pending
+   - Receipts
+   - Completed
 
-### 2. Public-Facing Pages
+8. **Subscriptions** (7 sub-items):
+   - Plans
+   - Active
+   - Billing
+   - History
+   - Pending
+   - Expired
+   - Cancelled
 
-#### 2.1 Homepage
+9. **Dependents** (8 sub-items):
+   - Family
+   - Elderly
+   - Manage
+   - History
+   - Records
+   - Chronic
+   - Insurance
+   - Emergency
 
-- Hero banner with platform value proposition
-- “How It Works” visual walkthrough
-- Sections for:
-  - Provider Assurance (Trust, Licensing, Security)
-  - Service Categories (Doctors, Hospitals, Pharmacies, Ambulances)
-  - Testimonials from Bookers and Providers
-  - Call-to-Action (Sign up / Browse Providers)
+10. **Health Reports** (7 sub-items):
+    - Family
+    - Impact
+    - Analytics
+    - Spending
+    - Medication
+    - Performance
+    - Appointments
 
-#### 2.2 About Us
+11. **Settings** (7 sub-items):
+    - Export
+    - Profile
+    - Privacy
+    - Security
+    - Account
+    - Preferences
+    - Notifications
 
-- Mission and Vision
-- Founding Team
-- Advisory Board (Optional)
-- Impact Metrics / Press Mentions
+12. **Support** (6 sub-items):
+    - Help
+    - Learn
+    - Guides
+    - Tickets
+    - Contact
+    - Feedback
 
-#### 2.3 Contact Us
+**Additional Navigation:**
+13. **Updates** - Platform updates and announcements
+14. **Themes** - UI theme customization
 
-- Contact form (name, email, message)
-- Location map of HQ (if applicable)
-- Support contact info (phone, email, live chat link)
+### 1.3 Chat System Integration
 
-#### 2.4 FAQ / Help Center
-
-- Accordion or category-based layout
-- Topics include:
-  - Booking Help
-  - Prescription Upload
-  - Payment Questions
-  - Technical Issues
-
-#### 2.5 Legal Pages
-
-- Terms of Service
-- Privacy Policy (with emphasis on DPA compliance)
-- Cookie Policy
-- Data Protection Notice
-
----
-
-### 3. Authenticated Booker (Remote User) Pages
-
-#### 3.1 Dashboard
-
-- Overview widgets:
-  - Next Appointment / Active Orders
-  - Booking Stats (this month)
-  - Dependents Summary
-
-#### 3.2 Provider Directory
-
-- Search and filter system:
-  - Provider Type, Specialty, Rating, Location Radius
-- Results grid/list view
-- Each card shows license badge, availability, rating
-
-#### 3.3 Provider Profile Page
-
-- Header with name, license badge, map
-- Tabs:
-  - Overview (About, Services)
-  - Availability (Calendar view)
-  - Credentials (certifications, affiliations)
-  - Ratings & Reviews
-
-#### 3.4 Booking Flow
-
-- Step 1: Choose Service Type (Video or In-Person)
-- Step 2: Select Dependent (or add new)
-- Step 3: Choose Time Slot
-- Step 4: Add Optional Notes
-- Step 5: Payment Method Selection (Card/Mpesa)
-- Step 6: Booking Summary + Confirmation
-- Post-confirmation: receipt email + appointment link (if virtual)
-
-#### 3.5 My Bookings Page
-
-- Tabbed Interface:
-  - Upcoming, Completed, Canceled
-- Each item shows:
-  - Status, provider info, service type, date/time
-  - Option to message provider, reschedule, cancel
-
-#### 3.6 Dependents Management
-
-- List of added recipients
-- Add/Edit Modal:
-  - Name, Phone, Location, Gender, DOB, Relationship
-  - Emergency Contact (optional)
-
-#### 3.7 Pharmacy Orders
-
-- Search Products
-- Add to cart
-- Cart Page:
-  - Upload prescription (if required)
-  - Choose Delivery or Pickup
-  - Select Fulfillment Time (optional)
-  - Payment
-
-#### 3.8 Ambulance Dispatch
-
-- Location Picker
-- Map-based provider selector (with ETA)
-- Option to flag as Emergency
-- Confirmation + live status page (En route, On Scene, Complete)
-
-#### 3.9 Payment History
-
-- List of all transactions
-- Filter by type: Booking, Pharmacy, Ambulance
-- Receipt download option
-
-#### 3.10 Settings
-
-- Profile details
-- Preferred time zone
-- Email, phone, password update
-- Notification Preferences
+- Real-time chat system for provider communication
+- Available throughout the platform for health consultations
+- Secure messaging for health information exchange
 
 ---
 
-### 4. Provider Pages
+## 2. Main Platform Pages
 
-#### 4.1 Dashboard (Admin)
+### 2.1 Dashboard
 
-- KPIs: Appointments, Orders, Revenue
-- Compliance Reminders (License expiry, uploads)
-- Quick links to update services or profile
+- Central health platform overview
+- Quick access to all health services
+- Recent activity summary
+- Key health metrics and alerts
 
-#### 4.2 Facility Profile Management
+### 2.2 Bookings Management
 
-- General Info
-- Services & Pricing
-- Operating Hours
-- License & Accreditation Uploads
-- Contact & Location Management
+- **Upcoming Bookings**: Future scheduled appointments
+- **Active Bookings**: Currently ongoing consultations
+- **Booking Requests**: Pending appointment requests
+- **Completed Bookings**: Past appointments with records
+- **Cancelled Bookings**: Cancelled appointment history
+- **Add New Booking**: Schedule new appointments
+- **Reschedule**: Modify existing appointments
+- **Booking History**: Complete appointment archive
 
-#### 4.3 Staff Management
+### 2.3 Video Meetings & Consultations
 
-- Add/Remove staff members
-- Assign specialties
-- View/edit their schedules
+- **Live Meetings**: Active video consultations
+- **Meeting History**: Past video consultation records
+- **Upcoming Meetings**: Scheduled video appointments
+- **Scheduled Meetings**: All planned video sessions
+- **Completed Meetings**: Finished consultation records
+- **Meeting Recordings**: Saved consultation videos
+- **Meeting Transcripts**: Text records of consultations
 
-#### 4.4 Calendar / Availability
+### 2.4 Provider Network
 
-- Weekly/hourly slots
-- Bulk upload support
-- Block dates
+- **Provider Directory**: Comprehensive healthcare provider listings
+- **Doctors**: Individual physician profiles and availability
+- **Hospitals**: Hospital and clinic information
+- **Clinics**: Specialized clinic services
+- **Specialists**: Specialist healthcare providers
+- **Favorite Providers**: Saved preferred providers
+- **Provider Reviews**: Rating and feedback system
+- **Provider Search**: Advanced search functionality
+- **Provider Comparison**: Side-by-side provider analysis
 
-#### 4.5 Appointment Queue
+### 2.5 Pharmacy Services
 
-- View by day
-- Filter by staff
-- Join virtual call button
-- Mark as completed / no-show
-- Add service notes post-consultation
+- **Pharmacy Orders**: Medication order management
+- **Prescriptions**: Digital prescription handling
+- **Delivery Tracking**: Medication delivery status
+- **Order History**: Past pharmacy orders
+- **Shopping Cart**: Current medication orders
+- **Medication Search**: Find specific medications
+- **Prescription Refills**: Renew existing prescriptions
 
-#### 4.6 Pharmacy Orders
+### 2.6 Emergency & Ambulance Services
 
-- Live Queue: Pending > Confirmed > Fulfilled
-- View Rx
-- Accept/Reject button
-- Notify delivery rider (optional integration)
+- **Ambulance Dispatch**: Emergency service requests
+- **Service Requests**: Ambulance booking requests
+- **En Route Status**: Real-time ambulance tracking
+- **On Scene Updates**: Live emergency response status
+- **Transport Coordination**: Patient transport management
+- **Completed Services**: Finished emergency responses
+- **Emergency Protocols**: Critical emergency procedures
 
-#### 4.7 Ambulance Requests
+### 2.7 Financial Management
 
-- Request list with timestamps
-- Manual Status Update:
-  - En Route, On Scene, Hospital Drop
-- Live toggle for availability
+- **Payment Processing**: Secure payment handling
+- **Failed Payments**: Payment issue resolution
+- **Payment History**: Complete transaction records
+- **Refund Management**: Refund request processing
+- **Payment Methods**: Saved payment options
+- **Pending Payments**: Outstanding payment status
+- **Digital Receipts**: Electronic payment receipts
+- **Completed Transactions**: Successful payment records
 
-#### 4.8 Messages (Chat)
+### 2.8 Subscription Services
 
-- Threaded view per service
-- Provider-staff shared inbox
+- **Subscription Plans**: Available health plan options
+- **Active Subscriptions**: Current active plans
+- **Billing Management**: Subscription billing details
+- **Subscription History**: Past subscription records
+- **Pending Subscriptions**: Awaiting activation
+- **Expired Plans**: Inactive subscription history
+- **Cancelled Subscriptions**: Terminated plan records
 
-#### 4.9 Payouts
+### 2.9 Family & Dependent Care
 
-- View balance, withdrawal history
-- Link Mpesa/Bank account
+- **Family Management**: Family member health profiles
+- **Elderly Care**: Specialized senior care services
+- **Dependent Management**: Add/edit family members
+- **Care History**: Family health service records
+- **Health Records**: Family medical record storage
+- **Chronic Condition Management**: Ongoing health monitoring
+- **Insurance Management**: Family health insurance
+- **Emergency Contacts**: Family emergency information
+
+### 2.10 Health Analytics & Reports
+
+- **Family Health Reports**: Comprehensive family health analytics
+- **Remittance Impact**: Health spending impact analysis
+- **Health Analytics**: Advanced health data insights
+- **Spending Reports**: Health expenditure analysis
+- **Medication Tracking**: Prescription adherence monitoring
+- **Provider Performance**: Healthcare provider analytics
+- **Appointment Analytics**: Consultation pattern analysis
+
+### 2.11 Platform Settings
+
+- **Data Export**: Personal health data export
+- **Profile Management**: User profile settings
+- **Privacy Controls**: Data privacy management
+- **Security Settings**: Account security options
+- **Account Management**: General account settings
+- **User Preferences**: Platform customization
+- **Notification Settings**: Communication preferences
+
+### 2.12 Support & Resources
+
+- **Help Center**: Comprehensive help documentation
+- **Learning Resources**: Educational health content
+- **User Guides**: Platform usage instructions
+- **Support Tickets**: Customer service requests
+- **Contact Support**: Direct support communication
+- **Feedback System**: User feedback and suggestions
+
+### 2.13 Platform Features
+
+- **Platform Updates**: New feature announcements
+- **Theme Customization**: UI appearance settings
 
 ---
 
-### 5. Admin-Only Pages
+## 3. Technical Implementation Notes
 
-#### 5.1 Admin Dashboard
+### 3.1 Navigation Structure
 
-- Platform stats:
-  - User count, booking volume, active providers
-  - Charted KPIs (week/month/year)
+- Shadow DOM web components architecture
+- Single-word sub-navigation pattern for mobile optimization
+- Comprehensive routing system with 14 main sections
+- All navigation items use consistent naming convention
 
-#### 5.2 Verification Panel
+### 3.2 Health Platform Focus
 
-- Submission list
-- Detailed application review modal
-- Direct links to verify license with PPB/KMPDC
-- Status toggle: Approved / Rejected (with reason)
+- Diaspora-to-Kenya health services specialization
+- Integration of video consultations, pharmacy services, and emergency care
+- Family-centered health management approach
+- Real-time tracking for ambulance and emergency services
 
-#### 5.3 Complaint Resolution
+### 3.3 User Experience Design
 
-- Ticket list
-- Filtering by status and date
-- View conversation thread
-- Action: Mark resolved, escalate, refund request
-
-#### 5.4 User Management
-
-- Search by email, name, phone
-- Role-based filtering
-- View user activity logs
-
-#### 5.5 Audit Logs
-
-- All CRUD actions by date/time
-- Filter by user role, module (e.g., Bookings, Profile Edits)
-
-#### 5.6 Content Moderation
-
-- Pending reviews
-- Edited profile bios (pending approval)
+- Responsive design for desktop and mobile platforms
+- Intuitive navigation with clear health service categorization
+- Consistent UI patterns across all platform sections
+- Accessibility considerations for diverse user base
 
 ---
 
-### 6. Global Modals and Dialogs
+## 4. Global Modals and Dialogs
 
 - **Login/Register:**
   - Email/password fields, two-step registration with role selection
@@ -328,4 +321,4 @@ This document outlines the structural and functional breakdown of the UI/UX comp
 
 ---
 
-This guide provides a comprehensive map of every page, panel, and modal required to build the platform's UI. Use it as a structured, detailed prompt when generating interfaces, components, or user flows in code or design tools.
+This guide provides a comprehensive map of the current Diasync health platform navigation structure and functionality. Use it as a structured, detailed prompt when generating interfaces, components, or user flows in code or design tools.
