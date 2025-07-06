@@ -17,7 +17,9 @@ Diasync addresses the critical need for diaspora members to efficiently manage h
 ## Target Market
 
 **Primary Users**: Kenyan diaspora members, particularly in the United States (51% of total remittances)
-**Secondary Users**: Local healthcare providers seeking verified platform presence
+
+**Secondary Users**: Local healthcare providers seeking verified platform presence.
+
 **Recipients**: Family members in Kenya receiving healthcare services
 
 ## Technical Architecture
