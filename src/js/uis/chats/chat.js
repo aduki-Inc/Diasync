@@ -136,9 +136,7 @@ export default class ChatItem extends HTMLDivElement {
     return /* html */`
       <div class="wrapper ${unread} ${opened}">
         <div class="image">
-          <span class="online-status">
-            ${this.getActive(this.textToBoolean(this.getAttribute('active')))}
-          </span>
+          ${this.getActive(this.textToBoolean(this.getAttribute('active')))}
           <div class="avatar">
             ${this.getImage(this.getAttribute('user-picture'))}
           </div>
@@ -282,15 +280,8 @@ export default class ChatItem extends HTMLDivElement {
   }
 
   getActive = active => {
-    if (active) {
-      return /* html */`
-        <span class="active"></span>
-      `;
-    } else {
-      return /* html */`
-        <span class="inactive"></span>
-      `;
-    }
+    if (active) return /* html */`<span class="online-status"><span class="active"></span></span>`;
+    return '';
   }
 
   textToBoolean = text => {
@@ -675,6 +666,7 @@ export default class ChatItem extends HTMLDivElement {
         .wrapper > .content > .text > .tick.recieved > svg {
           color: var(--gray-color);
           fill: none;
+          width: max-content;
         }
 
         .wrapper > .content > .text > .tick.unread > svg #outer {
