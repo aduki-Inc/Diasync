@@ -454,6 +454,7 @@ export default class AppMain extends HTMLElement {
       return /* html */`
         ${this.getMainNav()}
         <section class="flow">
+          ${this.getHeader()}
           <div id="content-container" class="content-container">
             ${this.getLoader()}
           </div>
@@ -481,6 +482,7 @@ export default class AppMain extends HTMLElement {
         ${this.getProvidersNav()}
         ${this.getPharmacyNav()}
         ${this.getAmbulanceNav()}
+        ${this.getOrdersNav()}
         ${this.getPaymentsNav()}
         ${this.getSubscriptionsNav()}
         ${this.getDependentsNav()}
@@ -549,16 +551,16 @@ export default class AppMain extends HTMLElement {
           <div class="link-section">
             <span class="left">
               <svg id="other" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path fill-rule="evenodd" clip-rule="evenodd" d="M2.74976 12.7756C2.74976 5.81959 5.06876 3.50159 12.0238 3.50159C18.9798 3.50159 21.2988 5.81959 21.2988 12.7756C21.2988 19.7316 18.9798 22.0496 12.0238 22.0496C5.06876 22.0496 2.74976 19.7316 2.74976 12.7756Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                <path d="M3.02515 9.32397H21.0331" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                <path d="M16.4285 13.261H16.4375" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                <path d="M12.0291 13.261H12.0381" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                <path d="M7.62135 13.261H7.63035" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                <path d="M16.4285 17.1129H16.4375" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                <path d="M12.0291 17.1129H12.0381" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                <path d="M7.62135 17.1129H7.63035" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                <path d="M16.033 2.05005V5.31205" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                <path d="M8.02466 2.05005V5.31205" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M2.74976 12.7756C2.74976 5.81959 5.06876 3.50159 12.0238 3.50159C18.9798 3.50159 21.2988 5.81959 21.2988 12.7756C21.2988 19.7316 18.9798 22.0496 12.0238 22.0496C5.06876 22.0496 2.74976 19.7316 2.74976 12.7756Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+                <path d="M3.02515 9.32397H21.0331" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+                <path d="M16.4285 13.261H16.4375" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+                <path d="M12.0291 13.261H12.0381" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+                <path d="M7.62135 13.261H7.63035" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+                <path d="M16.4285 17.1129H16.4375" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+                <path d="M12.0291 17.1129H12.0381" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+                <path d="M7.62135 17.1129H7.63035" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+                <path d="M16.033 2.05005V5.31205" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+                <path d="M8.02466 2.05005V5.31205" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
               </svg>
               <span class="text">Bookings</span>
             </span>
@@ -689,11 +691,11 @@ export default class AppMain extends HTMLElement {
             <li class="hospitals">
               <a href="/providers/hospitals"><span class="text">Hospitals</span></a>
             </li>
-            <li class="compliance">
-              <a href="/providers/compliance"><span class="text">Compliance</span></a>
-            </li>
             <li class="specialists">
               <a href="/providers/specialists"><span class="text">Specialists</span></a>
+            </li>
+            <li class="compliance">
+              <a href="/providers/compliance"><span class="text">Compliance</span></a>
             </li>
           </ul>
         </li>
@@ -797,6 +799,61 @@ export default class AppMain extends HTMLElement {
     `;
   }
 
+  getOrdersNav = () => {
+    return /* html */`
+      <ul class="special nav">
+        <li class="orders">
+          <div class="link-section">
+            <span class="left">
+              <svg id="other" width="24" height="25" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M7.43787 7.4209C7.44386 4.91878 9.47628 2.8949 11.9793 2.8997C14.4811 2.90569 16.5052 4.93856 16.4999 7.44022C16.4999 7.44065 16.4999 7.44107 16.4999 7.44149L15.7499 7.4397L16.4999 7.44022V10.4717C16.4999 10.8859 16.1641 11.2217 15.7499 11.2217C15.3357 11.2217 14.9999 10.8859 14.9999 10.4717V7.4397L14.9999 7.4379C15.0039 5.76426 13.6501 4.4039 11.9764 4.39969C10.3019 4.39668 8.94233 5.75028 8.93787 7.42364V10.4717C8.93787 10.8859 8.60208 11.2217 8.18787 11.2217C7.77365 11.2217 7.43787 10.8859 7.43787 10.4717L7.43787 7.4209Z" fill="currentColor"></path>
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M5.38521 10.2834C4.24823 11.1733 3.69995 12.6443 3.69995 15.2075C3.69995 17.7702 4.2482 19.2409 5.38518 20.1307C6.57922 21.0652 8.60338 21.5155 11.969 21.5155C15.3345 21.5155 17.3587 21.0652 18.5527 20.1307C19.6897 19.2409 20.238 17.7702 20.238 15.2075C20.238 12.6443 19.6897 11.1733 18.5527 10.2834C17.3587 9.34881 15.3345 8.8985 11.969 8.8985C8.60338 8.8985 6.57924 9.34881 5.38521 10.2834ZM4.46069 9.10214C6.08517 7.83069 8.57053 7.3985 11.969 7.3985C15.3674 7.3985 17.8527 7.83069 19.4772 9.10214C21.1587 10.4182 21.738 12.4767 21.738 15.2075C21.738 17.9378 21.1587 19.996 19.4772 21.312C17.8527 22.5833 15.3674 23.0155 11.969 23.0155C8.57052 23.0155 6.08519 22.5833 4.46072 21.312C2.7792 19.996 2.19995 17.9378 2.19995 15.2075C2.19995 12.4767 2.77918 10.4182 4.46069 9.10214Z" fill="currentColor"></path>
+              </svg>
+              <span class="text">Orders</span>
+            </span>
+            <span class="right">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="currentColor" fill="none">
+                <path d="M18 9.00005C18 9.00005 13.5811 15 12 15C10.4188 15 6 9 6 9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </span>
+          </div>
+          <ul class="dropdown">
+            <li class="all">
+              <a href="/orders/all"><span class="text">All</span></a>
+            </li>
+            <li class="basket">
+              <a href="/orders/basket"><span class="text">Basket</span></a>
+            </li>
+             <li class="shipped">
+              <a href="/orders/shipped"><span class="text">Shipped</span></a>
+            </li>
+            <li class="pending">
+              <a href="/orders/pending"><span class="text">Pending</span></a>
+            </li>
+            <li class="delivered">
+              <a href="/orders/delivered"><span class="text">Delivered</span></a>
+            </li>
+            <li class="refunded">
+              <a href="/orders/refunded"><span class="text">Refunded</span></a>
+            </li>
+            <li class="cancelled">
+              <a href="/orders/cancelled"><span class="text">Cancelled</span></a>
+            </li>
+            <li class="confirmed">
+              <a href="/orders/confirmed"><span class="text">Confirmed</span></a>
+            </li>
+            <li class="completed">
+              <a href="/orders/completed"><span class="text">Completed</span></a>
+            </li>
+            <li class="processing">
+              <a href="/orders/processing"><span class="text">Processing</span></a>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    `;
+  }
+
   getPaymentsNav = () => {
     return /* html */`
       <ul class="special nav">
@@ -876,11 +933,11 @@ export default class AppMain extends HTMLElement {
             <li class="history">
               <a href="/subscriptions/history"><span class="text">History</span></a>
             </li>
-            <li class="pending">
-              <a href="/subscriptions/pending"><span class="text">Pending</span></a>
-            </li>
             <li class="expired">
               <a href="/subscriptions/expired"><span class="text">Expired</span></a>
+            </li>
+            <li class="pending">
+              <a href="/subscriptions/pending"><span class="text">Pending</span></a>
             </li>
             <li class="cancelled">
               <a href="/subscriptions/cancelled"><span class="text">Cancelled</span></a>
@@ -916,7 +973,7 @@ export default class AppMain extends HTMLElement {
               <a href="/dependents/family"><span class="text">Family</span></a>
             </li>
             <li class="elderly-care">
-              <a href="/dependents/elderly-care"><span class="text">Elderly</span></a>
+              <a href="/dependents/elderly"><span class="text">Elderly</span></a>
             </li>
             <li class="manage">
               <a href="/dependents/manage"><span class="text">Manage</span></a>
@@ -1116,6 +1173,45 @@ export default class AppMain extends HTMLElement {
     `;
   }
 
+  getHeader = () => {
+    return /* html */`
+      <header class="header">
+        <form class="search">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="currentColor" fill="none">
+            <path d="M17 17L21 21" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11C3 15.4183 6.58172 19 11 19C15.4183 19 19 15.4183 19 11Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+          <input type="text" class="search-input" placeholder="Search services, producs & more" />
+          <button type="submit" class="search-button">Search</button>
+        </form>
+        <ul class="links">
+          <li class="link profile">
+            <div class="image">
+              <img src="https://randomuser.me/api/portraits/men/1.jpg" alt="Profile Image" />
+            </div>
+            <span class="text">Profile</span>
+          </li>
+          <li class="link updates">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" color="currentColor" fill="none">
+              <path id="animate" d="M22 5.5C22 7.433 20.433 9 18.5 9C16.567 9 15 7.433 15 5.5C15 3.567 16.567 2 18.5 2C20.433 2 22 3.567 22 5.5Z" stroke="currentColor" stroke-width="1.8" />
+              <path d="M21.9506 11C21.9833 11.3289 22 11.6625 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C12.3375 2 12.6711 2.01672 13 2.04938" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+              <path d="M8 10H12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+              <path d="M8 15H16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            <span class="text">Updates</span>
+          </li>
+          <li class="link more">
+            <span class="icon">
+              <span class="sp"></span>
+              <span class="sp"></span>
+            </span>
+            <span class="text">More</span>
+          </li>
+        </ul>
+      </header>
+    `
+  }
+
   getFooter = () => {
     const year = new Date().getFullYear();
     return /*html*/`
@@ -1220,7 +1316,12 @@ export default class AppMain extends HTMLElement {
 	      :host {
           font-size: 16px;
           width: 100%;
-          padding: 0;
+          min-width: 100%;
+          max-width: 100%;
+          height: 100%;
+          max-height: 100%;
+          overflow: hidden;
+          padding: 0 10px;
           margin: 0;
           display: flex;
           gap: 20px;
@@ -1554,18 +1655,265 @@ export default class AppMain extends HTMLElement {
           transition: color 0.2s ease;
         }
 
-
         section.flow {
-          width: calc(100% - 220px - 500px);
+          width: calc(100% - (220px + 500px + 20px));
           display: flex;
           flex-flow: column;
           gap: 0;
           padding: 0;
         }
 
+        /* Header Styles */
+        header.header {
+          height: 70px;
+          max-height: 70px;
+          width: 100%;
+          padding: 0;
+          background: var(--background);
+          border-bottom: var(--border);
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 20px;
+          position: sticky;
+          top: 0;
+          z-index: 100;
+          backdrop-filter: blur(10px);
+        }
+
+        header.header > form.search {
+          flex: 1;
+          width: calc(100% - 170px);
+          position: relative;
+          display: flex;
+          align-items: center;
+          background: var(--background-offset);
+          border: var(--border);
+          border-radius: 15px;
+          padding: 2px;
+          transition: all 0.3s ease;
+        }
+
+        header.header > form.search:focus-within {
+          border-color: var(--accent-color);
+          box-shadow: 0 0 0 3px rgba(var(--accent-rgb), 0.1);
+        }
+
+        header.header > form.search > svg {
+          width: 22px;
+          height: 22px;
+          color: var(--gray-color);
+          margin-left: 12px;
+          flex-shrink: 0;
+        }
+
+        header.header > form.search > input.search-input {
+          flex: 1;
+          border: none;
+          background: transparent;
+          padding: 10px 12px;
+          font-family: var(--font-text), sans-serif;
+          font-size: 0.95rem;
+          color: var(--text-color);
+          outline: none;
+        }
+
+        header.header > form.search > input.search-input::placeholder {
+          color: var(--gray-color);
+          opacity: 0.7;
+        }
+
+        header.header > form.search > button.search-button {
+          padding: 7px 15px;
+          margin: 0 5px 0 0;
+          background: var(--accent-color);
+          color: white;
+          border: none;
+          border-radius: 12px;
+          font-family: var(--font-text), sans-serif;
+          font-size: 0.85rem;
+          font-weight: 500;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          flex-shrink: 0;
+        }
+
+        header.header > form.search > button.search-button:hover {
+          background: var(--accent-hover);
+          transform: translateY(-1px);
+        }
+
+        header.header > form.search > button.search-button:active {
+          transform: translateY(0);
+        }
+
+        header.header > ul.links {
+          display: flex;
+          align-items: center;
+          gap: 15px;
+          margin: 0;
+          padding: 0;
+          list-style: none;
+        }
+
+        header.header > ul.links > li.link {
+          background: var(--gray-background);
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          width: 40px;
+          height: 40px;
+          max-width: 40px;
+          max-height: 40px;
+          padding: 0;
+          border-radius: 50%;
+          display: flex;
+          justify-content: center;
+          justify-content: center;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          color: var(--text-color);
+          position: relative;
+        }
+
+        header.header > ul.links > li.link:hover {
+          background: var(--tab-background);
+          color: var(--accent-color);
+        }
+
+        header.header > ul.links > li.link.profile > div.image {
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          overflow: hidden;
+        }
+
+        header.header > ul.links > li.link.profile > div.image > img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+
+        header.header > ul.links > li.link > span.text {
+          display: none;
+          position: absolute;
+          bottom: -38px;
+          left: 50%;
+          transform: translateX(-50%);
+          background: var(--background);
+          color: var(--text-color);
+          padding: 6px 10px;
+          border-radius: 12px;
+          font-family: var(--font-text), sans-serif;
+          font-size: 0.85rem;
+          font-weight: 500;
+          white-space: nowrap;
+          z-index: 1000;
+          border: var(--border);
+          box-shadow: var(--card-box-shadow);
+          pointer-events: none;
+        }
+
+        header.header > ul.links > li.link > span.text::before {
+          content: '';
+          position: absolute;
+          top: -2px;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 10px;
+          height: 10px;
+          rotate: 45deg;
+          background: var(--background);
+          border-top: var(--border);
+          border-left: var(--border);
+        }
+
+        header.header > ul.links > li.link:hover > span.text {
+          display: block;
+          animation: fadeInTooltip 0.2s ease-in-out;
+        }
+
+        @keyframes fadeInTooltip {
+          from {
+            opacity: 0;
+            transform: translateX(-50%) translateY(5px);
+          }
+          to {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+          }
+        }
+
+        header.header > ul.links > li.link.updates {
+          position: relative;
+        }
+
+        /* Animate the updates notification circle */
+        header.header > ul.links > li.link.updates svg path#animate {
+          animation: updatesPulse 2s ease-in-out infinite;
+          transform-origin: center;
+          z-index: 1;
+          color: var(--error-color);
+        }
+
+        @keyframes updatesPulse {
+          0%, 100% {
+            transform: scale(0.9);
+            opacity: 1;
+          }
+          50% {
+            transform: scale(1.05);
+            opacity: 0.7;
+          }
+        }
+
+        /* Alternative breathing animation for the updates icon */
+        header.header > ul.links > li.link.updates:hover svg path#animate {
+          animation: updatesBreath 1.8s ease-in-out infinite;
+          z-index: 1;
+          background: var(--error-background);
+        }
+
+        @keyframes updatesBreath {
+          0%, 100% {
+            transform: scale(0.8);
+            opacity: 0.8;
+          }
+          50% {
+            transform: scale(1);
+            opacity: 1;
+          }
+        }
+
+        header.header > ul.links > li.link > svg {
+          width: 24px;
+          height: 24px;
+          color: inherit;
+        }
+
+        header.header > ul.links > li.link.more > span.icon {
+          display: flex;
+          gap: 5px;
+          align-items: center;
+          justify-content: center;
+        }
+
+        header.header > ul.links > li.link.more > span.icon > span.sp {
+          display: inline-block;
+          width: 8px;
+          height: 8px;
+          background: var(--text-color);
+          color: inherit;
+          border-radius: 50%;
+        }
+
+
         section.flow > div#content-container {
           width: 100%;
-          min-height: calc(100dvh - 100px);
+          min-height: calc(100dvh - 140px);
           display: flex;
           flex-flow: column;
           gap: 0;
@@ -1576,11 +1924,11 @@ export default class AppMain extends HTMLElement {
         section.chats {
           width: 500px;
           height: 100dvh;
-          position: fixed;
+          position: sticky;
           right: 0;
           top: 0;
           background: var(--background);
-          border-left: var(--border);
+          /* border-left: var(--border); */
           display: flex;
           flex-flow: column;
           gap: 0;
@@ -1700,6 +2048,8 @@ export default class AppMain extends HTMLElement {
         }
 
         footer.footer {
+          height: 70px;
+          max-height: 70px;
           border-top: var(--border);
           padding: 13px 0;
           margin: 0;

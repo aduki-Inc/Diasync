@@ -420,26 +420,29 @@ export default class ChatContainer extends HTMLElement {
 
   getActions = () => {
     return /* html */`
-      <button class="action video" title="Call">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="currentColor" fill="none">
-          <path d="M11 8L13 8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
-          <path d="M2 11C2 7.70017 2 6.05025 3.02513 5.02513C4.05025 4 5.70017 4 9 4H10C13.2998 4 14.9497 4 15.9749 5.02513C17 6.05025 17 7.70017 17 11V13C17 16.2998 17 17.9497 15.9749 18.9749C14.9497 20 13.2998 20 10 20H9C5.70017 20 4.05025 20 3.02513 18.9749C2 17.9497 2 16.2998 2 13V11Z" stroke="currentColor" stroke-width="1.8" />
-          <path d="M17 8.90585L17.1259 8.80196C19.2417 7.05623 20.2996 6.18336 21.1498 6.60482C22 7.02628 22 8.42355 22 11.2181V12.7819C22 15.5765 22 16.9737 21.1498 17.3952C20.2996 17.8166 19.2417 16.9438 17.1259 15.198L17 15.0941" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+      <button class="action video">
+        <svg id="video" width="24" height="25" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path opacity="0.4" fill-rule="evenodd" clip-rule="evenodd" d="M9.06137 5.10962C3.59137 5.10962 1.65137 7.05962 1.65137 12.5396C1.65137 18.0196 3.59137 19.9596 9.06137 19.9596C14.5214 19.9596 16.4514 18.0196 16.4514 12.5396C16.4514 7.05962 14.5214 5.10962 9.06137 5.10962Z" fill="currentColor"></path>
+          <path fill-rule="evenodd" clip-rule="evenodd" d="M22.1513 7.46967C21.3713 6.62967 18.9713 8.13967 17.6113 9.09967C17.8413 10.0897 17.9513 11.2397 17.9513 12.5397C17.9513 13.8297 17.8413 14.9597 17.6213 15.9497C18.7113 16.7197 20.4913 17.8497 21.5313 17.8497C21.7913 17.8497 22.0113 17.7797 22.1513 17.6197C23.0813 16.6297 23.0813 8.46967 22.1513 7.46967Z" fill="currentColor"></path>
         </svg>
+        <span class="text">Meeting</span>
       </button>
-      <button class="action search" title="Search">
-        <svg class="large" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="currentColor" fill="none">
-          <path d="M12 3.00366C11.4383 3.01203 10.3789 3.03449 9.8294 3.07102C5.64639 3.34908 2.31441 6.72832 2.04024 10.9707C1.98659 11.8009 1.98659 12.6606 2.04024 13.4908C2.1401 15.0359 2.82343 16.4665 3.62791 17.6746C4.09501 18.5203 3.78674 19.5758 3.30021 20.4978C2.94941 21.1625 2.77401 21.4949 2.91484 21.735C3.05568 21.9752 3.37026 21.9828 3.99943 21.9981C5.24367 22.0284 6.08268 21.6757 6.74868 21.1846C7.1264 20.906 7.31527 20.7668 7.44544 20.7508C7.5756 20.7347 7.83177 20.8403 8.34401 21.0512C8.8044 21.2408 9.33896 21.3579 9.8294 21.3905C11.2536 21.4851 12.7435 21.4853 14.1706 21.3905C18.3536 21.1124 21.6856 17.7332 21.9598 13.4908C21.9915 13.0001 22.0044 12.4991 21.9987 11.9999" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-          <path d="M8.5 15H15.5M8.5 10H12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-          <path d="M20.2649 7.27042L22 9M21.1714 5.08571C21.1714 3.38152 19.7899 2 18.0857 2C16.3815 2 15 3.38152 15 5.08571C15 6.78991 16.3815 8.17143 18.0857 8.17143C19.7899 8.17143 21.1714 6.78991 21.1714 5.08571Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+      <button class="action search">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" class="injected-svg" data-src="https://cdn.hugeicons.com/icons/message-search-01-bulk-rounded.svg" xmlns:xlink="http://www.w3.org/1999/xlink" role="img" color="currentColor">
+          <path opacity="0.4" d="M12.1335 2.37231C12.5617 2.37553 12.7758 2.37714 12.8645 2.5048C12.9532 2.63246 12.8722 2.85524 12.7101 3.30081C12.4933 3.89668 12.375 4.53989 12.375 5.21071C12.375 8.29562 14.8758 10.7964 17.9607 10.7964C18.4468 10.7964 18.9194 10.734 19.3703 10.6167C19.5542 10.5688 19.6462 10.5449 19.7231 10.5657C19.8 10.5865 19.8623 10.6486 19.9869 10.7728L20.1101 10.8956C20.5895 11.3735 21.2143 11.6165 21.8416 11.6248C22.2477 11.6302 22.4507 11.6328 22.5371 11.7202C22.6235 11.8075 22.624 11.9692 22.6249 12.2926C22.6262 12.751 22.6123 13.2099 22.5832 13.6606C22.2853 18.2704 18.662 21.9567 14.0954 22.2602C12.6351 22.3573 11.1119 22.3571 9.65465 22.2602C9.08972 22.2227 8.47478 22.0891 7.93339 21.8661C7.84733 21.8307 7.77126 21.7994 7.70361 21.7718C7.56703 21.7161 7.49873 21.6883 7.42104 21.6979C7.34335 21.7076 7.28359 21.7515 7.16407 21.8394C7.13446 21.8612 7.10278 21.8845 7.0688 21.9096C6.27636 22.4939 5.27592 22.9039 3.85617 22.8693L3.81044 22.8682C3.53655 22.8617 3.24461 22.8547 3.00652 22.8086C2.71975 22.7531 2.36496 22.6145 2.14291 22.2359C1.90123 21.8238 1.99813 21.4071 2.09188 21.1447C2.18036 20.8971 2.33374 20.6066 2.49042 20.3098L2.5119 20.2691C2.97823 19.3854 3.10814 18.6633 2.85881 18.1818C2.02648 16.9254 1.27772 15.377 1.1668 13.6606C1.11107 12.7982 1.11107 11.9061 1.1668 11.0437C1.46472 6.43391 5.088 2.74762 9.65465 2.44406C10.4679 2.39001 11.3016 2.36605 12.1335 2.37231Z" fill="currentColor"></path>
+          <path fill-rule="evenodd" clip-rule="evenodd" d="M7.625 15.125C7.625 15.5392 7.96079 15.875 8.375 15.875H15.375C15.7892 15.875 16.125 15.5392 16.125 15.125C16.125 14.7108 15.7892 14.375 15.375 14.375H8.375C7.96079 14.375 7.625 14.7108 7.625 15.125ZM7.625 10.125C7.625 10.5392 7.96079 10.875 8.375 10.875H11.875C12.2892 10.875 12.625 10.5392 12.625 10.125C12.625 9.71079 12.2892 9.375 11.875 9.375H8.375C7.96079 9.375 7.625 9.71079 7.625 10.125Z" fill="currentColor"></path>
+          <path fill-rule="evenodd" clip-rule="evenodd" d="M13.875 5.21071C13.875 2.95424 15.7042 1.125 17.9607 1.125C20.2172 1.125 22.0464 2.95424 22.0464 5.21071C22.0464 5.97725 21.8353 6.69449 21.4681 7.30746L22.581 8.41676C22.9721 8.80666 22.9731 9.43982 22.5832 9.83097C22.1933 10.2221 21.5602 10.2231 21.169 9.83324L20.053 8.72078C19.441 9.08636 18.7254 9.29643 17.9607 9.29643C15.7042 9.29643 13.875 7.46719 13.875 5.21071ZM19.4332 6.68782C19.812 6.3102 20.0464 5.78783 20.0464 5.21071C20.0464 4.05881 19.1126 3.125 17.9607 3.125C16.8088 3.125 15.875 4.05881 15.875 5.21071C15.875 6.36262 16.8088 7.29643 17.9607 7.29643C18.5355 7.29643 19.056 7.06392 19.4332 6.68782Z" fill="currentColor"></path>
         </svg>
+        <span class="text">Search</span>
       </button>
-      <button class="action info" title="More">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="currentColor" fill="none">
-          <path d="M22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12Z" stroke="currentColor" stroke-width="1.8" />
-          <path d="M12.2422 17V12C12.2422 11.5286 12.2422 11.2929 12.0957 11.1464C11.9493 11 11.7136 11 11.2422 11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-          <path d="M11.992 8H12.001" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+      <button class="action info">
+        <svg id="info" width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+            <g id="Iconly/Bulk/Info-Circle" stroke="none" stroke-width="1.5" fill="none" fill-rule="evenodd">
+                <path d="M21.9999,11.9998 C21.9999,17.5238 17.5229,21.9998 11.9999,21.9998 C6.4769,21.9998 1.9999,17.5238 1.9999,11.9998 C1.9999,6.4778 6.4769,1.9998 11.9999,1.9998 C17.5229,1.9998 21.9999,6.4778 21.9999,11.9998" id="Fill-1" fill="currentColor" fill-rule="nonzero" opacity="0.400000006"></path>
+                <path d="M11.995,14.9285 C12.488,14.9285 12.88,15.3215 12.88,15.8035 C12.88,16.2855 12.488,16.6785 12.005,16.6785 C11.52,16.6785 11.125,16.2855 11.125,15.8035 C11.125,15.3215 11.516,14.9285 11.995,14.9285 Z M11.995,7.3357 C12.477,7.3357 12.87,7.7287 12.87,8.2107 L12.87,8.2107 L12.87,12.6307 C12.87,13.1127 12.477,13.5057 11.995,13.5057 C11.513,13.5057 11.12,13.1127 11.12,12.6307 L11.12,12.6307 L11.12,8.2107 C11.12,7.7287 11.513,7.3357 11.995,7.3357 Z" id="Combined-Shape" fill="currentColor" fill-rule="nonzero"></path>
+            </g>
         </svg>
+        <span class="text">Info</span>
       </button>
     `;
   }
@@ -447,71 +450,67 @@ export default class ChatContainer extends HTMLElement {
   getMessages = () => {
     return /* html */`
       ${this.getDisclaimer()}
-      <div is="message-item" class="message" user-name="John Doe" user-picture="https://randomuser.me/api/portraits/men/1.jpg" datetime="2024-12-24T12:00:00Z"
-        you="false" verified="true" status="seen" active="true" kind="message"
-        reactions='{ "from": null, "to": "love" }'
+      <div is="message-item" class="message" user-name="Dr. Sarah Mwangi" user-picture="https://randomuser.me/api/portraits/women/45.jpg" datetime="2025-01-05T09:00:00Z"
+        you="false" verified="true" status="seen" active="true" kind="message">
+        Good morning.
+      </div>
+      <div is="message-item" class="message" user-name="James Ochieng" user-picture="https://randomuser.me/api/portraits/men/32.jpg" datetime="2025-01-05T09:03:00Z"
+        you="true" verified="false" status="seen" active="false" kind="message">
+        Hello Doctor. I've been experiencing persistent headaches for the past week, especially in the mornings. Also feeling quite fatigued lately.
+      </div>
+      <div is="message-item" class="message" user-name="Dr. Sarah Mwangi" user-picture="https://randomuser.me/api/portraits/women/45.jpg" datetime="2025-01-05T09:05:00Z"
+        you="false" verified="true" status="delivered" active="true" kind="message">
+        I understand your concern. Can you tell me more about the headaches? Are they throbbing, sharp, or dull? Any specific triggers you've noticed?
+      </div>
+      <div is="message-item" class="message" user-name="James Ochieng" user-picture="https://randomuser.me/api/portraits/men/32.jpg" datetime="2025-01-05T09:08:00Z"
+        you="true" verified="false" status="seen" active="false" kind="message"
+        images="https://images.unsplash.com/photo-1559757148-5c350d0d3c56?q=80&w=1470&auto=format&fit=crop, https://images.unsplash.com/photo-1576091160550-2173dba999ef?q=80&w=1470&auto=format&fit=crop">
+        They're mostly dull but persistent. I've attached photos of my blood pressure readings from home - they seem higher than usual. Could this be related?
+      </div>
+      <div is="message-item" class="message" user-name="Dr. Sarah Mwangi" user-picture="https://randomuser.me/api/portraits/women/45.jpg" datetime="2025-01-05T09:12:00Z"
+        you="false" verified="true" status="delivered" active="true" kind="reply" to-you="true" reply-to="James Ochieng" reply-text="They're mostly dull but persistent. I've attached photos of my blood pressure readings from home"
+        reactions='{ "from": null, "to": "care" }'>
+        Thank you for sharing those readings. Yes, elevated blood pressure can definitely cause morning headaches and fatigue. Have you been taking any medications or supplements recently?
+      </div>
+      <div is="message-item" class="message" user-name="James Ochieng" user-picture="https://randomuser.me/api/portraits/men/32.jpg" datetime="2025-01-05T09:15:00Z"
+        you="true" verified="false" status="seen" active="false" kind="message">
+        Just my usual multivitamin. No prescription medications. Should I be worried about these readings?
+      </div>
+      <div is="message-item" class="message" user-name="Dr. Sarah Mwangi" user-picture="https://randomuser.me/api/portraits/women/45.jpg" datetime="2025-01-05T09:18:00Z"
+        you="false" verified="true" status="delivered" active="true" kind="message"
         attachments='[
           {
-            "name": "Meeting Notes.pdf",
-            "size": "1.2MB",
+            "name": "Hypertension_Guidelines_Kenya.pdf",
+            "size": "2.1MB",
             "type": "pdf",
-            "link": "https://example.com/meeting-notes.pdf"
+            "link": "https://example.com/hypertension-guidelines.pdf"
           },
           {
-            "name": "Design Mockup.png",
-            "size": "2.4MB",
-            "type": "image",
-            "link": "https://example.com/design-mockup.png"
-          },
-          {
-            "name": "Project Proposal.docx",
-            "size": "3.6MB",
-            "type": "doc",
-            "link": "https://example.com/project-proposal.docx"
+            "name": "Lifestyle_Recommendations.pdf",
+            "size": "1.8MB",
+            "type": "pdf",
+            "link": "https://example.com/lifestyle-recommendations.pdf"
           }
           ]'>
-        This is a message from John Doe, Please reply as soon as possible.
+        Your readings are in the elevated range and need attention. I'm sending you some guidelines and lifestyle recommendations. We should schedule an in-person consultation within the next few days.
       </div>
-      <div is="message-item" class="message" user-name="Jane Doe" user-picture="https://randomuser.me/api/portraits/women/12.jpg" datetime="2024-12-24T12:00:00Z"
-        you="true" verified="false" status="seen" active="false" kind="message"
-        reactions='{ "from": "angry", "to": null }'
-        images="https://images.unsplash.com/photo-1733077151673-c834c5613bbc?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D, https://plus.unsplash.com/premium_photo-1733514691529-da25716e449b?q=80&w=1471&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D, https://images.unsplash.com/photo-1719937051176-9b98352a6cf4?q=80&w=1472&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D">
-        This is a message from Jane Doe, Please reply as soon as possible.
-      </div>
-      <div is="message-item" class="message" user-name="John Doe" user-picture="https://randomuser.me/api/portraits/women/12.jpg" datetime="2024-12-24T12:00:00Z"
-        you="false" verified="true" status="delivered" active="true" kind="reply" to-you="true" reply-to="John" reply-text="This is a message from Jane Doe, Please reply as soon as possible."
-        reactions='{ "from": "love", "to": "love" }'>
-        OMG! WWE is coming to town, are you ready?
-      </div>
-      <div is="message-item" class="message" user-name="John Doe" user-picture="https://randomuser.me/api/portraits/men/1.jpg" datetime="2024-12-24T12:00:00Z"
-        you="false" verified="true" status="delivered" active="true" kind="message">
-        This is a message from John Doe, Please reply as soon as possible.
-      </div>
-      <div is="message-item" class="message" user-name="Jane Doe" user-picture="https://randomuser.me/api/portraits/women/12.jpg" datetime="2024-12-24T12:00:00Z"
-        you="true" verified="false" status="seen" active="false" kind="message"
-        reactions='{ "from": "love", "to": "love" }'>
-        Thanks! I will reply as soon as possible.
-      </div>
-      <div is="message-item" class="message" user-name="John Doe" user-picture="https://randomuser.me/api/portraits/men/1.jpg" datetime="2024-12-24T12:00:00Z"
-        you="false" verified="true" status="delivered" active="true" kind="reply" to-you="false" reply-to="John" reply-text="This is a message from Jane Doe, Please reply as soon as possible.">
-        OMG! WWE is coming to town, are you ready?
-      </div>
-      <div is="message-item" class="message" user-name="Jane Doe" user-picture="https://randomuser.me/api/portraits/women/12.jpg" datetime="2024-12-26T02:49:00Z"
+      <div is="message-item" class="message" user-name="James Ochieng" user-picture="https://randomuser.me/api/portraits/men/32.jpg" datetime="2025-01-05T09:22:00Z"
         you="true" verified="false" status="delivered" active="false" kind="message">
-        Did you get the news, apparently there is a new update on the way.
+        Thank you Doctor. Can I book an appointment through Diasync for this week? Also, any immediate steps I should take?
       </div>
-      <div is="message-item" class="message" user-name="Jane Doe" user-picture="https://randomuser.me/api/portraits/women/12.jpg" datetime="2024-12-27T17:12:00Z"
-        you="true" verified="false" status="sent" active="false" kind="reply" to-you="false" reply-to="John" reply-text="OMG! WWE is coming to town, are you ready?">
-        Rickoshea!!!!
+      <div is="message-item" class="message" user-name="Dr. Sarah Mwangi" user-picture="https://randomuser.me/api/portraits/women/45.jpg" datetime="2025-01-05T09:25:00Z"
+        you="false" verified="true" status="delivered" active="true" kind="message"
+        reactions='{ "from": null, "to": "thumbs_up" }'>
+        Absolutely, yes. Please book through the Diasync appointment system. Meanwhile: reduce salt intake, stay hydrated, get adequate sleep, and monitor your BP twice daily. Call emergency services if you experience severe headache, chest pain, or vision changes.
       </div>
-      <div is="message-item" class="message" user-name="John Doe" user-picture="https://randomuser.me/api/portraits/men/1.jpg" datetime="2025-01-23T17:12:00Z"
+      <div is="message-item" class="message" user-name="James Ochieng" user-picture="https://randomuser.me/api/portraits/men/32.jpg" datetime="2025-01-05T09:28:00Z"
+        you="true" verified="false" status="sent" active="false" kind="reply" to-you="false" reply-to="Dr. Sarah" reply-text="reduce salt intake, stay hydrated, get adequate sleep, and monitor your BP twice daily"
+        reactions='{ "from": "thumbs_up", "to": "care" }'>
+        Perfect, I'll book the appointment right after this chat. Thank you for the quick response and guidance, Doctor. This gives me peace of mind.
+      </div>
+      <div is="message-item" class="message" user-name="Dr. Sarah Mwangi" user-picture="https://randomuser.me/api/portraits/women/45.jpg" datetime="2025-01-05T09:30:00Z"
         you="false" verified="true" status="seen" active="true" kind="message">
-        Ok
-      </div>
-      <div is="message-item" class="message" user-name="John Doe" user-picture="https://randomuser.me/api/portraits/women/12.jpg" datetime="2025-01-27T10:47:00Z"
-        you="true" verified="true" status="sent" active="false" kind="reply" to-you="true" reply-to="Jane" reply-text="Rickoshea!!!!"
-        reactions='{ "from": "angry", "to": "love" }'>
-        okay
+        You're very welcome! Early intervention is key. See you soon for the detailed consultation. Take care and don't hesitate to reach out if symptoms worsen.
       </div>
       ${this.getTyping()}
     `;
@@ -525,7 +524,7 @@ export default class ChatContainer extends HTMLElement {
           <path d="M8.5 14.9999H15.5M8.5 9.99988H12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
           <path d="M16.7374 5.17553L16.7374 3.78517C16.7374 3.5798 16.746 3.37188 16.8196 3.1801C17.0155 2.66962 17.5346 2.00085 18.4795 2.00085C19.4245 2.00085 19.9639 2.66962 20.1598 3.1801C20.2335 3.37188 20.242 3.5798 20.242 3.78517L20.242 5.17553M16.8069 10.9984H20.1929C21.1898 10.9984 21.9979 10.1918 21.9979 9.19686V7.19551C21.9979 6.20053 21.1898 5.39394 20.1929 5.39394H16.8069C15.8101 5.39394 15.002 6.20053 15.002 7.19551V9.19686C15.002 10.1918 15.8101 10.9984 16.8069 10.9984Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
         </svg>
-        <span>Messages and calls are end-to-end encrypted. No one outside of this chat can read or listen to them.</span>
+        <span>Messages and calls are end-to-end encrypted.</span>
       </div>
     `;
   }
@@ -665,7 +664,7 @@ export default class ChatContainer extends HTMLElement {
           max-width: 100%;
           width: 100%;
           min-width: 100%;
-          padding: 0;
+          padding: 0 10px;
           height: 100dvh;
           max-height: 100vh;
           display: flex;
@@ -684,8 +683,7 @@ export default class ChatContainer extends HTMLElement {
           box-sizing: border-box;
           border-bottom: var(--border);
           background: var(--background);
-          padding: 0;
-          padding: 15px 0 10px;
+          padding: 15px 0 10px 25px;
           height: 70px;
           max-height: 70px;
           display: flex;
@@ -702,7 +700,7 @@ export default class ChatContainer extends HTMLElement {
 
         header.header > svg {
           position: absolute;
-          display: none;
+          display: inline-block;
           left: -12px;
           margin: 2px 0 0;
           top: 50%;
@@ -920,11 +918,12 @@ export default class ChatContainer extends HTMLElement {
           align-items: center;
           justify-content: end;
           flex-wrap: nowrap;
-          gap: 15px;
+          gap: 12px;
         }
 
         header.header > .contents > .actions > button {
           border: none;
+          position: relative;
           display: flex;
           background: var(--background);
           justify-content: center;
@@ -947,13 +946,64 @@ export default class ChatContainer extends HTMLElement {
           color: var(--accent-color);
         }
 
-        header.header > .contents > .actions > button > svg.large {
-          width: 23px;
-          height: 23px;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          margin: 0 0 3px;
+        header.header > .contents > .actions > button > svg#video {
+          width: 30px;
+          height: 30px;
+        }
+
+        header.header > .contents > .actions > button > svg#info {
+          width: 28px;
+          height: 28px;
+        }
+
+        header.header > .contents > .actions > button > span.text {
+          display: none;
+          position: absolute;
+          bottom: -38px;
+          left: 50%;
+          transform: translateX(-50%);
+          background: var(--background);
+          color: var(--text-color);
+          padding: 6px 10px;
+          border-radius: 12px;
+          font-family: var(--font-text), sans-serif;
+          font-size: 0.85rem;
+          font-weight: 500;
+          white-space: nowrap;
+          z-index: 1000;
+          border: var(--border);
+          box-shadow: var(--card-box-shadow);
+          pointer-events: none;
+        }
+
+        header.header > .contents > .actions > button > span.text::before {
+          content: '';
+          position: absolute;
+          top: -2px;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 10px;
+          height: 10px;
+          rotate: 45deg;
+          background: var(--background);
+          border-top: var(--border);
+          border-left: var(--border);
+        }
+
+        header.header > .contents > .actions > button:hover > span.text {
+          display: block;
+          animation: fadeInTooltip 0.2s ease-in-out;
+        }
+
+        @keyframes fadeInTooltip {
+          from {
+            opacity: 0;
+            transform: translateX(-50%) translateY(5px);
+          }
+          to {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+          }
         }
 
         main.main {
@@ -988,6 +1038,8 @@ export default class ChatContainer extends HTMLElement {
           min-width: 100%;
           gap: 10px;
           padding: 10px 0 30px;
+          background-image: var(--chat-container);
+          background-size: 50px 50px, 30px 30px, 30px 30px;
         }
 
         main.main > .messages > div.disclaimer {

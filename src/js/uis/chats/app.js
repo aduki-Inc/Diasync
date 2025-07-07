@@ -12,7 +12,7 @@ export default class ChatApp extends HTMLElement {
   }
 
   watchMql = () => {
-    this.mql.addEventListener("change", _e => {
+    this.mql.addEventListener("change", e => {
       // console.log("Media query changed", e);
       this.render();
       this.setUpEventListeners();
@@ -84,7 +84,7 @@ export default class ChatApp extends HTMLElement {
   getTemplate() {
     return /* html */`
       ${this.getChatsContainer()}
-     <!-- ${this.getMessagingContainer()} -->
+      <!--${this.getMessagingContainer()}-->
       ${this.getStyles()}
     `;
   }
@@ -128,8 +128,8 @@ export default class ChatApp extends HTMLElement {
 
   getMessagingContainer = () => {
     return /* html */`
-      <chat-container user-picture="https://api.dicebear.com/9.x/open-peeps/svg?seed=Aidan"
-        user-name="Alice Johnson" unread="0" active="true" user-verified="true"
+      <chat-container user-picture="https://randomuser.me/api/portraits/men/1.jpg"
+        user-name="Dr Sarah Hannah" unread="0" active="true" user-verified="true"
         message="I have attached the needed documents below!" last-active="2024-12-26T01:25:15Z">
       </chat-container>
     `;
@@ -190,78 +190,79 @@ export default class ChatApp extends HTMLElement {
 
   getChats = () => {
     return /* html */`
-      <div is="chat-item" user-picture="https://api.dicebear.com/9.x/open-peeps/svg?seed=Aidan"
-        user-name="Alice Johnson" unread="0" active="true" you="false" opened="true"
-        message="I have attached the needed documents below!" is-even="true" datetime="2024-12-31T19:07:15Z"
+      <div is="chat-item" user-picture="https://randomuser.me/api/portraits/women/45.jpg"
+        user-name="Dr. Sarah Mwangi GGfffsssfsffffsfsffsffsfsfsffsssssffsfsfsf" unread="0" active="true" you="false" opened="true"
+        message="I have attached your test results and treatment plan below!" is-even="true" datetime="2025-01-05T09:30:00Z"
+        user-verified="true" user-profession="General Practitioner" user-location="Kenyatta National Hospital"
         attachments='[
           {
-            "name": "Meeting Notes.pdf",
+            "name": "Blood_Test_Results.pdf",
             "size": "1.2MB",
             "type": "pdf",
-            "link": "https://example.com/meeting-notes.pdf"
+            "link": "https://example.com/blood-test-results.pdf"
           },
           {
-            "name": "Design Mockup.png",
+            "name": "Treatment_Plan.pdf",
             "size": "2.4MB",
-            "type": "image",
-            "link": "https://example.com/design-mockup.png"
+            "type": "pdf",
+            "link": "https://example.com/treatment-plan.pdf"
           },
           {
-            "name": "Project Proposal.docx",
-            "size": "3.6MB",
-            "type": "doc",
-            "link": "https://example.com/project-proposal.docx"
+            "name": "Prescription_Details.pdf",
+            "size": "0.8MB",
+            "type": "pdf",
+            "link": "https://example.com/prescription.pdf"
           }
           ]'>
       </div>
-      <div is="chat-item" user-picture="https://api.dicebear.com/9.x/open-peeps/svg?seed=Oliver"
-      user-name="Janet Doerinailsisgsgsgsg" unread="0" active="false" you="true" message="I'll be there soon, wait for me!"
-      is-even="false" datetime="2024-12-20T12:20:15Z" recieved="true" user-verified="true">
+      <div is="chat-item" user-picture="https://randomuser.me/api/portraits/men/32.jpg"
+      user-name="James Ochieng" unread="0" active="false" you="true" message="Thank you doctor, I'll book the follow-up appointment today!"
+      is-even="false" datetime="2025-01-05T09:28:00Z" recieved="true" user-verified="false" user-profession="Patient" user-location="Makongeni, Nairobi">
       </div>
-      <div is="chat-item" user-picture="https://randomuser.me/api/portraits/men/1.jpg"
-      user-name="Michael Scott" unread="78" active="true" you="false"
-      message="That's what she said!, See for yourself!" is-even="false" datetime="2024-11-15T16:30:15Z"
-      images="https://images.unsplash.com/photo-1733077151673-c834c5613bbc?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D, https://plus.unsplash.com/premium_photo-1733514691529-da25716e449b?q=80&w=1471&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D, https://images.unsplash.com/photo-1719937051176-9b98352a6cf4?q=80&w=1472&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D">
+      <div is="chat-item" user-picture="https://randomuser.me/api/portraits/women/38.jpg"
+      user-name="Dr. Grace Wanjiku" unread="2" active="true" you="false"
+      message="Your dental cleaning is scheduled for next week. Any sensitivity issues?" is-even="false" datetime="2025-01-04T14:30:00Z"
+      user-verified="true" user-profession="Dentist" user-location="Westlands Dental Clinic">
       </div>
-      <div is="chat-item" user-picture="https://api.dicebear.com/9.x/adventurer/svg?seed=Amaya"
-      user-name="Jim Halpert" unread="2" active="false" you="true" opened="true"
-      message="Pranking Dwight again!" is-even="true" datetime="2024-09-20T14:40:15Z" user-verified="true">
+      <div is="chat-item" user-picture="https://randomuser.me/api/portraits/men/28.jpg"
+      user-name="Peter Kimani" unread="1" active="false" you="true" opened="true"
+      message="No sensitivity, just routine cleaning please." is-even="true" datetime="2025-01-04T10:15:00Z" user-verified="false" user-profession="Patient" user-location="Kiambu, Kenya">
       </div>
-      <div is="chat-item" user-picture="https://randomuser.me/api/portraits/women/9.jpg"
-      user-name="Pam Beesly" unread="0" active="true" you="false"
-      message="See you at the office." is-even="true" datetime="2024-10-01T08:35:15Z" user-verified="false">
+      <div is="chat-item" user-picture="https://randomuser.me/api/portraits/men/42.jpg"
+      user-name="Dr. Michael Kiptoo" unread="0" active="true" you="false"
+      message="Your heart monitor results look normal. Continue medication as prescribed." is-even="true" datetime="2025-01-03T16:45:00Z" user-verified="true" user-profession="Cardiologist" user-location="Nairobi Hospital">
       </div>
-      <div is="chat-item" user-picture="https://randomuser.me/api/portraits/men/10.jpg"
-      user-name="Jim Halpert" unread="2" active="false" you="true"
-      message="Pranking Dwight again!" is-even="false" datetime="2024-09-20T14:40:15Z">
+      <div is="chat-item" user-picture="https://randomuser.me/api/portraits/women/22.jpg"
+      user-name="Mary Njeri" unread="1" active="false" you="true"
+      message="Thank you Dr. Kiptoo, feeling much better now!" is-even="false" datetime="2025-01-03T11:20:00Z" user-verified="false" user-profession="Patient" user-location="Karen, Nairobi">
       </div>
-      <div is="chat-item" user-picture="https://randomuser.me/api/portraits/women/11.jpg"
-      user-name="Angela Martin" unread="3" active="true" you="false"
-      message="Cat party at my place." is-even="true" datetime="2024-08-05T11:45:15Z" user-verified="true">
+      <div is="chat-item" user-picture="https://randomuser.me/api/portraits/women/35.jpg"
+      user-name="Dr. Angela Wambui" unread="3" active="true" you="false"
+      message="Your pregnancy check-up went well. Next appointment in 4 weeks." is-even="true" datetime="2025-01-02T09:15:00Z" user-verified="true" user-profession="Obstetrician" user-location="Aga Khan University Hospital">
       </div>
-      <div is="chat-item" user-picture="https://randomuser.me/api/portraits/men/12.jpg"
-      user-name="Dwight Schrute" unread="0" active="false" you="true"
-      message="Bears. Beets. Battlestar Galactica." is-even="false" datetime="2024-07-12T15:50:15Z">
+      <div is="chat-item" user-picture="https://randomuser.me/api/portraits/men/35.jpg"
+      user-name="David Maina" unread="0" active="false" you="true"
+      message="Perfect! My wife is very happy with the care." is-even="false" datetime="2025-01-01T18:30:00Z" user-verified="false" user-profession="Patient" user-location="Thika, Kiambu">
       </div>
-      <div is="chat-item" user-picture="https://randomuser.me/api/portraits/women/13.jpg"
-      user-name="Kelly Kapoor" unread="1" active="true" you="false"
-      message="Fashion show at lunch!" is-even="true" datetime="2024-06-30T10:55:15Z" user-verified="true">
+      <div is="chat-item" user-picture="https://randomuser.me/api/portraits/women/28.jpg"
+      user-name="Dr. Faith Cherop" unread="2" active="true" you="false"
+      message="Your child's vaccination schedule is updated. See attached calendar." is-even="true" datetime="2024-12-30T14:20:00Z" user-verified="true" user-profession="Pediatrician" user-location="Gertrude's Children's Hospital">
       </div>
-      <div is="chat-item" user-picture="https://randomuser.me/api/portraits/men/14.jpg"
-      user-name="Ryan Howard" unread="2" active="false" you="true"
-      message="Just got promoted!" is-even="false" datetime="2024-05-25T13:00:15Z">
+      <div is="chat-item" user-picture="https://randomuser.me/api/portraits/men/25.jpg"
+      user-name="John Mutua" unread="1" active="false" you="true"
+      message="Thank you! We'll bring him in next month." is-even="false" datetime="2024-12-29T16:45:00Z" user-verified="false" user-profession="Patient" user-location="Eastleigh, Nairobi">
       </div>
-      <div is="chat-item" user-picture="https://randomuser.me/api/portraits/women/15.jpg"
-      user-name="Phyllis Vance" unread="0" active="true" you="false"
-      message="Knitting club meeting." is-even="true" datetime="2024-04-18T09:05:15Z">
+      <div is="chat-item" user-picture="https://randomuser.me/api/portraits/women/40.jpg"
+      user-name="Dr. Rose Kiprotich" unread="0" active="true" you="false"
+      message="Your eye exam results are ready for collection." is-even="true" datetime="2024-12-28T11:30:00Z" user-verified="true" user-profession="Ophthalmologist" user-location="Mater Misericordiae Hospital">
       </div>
-      <div is="chat-item" user-picture="https://randomuser.me/api/portraits/men/16.jpg"
-      user-name="Stanley Hudson" unread="3" active="false" you="true"
-      message="Did I stutter?" is-even="false" datetime="2024-03-10T17:10:15Z" user-verified="true">
+      <div is="chat-item" user-picture="https://randomuser.me/api/portraits/men/40.jpg"
+      user-name="Samuel Otieno" unread="2" active="false" you="true"
+      message="Will my new glasses be ready this week?" is-even="false" datetime="2024-12-27T08:15:00Z" user-verified="false" user-profession="Patient" user-location="Kisumu, Kenya">
       </div>
-      <div is="chat-item" user-picture="https://randomuser.me/api/portraits/women/17.jpg"
-      user-name="Meredith Palmer" unread="1" active="true" you="false"
-      message="Party at my place!" is-even="true" datetime="2022-02-01T20:15:15Z">
+      <div is="chat-item" user-picture="https://randomuser.me/api/portraits/women/33.jpg"
+      user-name="Dr. Nancy Akinyi" unread="1" active="true" you="false"
+      message="Your therapy session went well today. See you next week!" is-even="true" datetime="2024-12-26T17:00:00Z" user-verified="true" user-profession="Therapist" user-location="Karen Wellness Center">
       </div>
     `;
   }
@@ -286,7 +287,7 @@ export default class ChatApp extends HTMLElement {
           display: flex;
           flex-direction: column;
           align-items: start;
-          padding: 0 10px;
+          padding: 0;
           gap: 20px;
         }
 

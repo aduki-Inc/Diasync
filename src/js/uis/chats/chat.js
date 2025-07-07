@@ -24,12 +24,12 @@ export default class ChatItem extends HTMLDivElement {
   }
 
   formatDateTime = str => {
-		const date = new Date(str);
+    const date = new Date(str);
 
-		// get th, st, nd, rd for the date
-		const day = date.getDate();
-		const dayStr = day === 1 || day === 21 || day === 31 ? 'st' : day === 2 || day === 22 ? 'nd' : day === 3 || day === 23 ? 'rd' : 'th';
-		const diff = new Date() - date;
+    // get th, st, nd, rd for the date
+    const day = date.getDate();
+    const dayStr = day === 1 || day === 21 || day === 31 ? 'st' : day === 2 || day === 22 ? 'nd' : day === 3 || day === 23 ? 'rd' : 'th';
+    const diff = new Date() - date;
 
     // if we are in the same minute: Just now
     if (diff < 1000 * 60) {
@@ -82,11 +82,11 @@ export default class ChatItem extends HTMLDivElement {
     }
 
     // if we are in a different year: 12th Jan 2021 at 11:59 PM
-		return /* html */`
+    return /* html */`
       ${date.getDate()}${dayStr} ${date.toLocaleString('default', { month: 'short' })} ${date.getFullYear()}
     `;
-	}
-  
+  }
+
   getLapseTime = date => {
     try {
       date = new Date(date);
@@ -146,13 +146,18 @@ export default class ChatItem extends HTMLDivElement {
         <div class="content">
           <span class="head">
             <span class="name">
-              <span class="text">${this.getAttribute('user-name')}</span>
-              ${this.checkVerified(this.textToBoolean(this.getAttribute('user-verified')))}
+              <span class="left">
+                <span class="text">
+                  <span class="user-name">${this.getAttribute('user-name')}</span>
+                  ${this.checkVerified(this.textToBoolean(this.getAttribute('user-verified')))}
+                </span>
+                <span class="user-info">${this.getUserInfo()}</span>
+              </span>
             </span>
             <span class="time">${this.formatDateTime(this.getAttribute('datetime'))}</span>
           </span>
           <span class="text">
-            ${this.getUnread(you,this.strToInteger(this.getAttribute('unread')), recieved)}
+            ${this.getUnread(you, this.strToInteger(this.getAttribute('unread')), recieved)}
             ${this.getYou(this.textToBoolean(this.getAttribute('you')))}
             <span class="message">${this.getAttribute('message')}</span>
             ${this.getUnreadMessages(you, this.strToInteger(this.getAttribute('unread')))}
@@ -162,6 +167,13 @@ export default class ChatItem extends HTMLDivElement {
         </div>
       </div>
     `;
+  }
+
+  getUserInfo = () => {
+    const profession = this.getAttribute('user-profession');
+    const location = this.getAttribute('user-location');
+    if (profession && location) return /* html */`${profession} <span>•</span> ${location}`;
+    return /* html */`User <span>•</span> Unknown, ${location || 'Location'}`;
   }
 
   checkVerified = verified => {
@@ -186,7 +198,7 @@ export default class ChatItem extends HTMLDivElement {
   }
 
   getUnread = (you, num, recieved) => {
-    if(!you) return '';
+    if (!you) return '';
 
     if (recieved) {
       return /* html */`
@@ -194,9 +206,9 @@ export default class ChatItem extends HTMLDivElement {
           ${this.getStatusIcon('delivered')}
         </span>
       `;
-    } 
+    }
 
-    if(num > 0 ) {
+    if (num > 0) {
       return /* html */`
       <span class="tick unread">
         ${this.getStatusIcon('sent')}
@@ -211,7 +223,7 @@ export default class ChatItem extends HTMLDivElement {
     }
   }
 
-  getStatusIcon = kind  => {
+  getStatusIcon = kind => {
     const icons = {
       sent: this.getSentIcon(),
       delivered: this.getDeliveredIcon(),
@@ -286,7 +298,7 @@ export default class ChatItem extends HTMLDivElement {
   }
 
   getImages = () => {
-   const images = this.imagesArray();
+    const images = this.imagesArray();
 
     if (images.length < 1) return '';
 
@@ -390,25 +402,6 @@ export default class ChatItem extends HTMLDivElement {
           gap: 10px;
           padding: 10px 0;
           transition: all 0.3s ease;
-        }
-
-        .wrapper.opened {
-          padding: 10px 5px 10px 8px;
-          border-radius: 10px;
-          position: relative;
-        }
-
-        .wrapper.opened::before {
-          content: '';
-          position: absolute;
-          top: 50%;
-          left: 0;
-          width: 2px;
-          height: 80%;
-          transition: all 0.3s ease;
-          transform: translateY(-50%);
-          background: var(--action-linear);
-          border-radius: 10px;
         }
 
         .wrapper:hover {
@@ -536,7 +529,28 @@ export default class ChatItem extends HTMLDivElement {
           gap: 3px;
         }
 
-        .wrapper > .content > .head > .name > .text {
+        .wrapper > .content > .head > .name > .left {
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: start;
+          width: max-content;
+          max-width: 100%;
+          min-width: 100%;
+        }
+
+        .wrapper > .content > .head > .name > .left > .text {
+          display: flex;
+          flex-direction: row;
+          justify-content: start;
+          align-items: center;
+          width: max-content;
+          max-width: 100%;
+          min-width: 100%;
+          gap: 5px;
+        }
+
+        .wrapper > .content > .head > .name > .left > .text > .user-name {
           width: max-content;
           max-width: calc(100% - 23px);
           text-align: start;
@@ -548,7 +562,7 @@ export default class ChatItem extends HTMLDivElement {
           text-overflow: ellipsis;
         }
 
-        .wrapper > .content > .head > .name > svg {
+        .wrapper > .content > .head > .name > .left > .text > svg {
           min-width: 18px;
           max-width: 18px;
           min-height: 18px;
@@ -563,7 +577,7 @@ export default class ChatItem extends HTMLDivElement {
           fill: var(--accent-color);
         }
 
-        .wrapper > .content > .head > .name > svg > path#outer {
+        .wrapper > .content > .head > .name > .left > .text > svg > path#outer {
           stroke: var(--accent-color);
           color: var(--accent-color);
         }
@@ -571,6 +585,31 @@ export default class ChatItem extends HTMLDivElement {
         .wrapper.unread > .content > .head > .name {
           font-weight: 600;
           color: var(--title-color);
+        }
+
+        .wrapper > .content > .head > .name > .left > .user-info {
+          font-family: var(--font-read), sans-serif;
+          font-weight: 400;
+          font-size: 0.85rem;
+          line-height: 1;
+          color: var(--gray-color);
+          display: inline-block;
+          width: max-content;
+          max-width: 100%;
+          min-width: 100%;
+
+          /* add ellipsis */
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .wrapper > .content > .head > .name > .left > .user-info > span {
+          color: var(--gray-color);
+          font-weight: 500;
+          font-size: 1rem;
+          display: inline-block;
+          margin-bottom: -3px;
         }
 
         .wrapper > .content > .head > .time {
@@ -658,7 +697,7 @@ export default class ChatItem extends HTMLDivElement {
           font-family: var(--font-main), sans-serif;
           font-weight: 400;
           font-size: 1rem;
-          padding-left: 2px;
+          padding: 2px 25px 0 5px;
           color: var(--gray-color);
           white-space: nowrap;
           overflow: hidden;

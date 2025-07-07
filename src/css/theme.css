@@ -135,6 +135,13 @@ Author URL: https://nomadia.aduki.io
 
   /* Chat Variables */
   --chat-background: #f0f2f5;
+  --chat-container: radial-gradient(
+      circle at 50% 50%,
+      #e0e0e0 1px,
+      transparent 1px
+    ),
+    radial-gradient(circle at 25% 25%, #d8d8d8 1px, transparent 1px),
+    radial-gradient(circle at 75% 75%, #d8d8d8 1px, transparent 1px);
   --you-background: #a1e3f950;
   --reply-background: #f8f8f8;
   --chat-hover: #f3f3f3;
