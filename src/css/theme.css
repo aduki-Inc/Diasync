@@ -240,6 +240,206 @@ Author URL: https://nomadia.aduki.io
   );
 }
 
+/* Dark Mode Variables */
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* Background Colors - Dark theme */
+    --tab-background: #3674b520;
+    --hubspot-background: linear-gradient(0deg, #1a1a1a 0%, #2a2a2a 100%);
+    --stat-background: #1a1a1a;
+    --attachement-background: var(--tab-background);
+
+    /* Shadow Variables - Dark theme */
+    --card-box-shadow: 0 12px 28px 0 rgba(0, 0, 0, 0.4);
+    --image-shadow: 0 -1px 10px 0 #0000001a;
+    --card-box-shadow-alt: 0 2px 4px 0 rgba(0, 0, 0, 0.3);
+    --box-shadow: 0 0 0 1px #ffffff10, 0 2px 2px #0000001a,
+      0 8px 16px -4px #0000001a;
+
+    /* Scrollbar Colors - Dark theme */
+    --scroll-bar-background: #333333;
+    --scroll-bar-linear: linear-gradient(var(--alt), var(--main-700));
+
+    /* Border Variables - Subtle with reduced opacity */
+    --input-border: 1px solid #2a2a2a80;
+    --input-border-focus: 1px solid #3674b5aa;
+    --input-border-error: 1px solid #ec4a1975;
+    --action-border: 1px solid #2a2a2a80;
+    --border: thin solid #2a2a2a80;
+    --border-button: thin solid #2a2a2a80;
+    --topic-border: thin solid #2a2a2a80;
+    --topic-border-active: thin solid #3674b5aa;
+    --section-border: 2px solid var(--main);
+    --poll-border: thin solid #2a2a2a80;
+    --border-mobile: thin solid #2a2a2a80;
+    --border-header: 0.002rem solid #2a2a2a80;
+
+    /* Main Background - Pure Black */
+    --background: #000000;
+
+    /* Component Backgrounds - Dark variations */
+    --label-focus-background: #a1e3f920;
+    --modal-background: #000000e6;
+    --action-background: #1a1a1a;
+    --author-background: #1a1a1a;
+    --user-background: #0f0f0f;
+    --dot-background: #2a2a2a60;
+    --hover-background: #1a1a1a;
+    --que-background: #1a1a1a6c;
+    --poll-background: #1a1a1ad7;
+    --gray-background: #1a1a1ad7;
+    --create-background: linear-gradient(90deg, #a1e3f920 0%, #578fca20 100%);
+    --logon-background: #0f0f0f;
+    --error-background: #ff8d6a22;
+    --logon-image: radial-gradient(circle, #333333 1px, rgba(0, 0, 0, 0) 1px);
+
+    /* Color Variables - Enhanced visibility */
+    --accent-color: var(--main);
+    --accent-alt: var(--main-700);
+    --action-color: var(--main-700);
+    --success-color: #10b981;
+    --white-color: #ffffff;
+    --gray-color: #808080;
+    --add-color: #808080;
+    --text-color: #c0c0c0;
+    --label-color: #b0b0b0;
+    --highlight-color: #c0c0c0;
+    --read-color: #e0e0e0;
+    --editor-color: #e0e0e0;
+    --title-color: #f0f0f0;
+    --alt-color: #808080;
+    --hubspot-color: #808080;
+    --error-color: #ec4b19;
+    --anchor-color: var(--main);
+    --icon-color: #c0c0c0;
+
+    /* Shot/Dark Theme Variables - Enhanced */
+    --shot-text-color: #c0c0c0;
+    --shot-read-color: #e0e0e0;
+    --shot-title-color: #f0f0f0;
+    --shot-alt-color: #578fca;
+    --shot-error-color: #d94317;
+    --shot-anchor-color: #a1e3f9;
+    --shot-background: #1a1a1a;
+    --shot-active-background: #3674b540;
+
+    /* Pin Variables - Dark theme */
+    --pin-linear-gradient: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0),
+      rgba(0, 0, 0, 0.8)
+    );
+    --pin-text-color: #f0f0f0;
+    --pin-gray-color: #c0c0c0;
+
+    /* Chat Variables - Dark theme */
+    --chat-background: #0a0a0a;
+    --chat-container: radial-gradient(
+        circle at 50% 50%,
+        #333333 1px,
+        transparent 1px
+      ),
+      radial-gradient(circle at 25% 25%, #2a2a2a 1px, transparent 1px),
+      radial-gradient(circle at 75% 75%, #2a2a2a 1px, transparent 1px);
+    --you-background: #a1e3f920;
+    --reply-background: #0f0f0f;
+    --chat-hover: #1a1a1a;
+    --chat-you-delivered: var(--main);
+    --typing-color: rgba(148, 163, 184, 0.8);
+    --message-background: linear-gradient(
+      var(--main-500) 0%,
+      var(--main-700) 50%,
+      var(--main) 100%
+    );
+    --attachement-background: #3674b520;
+
+    /* Line Variables - Dark theme */
+    --open-line: 2px solid #3674b593;
+    --open-line-mobile: 2px solid #3674b5c5;
+    --close-line: 2px solid #2a2a2a60;
+
+    /* Modal Variables - Dark theme */
+    --modal-shadow: 0 12px 48px #00000066;
+    --modal-border: 1px solid #2a2a2a60;
+    --modal-overlay: #000000e6;
+
+    /* Gradient Variables - Dark theme */
+    --action-linear-start: var(--main);
+    --action-linear-end: var(--main-700);
+
+    --action-linear: linear-gradient(#808080, var(--main-700));
+    --light-linear: linear-gradient(90deg, #a1e3f920 0%, #578fca20 100%);
+    --error-linear: linear-gradient(103.53deg, #fa6436 -6.72%, #ec4b19 109.77%);
+    --second-linear: linear-gradient(0deg, #808080 0%, #576070 100%);
+    --poll-linear: linear-gradient(0deg, #1a1a1a 0%, #2a2a2a 100%);
+    --accent-linear: linear-gradient(
+      103.53deg,
+      var(--main) -6.72%,
+      var(--main-700) 109.77%
+    );
+    --alt-linear: linear-gradient(
+      78deg,
+      #808080 -50%,
+      var(--main) 28.67%,
+      var(--main-700) 57.79%,
+      rgba(54, 116, 181, 0.85) 76.05%,
+      var(--main-500) 88.54%,
+      #a1e3f9
+    );
+
+    --loader-gradient: linear-gradient(
+      -45deg,
+      #1a1a1a,
+      #2a2a2a,
+      #333333,
+      #2a2a2a,
+      #1a1a1a
+    );
+
+    --fade-linear-gradient: linear-gradient(
+      180deg,
+      #00000002,
+      #0000002a,
+      #0000004d,
+      #00000069,
+      #00000083,
+      #000000c7,
+      #000000d5,
+      #000000ea,
+      #000000f6,
+      #000000
+    );
+
+    --controls-gradient-left: linear-gradient(
+      -90deg,
+      #00000002,
+      #0000002a,
+      #0000004d,
+      #00000069,
+      #00000083,
+      #000000c7,
+      #000000d5,
+      #000000ea,
+      #000000f6,
+      #000000
+    );
+
+    --controls-gradient-right: linear-gradient(
+      90deg,
+      #00000002,
+      #0000002a,
+      #0000004d,
+      #00000069,
+      #00000083,
+      #000000c7,
+      #000000d5,
+      #000000ea,
+      #000000f6,
+      #000000
+    );
+  }
+}
+
 *,
 *:after,
 *:before {

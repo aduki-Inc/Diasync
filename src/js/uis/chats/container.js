@@ -664,7 +664,7 @@ export default class ChatContainer extends HTMLElement {
           max-width: 100%;
           width: 100%;
           min-width: 100%;
-          padding: 0 10px;
+          padding: 0;
           height: 100dvh;
           max-height: 100vh;
           display: flex;

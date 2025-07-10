@@ -454,13 +454,12 @@ export default class AppMain extends HTMLElement {
       return /* html */`
         ${this.getMainNav()}
         <section class="flow">
-          ${this.getHeader()}
           <div id="content-container" class="content-container">
             ${this.getLoader()}
           </div>
           ${this.getFooter()}
         </section>
-        ${this.getChats()}
+        ${this.getSidebar()}
       `;
     }
   }
@@ -1165,51 +1164,12 @@ export default class AppMain extends HTMLElement {
     `;
   }
 
-  getChats = () => {
+  getSidebar = () => {
     return /* html */`
-      <section class="chats">
-        <chats-section all="628" unread="3" requests="2"></chats-section>
+      <section class="sidebar">
+       <sidebar-section section-title="Chats & Updates" description="Stay connected with your contacts and receive updates."></sidebar-section>
       </section>
     `;
-  }
-
-  getHeader = () => {
-    return /* html */`
-      <header class="header">
-        <form class="search">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="currentColor" fill="none">
-            <path d="M17 17L21 21" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-            <path d="M19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11C3 15.4183 6.58172 19 11 19C15.4183 19 19 15.4183 19 11Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-          </svg>
-          <input type="text" class="search-input" placeholder="Search services, producs & more" />
-          <button type="submit" class="search-button">Search</button>
-        </form>
-        <ul class="links">
-          <li class="link profile">
-            <div class="image">
-              <img src="https://randomuser.me/api/portraits/men/1.jpg" alt="Profile Image" />
-            </div>
-            <span class="text">Profile</span>
-          </li>
-          <li class="link updates">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" color="currentColor" fill="none">
-              <path id="animate" d="M22 5.5C22 7.433 20.433 9 18.5 9C16.567 9 15 7.433 15 5.5C15 3.567 16.567 2 18.5 2C20.433 2 22 3.567 22 5.5Z" stroke="currentColor" stroke-width="1.8" />
-              <path d="M21.9506 11C21.9833 11.3289 22 11.6625 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C12.3375 2 12.6711 2.01672 13 2.04938" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
-              <path d="M8 10H12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-              <path d="M8 15H16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-            </svg>
-            <span class="text">Updates</span>
-          </li>
-          <li class="link more">
-            <span class="icon">
-              <span class="sp"></span>
-              <span class="sp"></span>
-            </span>
-            <span class="text">More</span>
-          </li>
-        </ul>
-      </header>
-    `
   }
 
   getFooter = () => {
@@ -1271,6 +1231,35 @@ export default class AppMain extends HTMLElement {
     `
   }
 
+  _expandDropdown(parentLi) {
+    if (!parentLi) return;
+
+    // Remove collapsed class and add active class to show vertical line
+    parentLi.classList.remove('collapsed');
+    parentLi.classList.add('active');
+
+    // Get the dropdown and expand it
+    const dropdown = parentLi.querySelector('ul.dropdown');
+    if (dropdown) {
+      // Set max height to scrollHeight to show the dropdown
+      dropdown.style.maxHeight = (dropdown.scrollHeight + 7) + 'px';
+    }
+
+    // Close other dropdowns
+    const specialNavUls = this.shadowRoot.querySelectorAll('section.nav > ul.nav.special');
+    specialNavUls.forEach(ul => {
+      const item = ul.querySelector('li');
+      if (item && item !== parentLi) {
+        item.classList.add('collapsed');
+        item.classList.remove('active');
+        const otherDropdown = item.querySelector('ul.dropdown');
+        if (otherDropdown) {
+          otherDropdown.style.maxHeight = '0px';
+        }
+      }
+    });
+  }
+
   getStyles() {
     return /* css */`
 	    <style>
@@ -1318,10 +1307,7 @@ export default class AppMain extends HTMLElement {
           width: 100%;
           min-width: 100%;
           max-width: 100%;
-          height: 100%;
-          max-height: 100%;
-          overflow: hidden;
-          padding: 0 10px;
+          padding: 0;
           margin: 0;
           display: flex;
           gap: 20px;
@@ -1378,11 +1364,11 @@ export default class AppMain extends HTMLElement {
         }
 
         section.nav {
-          width: 200px;
+          width: 220px;
           display: flex;
           flex-flow: column;
           gap: 5px;
-          padding: 0;
+          padding: 10px 0 0 10px;
           height: 100dvh;
           max-height: 100dvh;
           overflow-y: scroll;
@@ -1467,6 +1453,31 @@ export default class AppMain extends HTMLElement {
           font-family: var(--font-text), sans-serif;
           font-size: 1rem;
           font-weight: 500;
+        }
+
+        /* External link styles */
+        section.nav > ul.nav.main > li > a.external-link {
+          justify-content: space-between;
+          width: 100%;
+          padding: 5px;
+          display: flex;
+          align-items: center;
+          color: inherit;
+          border-radius: 7px;
+        }
+
+        section.nav > ul.nav.main > li > a.external-link > .link-content {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          flex: 1;
+        }
+
+        section.nav > ul.nav.main > li > a.external-link > .external-icon {
+          width: 16px;
+          height: 16px;
+          opacity: 0.7;
+          flex-shrink: 0;
         }
 
         section.nav > ul.nav > li.logo {
@@ -1656,349 +1667,45 @@ export default class AppMain extends HTMLElement {
         }
 
         section.flow {
-          width: calc(100% - (220px + 500px + 20px));
+          width: calc(100% - (240px + 500px + 20px));
           display: flex;
           flex-flow: column;
+          max-height: max-content;
           gap: 0;
           padding: 0;
         }
 
-        /* Header Styles */
-        header.header {
-          height: 70px;
-          max-height: 70px;
-          width: 100%;
-          padding: 0;
-          background: var(--background);
-          border-bottom: var(--border);
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          gap: 20px;
-          position: sticky;
-          top: 0;
-          z-index: 100;
-          backdrop-filter: blur(10px);
-        }
-
-        header.header > form.search {
-          flex: 1;
-          width: calc(100% - 170px);
-          position: relative;
-          display: flex;
-          align-items: center;
-          background: var(--background-offset);
-          border: var(--border);
-          border-radius: 15px;
-          padding: 2px;
-          transition: all 0.3s ease;
-        }
-
-        header.header > form.search:focus-within {
-          border-color: var(--accent-color);
-          box-shadow: 0 0 0 3px rgba(var(--accent-rgb), 0.1);
-        }
-
-        header.header > form.search > svg {
-          width: 22px;
-          height: 22px;
-          color: var(--gray-color);
-          margin-left: 12px;
-          flex-shrink: 0;
-        }
-
-        header.header > form.search > input.search-input {
-          flex: 1;
-          border: none;
-          background: transparent;
-          padding: 10px 12px;
-          font-family: var(--font-text), sans-serif;
-          font-size: 0.95rem;
-          color: var(--text-color);
-          outline: none;
-        }
-
-        header.header > form.search > input.search-input::placeholder {
-          color: var(--gray-color);
-          opacity: 0.7;
-        }
-
-        header.header > form.search > button.search-button {
-          padding: 7px 15px;
-          margin: 0 5px 0 0;
-          background: var(--accent-color);
-          color: white;
-          border: none;
-          border-radius: 12px;
-          font-family: var(--font-text), sans-serif;
-          font-size: 0.85rem;
-          font-weight: 500;
-          cursor: pointer;
-          transition: all 0.2s ease;
-          flex-shrink: 0;
-        }
-
-        header.header > form.search > button.search-button:hover {
-          background: var(--accent-hover);
-          transform: translateY(-1px);
-        }
-
-        header.header > form.search > button.search-button:active {
-          transform: translateY(0);
-        }
-
-        header.header > ul.links {
-          display: flex;
-          align-items: center;
-          gap: 15px;
-          margin: 0;
-          padding: 0;
-          list-style: none;
-        }
-
-        header.header > ul.links > li.link {
-          background: var(--gray-background);
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          width: 40px;
-          height: 40px;
-          max-width: 40px;
-          max-height: 40px;
-          padding: 0;
-          border-radius: 50%;
-          display: flex;
-          justify-content: center;
-          justify-content: center;
-          cursor: pointer;
-          transition: all 0.2s ease;
-          color: var(--text-color);
-          position: relative;
-        }
-
-        header.header > ul.links > li.link:hover {
-          background: var(--tab-background);
-          color: var(--accent-color);
-        }
-
-        header.header > ul.links > li.link.profile > div.image {
-          width: 40px;
-          height: 40px;
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          overflow: hidden;
-        }
-
-        header.header > ul.links > li.link.profile > div.image > img {
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-        }
-
-        header.header > ul.links > li.link > span.text {
-          display: none;
-          position: absolute;
-          bottom: -38px;
-          left: 50%;
-          transform: translateX(-50%);
-          background: var(--background);
-          color: var(--text-color);
-          padding: 6px 10px;
-          border-radius: 12px;
-          font-family: var(--font-text), sans-serif;
-          font-size: 0.85rem;
-          font-weight: 500;
-          white-space: nowrap;
-          z-index: 1000;
-          border: var(--border);
-          box-shadow: var(--card-box-shadow);
-          pointer-events: none;
-        }
-
-        header.header > ul.links > li.link > span.text::before {
-          content: '';
-          position: absolute;
-          top: -2px;
-          left: 50%;
-          transform: translateX(-50%);
-          width: 10px;
-          height: 10px;
-          rotate: 45deg;
-          background: var(--background);
-          border-top: var(--border);
-          border-left: var(--border);
-        }
-
-        header.header > ul.links > li.link:hover > span.text {
-          display: block;
-          animation: fadeInTooltip 0.2s ease-in-out;
-        }
-
-        @keyframes fadeInTooltip {
-          from {
-            opacity: 0;
-            transform: translateX(-50%) translateY(5px);
-          }
-          to {
-            opacity: 1;
-            transform: translateX(-50%) translateY(0);
-          }
-        }
-
-        header.header > ul.links > li.link.updates {
-          position: relative;
-        }
-
-        /* Animate the updates notification circle */
-        header.header > ul.links > li.link.updates svg path#animate {
-          animation: updatesPulse 2s ease-in-out infinite;
-          transform-origin: center;
-          z-index: 1;
-          color: var(--error-color);
-        }
-
-        @keyframes updatesPulse {
-          0%, 100% {
-            transform: scale(0.9);
-            opacity: 1;
-          }
-          50% {
-            transform: scale(1.05);
-            opacity: 0.7;
-          }
-        }
-
-        /* Alternative breathing animation for the updates icon */
-        header.header > ul.links > li.link.updates:hover svg path#animate {
-          animation: updatesBreath 1.8s ease-in-out infinite;
-          z-index: 1;
-          background: var(--error-background);
-        }
-
-        @keyframes updatesBreath {
-          0%, 100% {
-            transform: scale(0.8);
-            opacity: 0.8;
-          }
-          50% {
-            transform: scale(1);
-            opacity: 1;
-          }
-        }
-
-        header.header > ul.links > li.link > svg {
-          width: 24px;
-          height: 24px;
-          color: inherit;
-        }
-
-        header.header > ul.links > li.link.more > span.icon {
-          display: flex;
-          gap: 5px;
-          align-items: center;
-          justify-content: center;
-        }
-
-        header.header > ul.links > li.link.more > span.icon > span.sp {
-          display: inline-block;
-          width: 8px;
-          height: 8px;
-          background: var(--text-color);
-          color: inherit;
-          border-radius: 50%;
-        }
-
-
-        section.flow > div#content-container {
-          width: 100%;
-          min-height: calc(100dvh - 140px);
-          display: flex;
-          flex-flow: column;
-          gap: 0;
-          padding: 0;
-        }
-
-        /* Chat Panel Styles */
-        section.chats {
+        /* Latency Panel Styles */
+        section.sidebar {
           width: 500px;
           height: 100dvh;
-          position: sticky;
-          right: 0;
-          top: 0;
+          padding: 0;
           background: var(--background);
           /* border-left: var(--border); */
           display: flex;
           flex-flow: column;
+          max-height: 100dvh;
           gap: 0;
           z-index: 10;
+          overflow-y: auto;
+          scrollbar-width: none;
+          position: sticky;
+          top: 0;
         }
 
-        section.chats > .chat-header {
-          padding: 15px 20px;
-          border-bottom: var(--border);
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          background: var(--tab-background);
+        section.sidebar::-webkit-scrollbar {
+          visibility: hidden;
+          display: none;
         }
 
-        section.chats > .chat-header > h3 {
-          margin: 0;
-          font-family: var(--font-text), sans-serif;
-          font-size: 1.1rem;
-          font-weight: 600;
-          color: var(--title-color);
-        }
-
-        section.chats > .chat-header > .chat-toggle {
-          cursor: pointer;
-          padding: 5px;
-          border-radius: 5px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          transition: background-color 0.2s ease;
-        }
-
-        section.chats > .chat-header > .chat-toggle:hover {
-          background: var(--hover-background);
-        }
-
-        section.chats > .chat-header > .chat-toggle > svg {
-          color: var(--icon-color);
-        }
-
-        section.chats > .chat-content {
-          flex: 1;
-          padding: 20px;
+        section.flow > div#content-container {
+          width: 100%;
+          min-height: calc(100dvh - 140px);
+          max-height: max-content;
           display: flex;
           flex-flow: column;
-          align-items: center;
-          justify-content: center;
-          gap: 15px;
-        }
-
-        section.chats > .chat-content > .chat-placeholder {
-          text-align: center;
-          display: flex;
-          flex-flow: column;
-          align-items: center;
-          gap: 15px;
-        }
-
-        section.chats > .chat-content > .chat-placeholder > svg {
-          color: var(--gray-color);
-          opacity: 0.5;
-        }
-
-        section.chats > .chat-content > .chat-placeholder > p {
-          margin: 0;
-          font-family: var(--font-text), sans-serif;
-          font-size: 0.95rem;
-          color: var(--gray-color);
-          opacity: 0.7;
+          gap: 0;
+          padding: 0;
         }
 
         /* Mobile section unavailable */
@@ -2128,34 +1835,5 @@ export default class AppMain extends HTMLElement {
         }
 	    </style>
     `;
-  }
-
-  _expandDropdown(parentLi) {
-    if (!parentLi) return;
-
-    // Remove collapsed class and add active class to show vertical line
-    parentLi.classList.remove('collapsed');
-    parentLi.classList.add('active');
-
-    // Get the dropdown and expand it
-    const dropdown = parentLi.querySelector('ul.dropdown');
-    if (dropdown) {
-      // Set max height to scrollHeight to show the dropdown
-      dropdown.style.maxHeight = (dropdown.scrollHeight + 7) + 'px';
-    }
-
-    // Close other dropdowns
-    const specialNavUls = this.shadowRoot.querySelectorAll('section.nav > ul.nav.special');
-    specialNavUls.forEach(ul => {
-      const item = ul.querySelector('li');
-      if (item && item !== parentLi) {
-        item.classList.add('collapsed');
-        item.classList.remove('active');
-        const otherDropdown = item.querySelector('ul.dropdown');
-        if (otherDropdown) {
-          otherDropdown.style.maxHeight = '0px';
-        }
-      }
-    });
   }
 }
