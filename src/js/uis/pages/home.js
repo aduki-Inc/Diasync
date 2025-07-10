@@ -145,37 +145,8 @@ export default class Home extends HTMLElement {
   getBody = () => {
     return /* html */ `
       <div class="dashboard-container">
-        ${this.getHeader()}
         ${this.getMainContent()}
       </div>
-    `;
-  };
-
-  getHeader = () => {
-    return /* html */`
-      <header class="dashboard-header">
-        <div class="header-content">
-          <div class="header-left">
-            <h2 class="dashboard-title">Dashboard</h2>
-            <p class="dashboard-subtitle">Manage your family's healthcare.</p>
-          </div>
-          <div class="header-right">
-            <form class="search-bar">
-              <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="11" cy="11" r="8"></circle>
-                <path d="M21 21l-4.35-4.35"></path>
-              </svg>
-              <input type="text" class="search-input" placeholder="Search services, doctors, medications..." />
-            </form>
-            <nav class="tab-navigation">
-              <div class="tab active">Overview</div>
-              <div class="tab">Services</div>
-              <div class="tab">Reports</div>
-              <div class="tab">Family</div>
-            </nav>
-          </div>
-        </div>
-      </header>
     `;
   };
 
@@ -276,7 +247,7 @@ export default class Home extends HTMLElement {
       <div class="action-card primary" data-action="consultation">
         <div class="action-content">
           <h3>Book Consultation</h3>
-          <p>Virtual or in-person appointments</p>
+          <p>Virtual or in-person meetings</p>
         </div>
       </div>
 
@@ -837,14 +808,14 @@ export default class Home extends HTMLElement {
       /* Quick Actions */
       .quick-actions-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
         gap: 1.5rem;
       }
 
       .action-card {
         background: var(--poll-background);
         border-radius: 12px;
-        padding: 1.5rem;
+        padding: 1rem;
         display: flex;
         align-items: center;
         gap: 1rem;
