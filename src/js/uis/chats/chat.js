@@ -509,8 +509,8 @@ export default class ChatItem extends HTMLDivElement {
           width: calc(100% - 105px);
           max-width: calc(100% - 105px);
           min-width: calc(100% - 105px);
-          font-weight: 500;
-          font-size: 1.08rem;
+          font-weight: 400;
+          font-size: 1rem;
           line-height: 1.4;
           color: var(--text-color);
           display: flex;
@@ -574,7 +574,7 @@ export default class ChatItem extends HTMLDivElement {
         }
 
         .wrapper.unread > .content > .head > .name {
-          font-weight: 600;
+          font-weight: 500;
           color: var(--title-color);
         }
 
@@ -615,7 +615,7 @@ export default class ChatItem extends HTMLDivElement {
         }
 
         .wrapper.unread > .content > .head > .time {
-          font-weight: 600;
+          font-weight: 500;
           color: var(--text-color);
         }
 
@@ -688,7 +688,7 @@ export default class ChatItem extends HTMLDivElement {
         .wrapper > .content > .text > .message {
           font-family: var(--font-main), sans-serif;
           font-weight: 400;
-          font-size: 1rem;
+          font-size: 0.95rem;
           padding: 2px 25px 0 5px;
           color: var(--gray-color);
           white-space: nowrap;

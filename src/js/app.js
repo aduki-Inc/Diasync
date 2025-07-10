@@ -53,9 +53,7 @@ export default class AppMain extends HTMLElement {
     // Load the content for this URL
     if (this.getNavContents[currentPath]) {
       const container = this.shadowObj.querySelector('section.flow > div#content-container.content-container');
-      if (container) {
-        container.innerHTML = this.getNavContents[currentPath];
-      }
+      if (container) container.innerHTML = this.getNavContents[currentPath];
     } else if (currentPath !== '/' && currentPath !== '/dashboard') {
       // If a path is not in nav contents and not the root path, show 404/default
       const container = this.shadowObj.querySelector('section.flow > div#content-container.content-container');
@@ -338,7 +336,7 @@ export default class AppMain extends HTMLElement {
   }
 
   getNavContents = {
-    "/dashboard": /* HTML */`<health-dashboard api="/dashboard/overview"></health-dashboard>`,
+    "/": /* HTML */`<health-home></health-home>`,
     "/providers": /* HTML */`<provider-directory api="/providers/directory"></provider-directory>`,
     "/bookings": /* HTML */`<booking-management api="/bookings/all"></booking-management>`,
     "/meetings": /* HTML */`<meeting-management api="/meetings/dashboard"></meeting-management>`,
@@ -418,7 +416,7 @@ export default class AppMain extends HTMLElement {
     "/about": /* HTML */`<about-page api="/about"></about-page>`,
     "/contact": /* HTML */`<contact-page api="/contact"></contact-page>`,
 
-    default: /* HTML */`<health-dashboard api="/dashboard/overview"></health-dashboard>`,
+    default: /* HTML */`<health-home></health-home>`,
   }
 
   // Reenable this when backend & authentication is implemented

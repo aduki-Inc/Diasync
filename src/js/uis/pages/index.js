@@ -1,4 +1,5 @@
 import Overview from "./overview.js";
+import Home from "./home.js";
 import Metrics from "./metrics.js";
 import Performance from "./perform.js";
 import Apply from "./apply.js";
@@ -11,6 +12,7 @@ import SheetThemes from "./theme.js";
 // register all
 export default function all() {
   customElements.define("stats-overview", Overview);
+  customElements.define("health-home", Home);
   customElements.define("stats-metrics", Metrics);
   customElements.define("stats-performance", Performance);
   customElements.define("stats-apply", Apply);
