@@ -1,12 +1,14 @@
-import pages from "./pages/index.js";
+import home from "./home/index.js";
+import market from "./market/index.js";
 import popups from "./popups/index.js";
 import chats from "./chats/index.js"
-import Sidebar from "./sidebar.js";
+import sections from "./sections/index.js";
 
 export default function uis(text) {
-  pages();
+  home();
+  market();
   popups();
   chats();
-  customElements.define("sidebar-section", Sidebar);
+  sections();
   console.log(text);
 }
