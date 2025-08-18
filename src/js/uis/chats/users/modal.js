@@ -1,8 +1,10 @@
 export default class UsersModal extends HTMLElement {
   constructor() {
     super();
-    this.shadow = this.attachShadow({mode: 'open'});
+    this.shadow = this.attachShadow({ mode: 'open' });
     this.active_tab = null;
+    this.app = window.app || {};
+    this.number = this.app?.utils?.number;
     this.render();
   }
 
@@ -125,14 +127,14 @@ export default class UsersModal extends HTMLElement {
     document.body.classList.add("stop-scrolling");
 
     // if any scroll is attempted, set this to the previous value
-    window.onscroll = function() {
+    window.onscroll = function () {
       window.scrollTo(scrollLeft, scrollTop);
     };
   }
 
   enableScroll() {
     document.body.classList.remove("stop-scrolling");
-    window.onscroll = function() {};
+    window.onscroll = function () { };
   }
 
   // close the modal
@@ -195,7 +197,7 @@ export default class UsersModal extends HTMLElement {
             <path d="M7 16H15" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
           </svg>
           <span class="text">All</span>
-          <span class="count">${this.formatNumber(675964)}</span>
+          <span class="count">${this.number.format(675964)}</span>
         </li>
         <li class="tab">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="currentColor" fill="none">
@@ -206,7 +208,7 @@ export default class UsersModal extends HTMLElement {
             <path d="M20 11L22 11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
           </svg>
           <span class="text">Followers</span>
-          <span class="count">${this.formatNumber(43)}</span>
+          <span class="count">${this.number.format(43)}</span>
         </li>
         <li class="tab">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="currentColor" fill="none">
@@ -215,7 +217,7 @@ export default class UsersModal extends HTMLElement {
             <path d="M17 5.71429C17 5.71429 18 6.23573 18.5 7C18.5 7 20 4 22 3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
           </svg>
           <span class="text">Following</span>
-          <span class="count">${this.formatNumber(3)}</span>
+          <span class="count">${this.number.format(3)}</span>
         </li>
       </ul>
     `;

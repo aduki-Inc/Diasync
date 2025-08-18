@@ -1,5 +1,5 @@
 // Universal number formatter (same as overview.js)
-export default function formatNumber(value) {
+export default function formatLongNumber(value) {
   const num = parseFloat(value);
 
   if (isNaN(num)) return '0';

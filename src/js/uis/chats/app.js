@@ -4,6 +4,8 @@ export default class ChatApp extends HTMLElement {
     this.shadow = this.attachShadow({ mode: 'open' });
     this.active_tab = null;
     this.mql = window.matchMedia("(max-width: 768px)");
+    this.app = window.app || {};
+    this.number = this.app?.utils?.number;
     this.render();
   }
 
@@ -65,20 +67,6 @@ export default class ChatApp extends HTMLElement {
 
     // else set the active tab
     this.active_tab = activeTab;
-  }
-
-  formatNumber = numStr => {
-    const num = parseInt(numStr, 10);
-    if (isNaN(num)) return '0';
-
-    if (num < 1000) return num.toString();
-    if (num < 10000) return `${(num / 1000).toFixed(2)}k`;
-    if (num < 100000) return `${(num / 1000).toFixed(1)}k`;
-    if (num < 1000000) return `${Math.floor(num / 1000)}k`;
-    if (num < 10000000) return `${(num / 1000000).toFixed(2)}M`;
-    if (num < 100000000) return `${(num / 1000000).toFixed(1)}M`;
-    if (num < 1000000000) return `${Math.floor(num / 1000000)}M`;
-    return `${Math.floor(num / 1000000000)}B+`;
   }
 
   getTemplate() {
@@ -164,7 +152,7 @@ export default class ChatApp extends HTMLElement {
             <path d="M7 16H15" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
           </svg>
           <span class="text">All</span>
-          <span class="count">${this.formatNumber(this.getAttribute("all"))}</span>
+          <span class="count">${this.number.format(this.getAttribute("all"))}</span>
         </li>
         <li class="tab">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="currentColor" fill="none">
@@ -173,7 +161,7 @@ export default class ChatApp extends HTMLElement {
             <path d="M22 5.5C22 7.433 20.433 9 18.5 9C16.567 9 15 7.433 15 5.5C15 3.567 16.567 2 18.5 2C20.433 2 22 3.567 22 5.5Z" stroke="currentColor" stroke-width="1.8" />
           </svg>
           <span class="text">Unread</span>
-          <span class="count">${this.formatNumber(43)}</span>
+          <span class="count">${this.number.format(43)}</span>
         </li>
         <li class="tab">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="currentColor" fill="none">
@@ -182,7 +170,7 @@ export default class ChatApp extends HTMLElement {
             <path d="M14 4.5L22 4.5M14 4.5C14 3.79977 15.9943 2.49153 16.5 2M14 4.5C14 5.20023 15.9943 6.50847 16.5 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
           </svg>
           <span class="text">Tickets</span>
-          <span class="count">${this.formatNumber(3)}</span>
+          <span class="count">${this.number.format(3)}</span>
         </li>
       </ul>
     `;

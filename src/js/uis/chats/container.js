@@ -6,6 +6,9 @@ export default class ChatContainer extends HTMLElement {
     this.openedContextNode = null;
     this.expanded = false;
     this.reply = null;
+    this.app = window.app || {};
+    this.number = this.app?.utils?.number;
+    this.date = this.app?.utils?.date;
     this.render();
   }
 
@@ -242,88 +245,6 @@ export default class ChatContainer extends HTMLElement {
     return text === 'true' ? true : false;
   }
 
-  formatNumber = numStr => {
-    try {
-      const num = parseInt(numStr);
-
-      // less than a thousand: return the number
-      if (num < 1000) return num;
-
-      // less than a 10,000: return the number with a k with two decimal places
-      if (num < 10000) return `${(num / 1000).toFixed(2)}k`;
-
-      // less than a 100,000: return the number with a k with one decimal place
-      if (num < 100000) return `${(num / 1000).toFixed(1)}k`;
-
-      // less than a million: return the number with a k with no decimal places
-      if (num < 1000000) return `${Math.floor(num / 1000)}k`;
-
-      // less than a 10 million: return the number with an m with two decimal places
-      if (num < 10000000) return `${(num / 1000000).toFixed(2)}M`;
-
-      // less than a 100 million: return the number with an m with one decimal place
-      if (num < 100000000) return `${(num / 1000000).toFixed(1)}M`;
-
-      // less than a billion: return the number with an m with no decimal places
-      if (num < 1000000000) return `${Math.floor(num / 1000000)}M`;
-
-      // a billion or more: return the number with a B+
-      if (num >= 1000000000) return `${Math.floor(num / 1000000000)}B+`;
-
-      // else return the zero
-      return '0';
-    } catch (error) {
-      return '0';
-    }
-  }
-
-  formatDateTime = str => {
-    const date = new Date(str);
-
-    // get th, st, nd, rd for the date
-    const day = date.getDate();
-    const dayStr = day === 1 || day === 21 || day === 31 ? 'st' : day === 2 || day === 22 ? 'nd' : day === 3 || day === 23 ? 'rd' : 'th';
-    const diff = new Date() - date;
-
-    // if we are in the same minute: Just now
-    if (diff < 1000 * 60) {
-      return 'Just now';
-    }
-
-    // if we are in the same day: Today at HH:MM AM/PM
-    if (diff < 1000 * 60 * 60 * 24) {
-      return /* html */`
-        Today at ${date.toLocaleString('default', { hour: 'numeric', minute: 'numeric', hour12: true })}
-      `;
-    }
-
-    // if we are in the diff is less than 7 days: DAY AT HH:MM AM/PM
-    if (diff < 1000 * 60 * 60 * 24 * 7) {
-      return /* html */`
-        ${date.toLocaleString('default', { weekday: 'short' })} at ${date.toLocaleString('default', { hour: 'numeric', minute: 'numeric', hour12: true })}
-      `;
-    }
-
-    // if we are in the same month AND year: 12th APR AT HH:MM AM/PM
-    if (new Date().getMonth() === date.getMonth() && new Date().getFullYear() === date.getFullYear()) {
-      return /* html */`
-        ${date.getDate()}${dayStr} ${date.toLocaleString('default', { month: 'short' })} at ${date.toLocaleString('default', { hour: 'numeric', minute: 'numeric', hour12: true })}
-      `;
-    }
-
-    // if we are in the same year: 12th Jan at 11:59 PM
-    if (new Date().getFullYear() === date.getFullYear()) {
-      return /* html */`
-        ${date.getDate()}${dayStr} ${date.toLocaleString('default', { month: 'short' })} at ${date.toLocaleString('default', { hour: 'numeric', minute: 'numeric', hour12: true })}
-      `;
-    }
-
-    // if we are in a different year: 12th Jan 2021 at 11:59 PM
-    return /* html */`
-      ${date.getDate()}${dayStr} ${date.toLocaleString('default', { month: 'short' })} ${date.getFullYear()} at ${date.toLocaleString('default', { hour: 'numeric', minute: 'numeric', hour12: true })}
-    `;
-  }
-
   getTemplate() {
     return /* html */`
       ${this.getBody()}
@@ -412,7 +333,7 @@ export default class ChatContainer extends HTMLElement {
         </span>
         <span class="time offline">
           <span class="text">Seen</span>
-          <span class="date">${this.formatDateTime(this.getAttribute('last-active'))}</span>
+          <span class="date">${this.date.message(this.getAttribute('last-active'))}</span>
         </span>
       `;
     }

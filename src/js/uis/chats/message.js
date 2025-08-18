@@ -2,7 +2,9 @@ export default class Message extends HTMLDivElement {
   constructor() {
     super();
     this.shadow = this.attachShadow({ mode: 'open' });
-    this.app = window.app;
+    this.app = window.app || {};
+    this.number = this.app?.utils?.number;
+    this.date = this.app?.utils?.date;
     this.active_tab = null;
     this.editable = this.textToBoolean(this.getAttribute('you'));
     this.mql = window.matchMedia('(max-width: 660px)');
@@ -364,86 +366,6 @@ export default class Message extends HTMLDivElement {
     return text === 'true' ? true : false;
   }
 
-  formatNumber = numStr => {
-    try {
-      const num = parseInt(numStr);
-
-      // less than a thousand: return the number
-      if (num < 1000) return num;
-
-      // less than a 10,000: return the number with a k with two decimal places
-      if (num < 10000) return `${(num / 1000).toFixed(2)}k`;
-
-      // less than a 100,000: return the number with a k with one decimal place
-      if (num < 100000) return `${(num / 1000).toFixed(1)}k`;
-
-      // less than a million: return the number with a k with no decimal places
-      if (num < 1000000) return `${Math.floor(num / 1000)}k`;
-
-      // less than a 10 million: return the number with an m with two decimal places
-      if (num < 10000000) return `${(num / 1000000).toFixed(2)}M`;
-
-      // less than a 100 million: return the number with an m with one decimal place
-      if (num < 100000000) return `${(num / 1000000).toFixed(1)}M`;
-
-      // less than a billion: return the number with an m with no decimal places
-      if (num < 1000000000) return `${Math.floor(num / 1000000)}M`;
-
-      // a billion or more: return the number with a B+
-      if (num >= 1000000000) return `${Math.floor(num / 1000000000)}B+`;
-
-      // else return the zero
-      return '0';
-    } catch (error) {
-      return '0';
-    }
-  }
-
-  formatDateTime = str => {
-    const dateIso = new Date(str); // ISO strings with timezone are automatically handled
-    let userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-
-    // Convert posted time to the current timezone
-    const date = new Date(dateIso.toLocaleString('en-US', { timeZone: userTimezone }));
-
-    // Get the current time
-    const currentTime = new Date();
-
-    // Get the difference in time
-    const timeDifference = currentTime - date;
-
-    // Get the seconds
-    const seconds = timeDifference / 1000;
-
-    // Check if seconds is less than 60: return Just now
-    if (seconds < 60) {
-      return 'Just now';
-    }
-    // check if seconds is less than 86400: return time AM/PM
-    if (seconds < 86400) {
-      const isToday = date.getDate() === currentTime.getDate();
-      if (isToday) {
-        return `Today at ${date.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}`;
-      } else {
-        return `Yesterday at ${date.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}`;
-      }
-    }
-
-    // check if seconds is less than 604800: return day and time
-    if (seconds <= 604800) {
-      // return date.toLocaleDateString('en-US', { weekday: 'short', hour: 'numeric', minute: 'numeric', hour12: true });
-      return `${date.toLocaleDateString('en-US', { weekday: 'short' })} at ${date.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}`;
-    }
-
-    // Check if the date is in the current year:: return date and month short 2-digit year without time
-    if (date.getFullYear() === currentTime.getFullYear()) {
-      return `${date.toLocaleDateString('en-US', { day: 'numeric', month: 'short', })} at ${date.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}`;
-    }
-    else {
-      return `${date.toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: '2-digit' })} at ${date.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}`;
-    }
-  }
-
   getTemplate() {
     return /* html */`
       ${this.getMessage()}
@@ -479,7 +401,7 @@ export default class Message extends HTMLDivElement {
         ${this.getDesktopReactions(this.mql)}
         ${this.getActionsDropdown(this.mql)}
         <div class="time">
-          <span class="date">${this.formatDateTime(this.getAttribute('datetime'))}</span>
+          <span class="date">${this.date.message(this.getAttribute('datetime'))}</span>
           <span class="sp">•</span>
           ${this.getStatus(you, this.getAttribute('status'))}
         </div>

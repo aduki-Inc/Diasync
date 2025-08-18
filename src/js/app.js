@@ -1,6 +1,7 @@
 import APIManager from "./api.js";
-import formatNumber from "./number.js";
+import utils from "./utils/index.js";
 import uis from "./uis/index.js"
+import urls from "./urls.js";
 
 export default class AppMain extends HTMLElement {
   constructor() {
@@ -10,7 +11,8 @@ export default class AppMain extends HTMLElement {
     this.registerComponents();
     this.api = new APIManager(this.getAttribute('api'), 9500, 'v1');
     window.app = this;
-    this.format = formatNumber;
+    this.utils = utils();
+    this.urls = urls;
     this.mql = window.matchMedia('(max-width: 660px)');
     this.render();
     this.currentUrl = this.getAttribute('url');
@@ -51,14 +53,14 @@ export default class AppMain extends HTMLElement {
     this._updateActiveNavItem(currentPath);
 
     // Load the content for this URL
-    if (this.getNavContents[currentPath]) {
+    if (this.urls[currentPath]) {
       const container = this.shadowObj.querySelector('section.flow > div#content-container.content-container');
-      if (container) container.innerHTML = this.getNavContents[currentPath];
+      if (container) container.innerHTML = this.urls[currentPath];
     } else if (currentPath !== '/' && currentPath !== '/dashboard') {
       // If a path is not in nav contents and not the root path, show 404/default
       const container = this.shadowObj.querySelector('section.flow > div#content-container.content-container');
       if (container) {
-        container.innerHTML = this.getNavContents.default;
+        container.innerHTML = this.urls.default;
       }
     }
   }
@@ -82,7 +84,7 @@ export default class AppMain extends HTMLElement {
         this._updateActiveNavItem(url);
 
         // Get content for the URL
-        const content = this.getNavContents[url] || this.getNavContents.default;
+        const content = this.urls[url] || this.urls.default;
 
         // Navigate to the URL with the content as state
         this.navigate(url, { kind: 'app', html: content });
@@ -150,7 +152,7 @@ export default class AppMain extends HTMLElement {
     const currentPath = window.location.pathname;
 
     // Only initialize default content if we're at the root or there's no specific content for this path
-    if (container && (currentPath === '/' || !this.getNavContents[currentPath])) {
+    if (container && (currentPath === '/' || !this.urls[currentPath])) {
       container.innerHTML = this.getLoader();
     }
   }
@@ -200,7 +202,7 @@ export default class AppMain extends HTMLElement {
 
   navigate = (url, state) => {
     const container = this.shadowObj.querySelector('section.flow > div#content-container.content-container');
-    const content = state ? state : this.getNavContents[url] || this.getNavContents.default;
+    const content = state ? state : this.urls[url] || this.urls.default;
     this.push(url, content, url);
     // set the loader
     container.innerHTML = this.getLoader();
@@ -210,13 +212,13 @@ export default class AppMain extends HTMLElement {
     this.currentUrl = url;
 
     // check if the URL is in the nav contents
-    if (this.getNavContents[url]) {
-      this.updateHistory(this.getNavContents[url]);
+    if (this.urls[url]) {
+      this.updateHistory(this.urls[url]);
       return;
     }
 
     // if the URL is not in the nav contents, show the 404 page
-    this.updateHistory(this.getNavContents.default);
+    this.updateHistory(this.urls.default);
   }
 
   replaceHistory = state => {
@@ -249,7 +251,7 @@ export default class AppMain extends HTMLElement {
       this.updateHistory(state.html);
     } else {
       // If no state or not our app state, still handle the content
-      const content = this.getNavContents[url] || this.getNavContents.default;
+      const content = this.urls[url] || this.urls.default;
       this.updateHistory(content);
     }
 
@@ -335,90 +337,6 @@ export default class AppMain extends HTMLElement {
     });
   }
 
-  getNavContents = {
-    "/": /* HTML */`<health-home></health-home>`,
-    "/providers": /* HTML */`<provider-directory api="/providers/directory"></provider-directory>`,
-    "/bookings": /* HTML */`<booking-management api="/bookings/all"></booking-management>`,
-    "/meetings": /* HTML */`<meeting-management api="/meetings/dashboard"></meeting-management>`,
-    "/pharmacy": /* HTML */`<pharmacy-orders api="/pharmacy/orders"></pharmacy-orders>`,
-    "/ambulance": /* HTML */`<ambulance-dispatch api="/ambulance/dispatch"></ambulance-dispatch>`,
-    "/dependents": /* HTML */`<dependent-management api="/dependents/all"></dependent-management>`,
-    "/payments": /* HTML */`<payment-history api="/payments/history"></payment-history>`,
-    "/subscriptions": /* HTML */`<subscription-management api="/subscriptions/active"></subscription-management>`,
-    "/settings": /* HTML */`<user-settings api="/settings/profile"></user-settings>`,
-
-    /* Enhanced Health Platform Routes */
-    "/bookings/telemedicine": /* HTML */`<telemedicine-bookings api="/bookings/telemedicine"></telemedicine-bookings>`,
-    "/bookings/in-person": /* HTML */`<in-person-bookings api="/bookings/in-person"></in-person-bookings>`,
-    "/bookings/video-calls": /* HTML */`<video-call-management api="/bookings/video-calls"></video-call-management>`,
-
-    /* Meeting & Video Call Routes */
-    "/meetings/upcoming": /* HTML */`<upcoming-meetings api="/meetings/upcoming"></upcoming-meetings>`,
-    "/meetings/live": /* HTML */`<live-sessions api="/meetings/live"></live-sessions>`,
-    "/meetings/scheduled": /* HTML */`<scheduled-meetings api="/meetings/scheduled"></scheduled-meetings>`,
-    "/meetings/completed": /* HTML */`<completed-meetings api="/meetings/completed"></completed-meetings>`,
-    "/meetings/recordings": /* HTML */`<meeting-recordings api="/meetings/recordings"></meeting-recordings>`,
-    "/meetings/transcripts": /* HTML */`<meeting-transcripts api="/meetings/transcripts"></meeting-transcripts>`,
-    "/meetings/join-room": /* HTML */`<meeting-room api="/meetings/join-room"></meeting-room>`,
-    "/meetings/test-connection": /* HTML */`<connection-test api="/meetings/test-connection"></connection-test>`,
-
-    "/providers/kmpdc-verified": /* HTML */`<kmpdc-verified-providers api="/providers/kmpdc-verified"></kmpdc-verified-providers>`,
-    "/providers/verification-status": /* HTML */`<provider-verification api="/providers/verification-status"></provider-verification>`,
-    "/providers/ratings": /* HTML */`<provider-ratings api="/providers/ratings"></provider-ratings>`,
-    "/providers/compliance": /* HTML */`<provider-compliance api="/providers/compliance"></provider-compliance>`,
-    "/pharmacy/prescriptions": /* HTML */`<prescription-management api="/pharmacy/prescriptions"></prescription-management>`,
-    "/pharmacy/otc-products": /* HTML */`<otc-products api="/pharmacy/otc-products"></otc-products>`,
-    "/dependents/health-records": /* HTML */`<health-records api="/dependents/health-records"></health-records>`,
-    "/dependents/medical-history": /* HTML */`<medical-history api="/dependents/medical-history"></medical-history>`,
-    "/dependents/emergency-contacts": /* HTML */`<emergency-contacts api="/dependents/emergency-contacts"></emergency-contacts>`,
-    "/dependents/elderly-care": /* HTML */`<elderly-care-management api="/dependents/elderly-care"></elderly-care-management>`,
-    "/dependents/chronic-conditions": /* HTML */`<chronic-conditions api="/dependents/chronic-conditions"></chronic-conditions>`,
-    "/settings/timezone": /* HTML */`<timezone-settings api="/settings/timezone"></timezone-settings>`,
-    "/settings/privacy": /* HTML */`<privacy-settings api="/settings/privacy"></privacy-settings>`,
-
-    /* Health Reports & Analytics Routes */
-    "/reports/health-analytics": /* HTML */`<health-analytics api="/reports/health-analytics"></health-analytics>`,
-    "/reports/family-health": /* HTML */`<family-health-report api="/reports/family-health"></family-health-report>`,
-    "/reports/spending-summary": /* HTML */`<health-spending-report api="/reports/spending-summary"></health-spending-report>`,
-    "/reports/appointment-history": /* HTML */`<appointment-history-report api="/reports/appointment-history"></appointment-history-report>`,
-    "/reports/medication-tracking": /* HTML */`<medication-tracking-report api="/reports/medication-tracking"></medication-tracking-report>`,
-    "/reports/provider-performance": /* HTML */`<provider-performance-report api="/reports/provider-performance"></provider-performance-report>`,
-    "/reports/remittance-impact": /* HTML */`<remittance-impact-report api="/reports/remittance-impact"></remittance-impact-report>`,
-
-    /* Provider Admin Routes */
-    "/provider/dashboard": /* HTML */`<provider-dashboard api="/provider/dashboard"></provider-dashboard>`,
-    "/provider/profile": /* HTML */`<provider-profile api="/provider/profile"></provider-profile>`,
-    "/provider/staff": /* HTML */`<staff-management api="/provider/staff"></staff-management>`,
-    "/provider/schedule": /* HTML */`<schedule-management api="/provider/schedule"></schedule-management>`,
-    "/provider/appointments": /* HTML */`<appointment-management api="/provider/appointments"></appointment-management>`,
-    "/provider/orders": /* HTML */`<provider-orders api="/provider/pharmacy/orders"></provider-orders>`,
-    "/provider/ambulance": /* HTML */`<ambulance-requests api="/provider/ambulance/requests"></ambulance-requests>`,
-    "/provider/financials": /* HTML */`<provider-financials api="/provider/financials"></provider-financials>`,
-    "/provider/compliance": /* HTML */`<compliance-documents api="/provider/compliance"></compliance-documents>`,
-
-    /* Provider Staff Routes */
-    "/staff/appointments": /* HTML */`<staff-appointments api="/staff/appointments"></staff-appointments>`,
-    "/staff/availability": /* HTML */`<staff-availability api="/staff/availability"></staff-availability>`,
-    "/staff/profile": /* HTML */`<staff-profile api="/staff/profile"></staff-profile>`,
-    "/staff/earnings": /* HTML */`<staff-earnings api="/staff/earnings"></staff-earnings>`,
-
-    /* Platform Admin Routes */
-    "/admin/dashboard": /* HTML */`<admin-dashboard api="/admin/dashboard"></admin-dashboard>`,
-    "/admin/users": /* HTML */`<admin-users api="/admin/users"></admin-users>`,
-    "/admin/verification": /* HTML */`<admin-verification api="/admin/verification"></admin-verification>`,
-    "/admin/complaints": /* HTML */`<admin-complaints api="/admin/complaints"></admin-complaints>`,
-    "/admin/audit": /* HTML */`<admin-audit api="/admin/audit"></admin-audit>`,
-    "/admin/content": /* HTML */`<admin-content api="/admin/content"></admin-content>`,
-
-    /* Support & Help */
-    "/support": /* HTML */`<support-center api="/support/center"></support-center>`,
-    "/help": /* HTML */`<help-center api="/help/center"></help-center>`,
-    "/about": /* HTML */`<about-page api="/about"></about-page>`,
-    "/contact": /* HTML */`<contact-page api="/contact"></contact-page>`,
-
-    default: /* HTML */`<health-home></health-home>`,
-  }
-
   // Reenable this when backend & authentication is implemented
   // getTemplate = (authenticated = false) => {
   //   if (!authenticated) return `${this.getAccess()}`
@@ -474,13 +392,14 @@ export default class AppMain extends HTMLElement {
       <section class="nav">
         ${this.getLogoNav()}
         ${this.getMainLinksNav()}
+        ${this.getOrdersNav()}
+        ${this.getPaymentsNav()}
         ${this.getBookingsNav()}
         ${this.getMeetingsNav()}
         ${this.getProvidersNav()}
+        ${this.getVisitCare()}
         ${this.getPharmacyNav()}
         ${this.getAmbulanceNav()}
-        ${this.getOrdersNav()}
-        ${this.getPaymentsNav()}
         ${this.getSubscriptionsNav()}
         ${this.getDependentsNav()}
         ${this.getHealthReportsNav()}
@@ -910,6 +829,52 @@ export default class AppMain extends HTMLElement {
                 <path d="M4 22H20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
               </svg>
               <span class="text">Subscriptions</span>
+            </span>
+            <span class="right">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="currentColor" fill="none">
+                <path d="M18 9.00005C18 9.00005 13.5811 15 12 15C10.4188 15 6 9 6 9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </span>
+          </div>
+          <ul class="dropdown">
+            <li class="plans">
+              <a href="/subscriptions/plans"><span class="text">Plans</span></a>
+            </li>
+            <li class="active">
+              <a href="/subscriptions/active"><span class="text">Active</span></a>
+            </li>
+            <li class="billing">
+              <a href="/subscriptions/billing"><span class="text">Billing</span></a>
+            </li>
+            <li class="history">
+              <a href="/subscriptions/history"><span class="text">History</span></a>
+            </li>
+            <li class="expired">
+              <a href="/subscriptions/expired"><span class="text">Expired</span></a>
+            </li>
+            <li class="pending">
+              <a href="/subscriptions/pending"><span class="text">Pending</span></a>
+            </li>
+            <li class="cancelled">
+              <a href="/subscriptions/cancelled"><span class="text">Cancelled</span></a>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    `;
+  }
+
+  getVisitCare = () => {
+    return /* html */`
+      <ul class="special nav">
+        <li class="subscriptions">
+          <div class="link-section">
+            <span class="left">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="currentColor" fill="none">
+                <path d="M19.4626 3.99352C16.7809 2.3486 14.4404 3.01148 13.0344 4.06738C12.4578 4.50033 12.1696 4.7168 12 4.7168C11.8304 4.7168 11.5422 4.50033 10.9656 4.06738C9.55962 3.01148 7.21909 2.3486 4.53744 3.99352C1.01807 6.1523 0.221719 13.2742 8.33953 19.2827C9.88572 20.4272 10.6588 20.9994 12 20.9994C13.3412 20.9994 14.1143 20.4272 15.6605 19.2827C23.7783 13.2742 22.9819 6.1523 19.4626 3.99352Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+                <path d="M16 13H15C14.5447 13 14.0655 13.0352 13.6569 12.7214C13.5011 12.6017 13.3977 12.4363 13.191 12.1056L11.5 9L8.5 14L6.94338 11.8321C6.68722 11.5247 6.43747 11.213 6.09845 11.0897C5.85189 11 5.56792 11 5 11H3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+              <span class="text">AfterCare</span>
             </span>
             <span class="right">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="currentColor" fill="none">
