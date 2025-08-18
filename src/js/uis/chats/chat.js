@@ -265,6 +265,7 @@ export default class ChatItem extends HTMLDivElement {
     }
   }
 
+
   getStyles = () => {
     return /* css */`
       <style>
@@ -297,7 +298,7 @@ export default class ChatItem extends HTMLDivElement {
           width: 100%;
           cursor: pointer;
           gap: 10px;
-          padding: 10px 0;
+          padding: 5px 0;
           transition: all 0.3s ease;
         }
 
@@ -516,7 +517,7 @@ export default class ChatItem extends HTMLDivElement {
           font-family: var(--font-read), sans-serif;
           font-weight: 500;
           font-size: 0.85rem;
-          /* text-transform: uppercase;*/
+          text-transform: capitalize;
           color: var(--gray-color);
         }
 
@@ -566,11 +567,11 @@ export default class ChatItem extends HTMLDivElement {
         }
 
         .wrapper > .content > .text > .tick.unread > svg {
-          color: var(--gray-color);
+          color: var(--text-color);
         }
 
         .wrapper > .content > .text > .tick.recieved > svg {
-          color: var(--gray-color);
+          color: var(--text-color);
           fill: none;
           width: max-content;
         }
@@ -582,8 +583,10 @@ export default class ChatItem extends HTMLDivElement {
         .wrapper > .content > .text > .you {
           font-family: var(--font-main), sans-serif;
           font-weight: 500;
-          font-size: 1rem;
-          color: var(--gray-color);
+          font-size: 0.9rem;
+          display: inline-block;
+          padding: 0 5px 0 0;
+          color: var(--text-color);
         }
 
         .wrapper.unread > .content > .text > .you {
@@ -594,9 +597,9 @@ export default class ChatItem extends HTMLDivElement {
         .wrapper > .content > .text > .message {
           font-family: var(--font-main), sans-serif;
           font-weight: 400;
-          font-size: 0.95rem;
-          padding: 2px 25px 0 5px;
-          color: var(--gray-color);
+          font-size: 0.9rem;
+          padding: 0 25px 0 0;
+          color: var(--text-color);
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
@@ -669,15 +672,27 @@ export default class ChatItem extends HTMLDivElement {
           gap: 5px;
           text-decoration: none;
           color: var(--gray-color);
-          font-family: var(--font-read), sans-serif;
-          font-size: 0.85rem;
+          font-family: var(--font-main), sans-serif;
+          font-size: 0.8rem;
           background: var(--gray-background);
           border-radius: 8px;
-          padding: 2.5px 7px;
+          padding: 2px 10px;
+          border: 1px solid color-mix(in srgb, var(--alt-color) 30%, transparent);
 
           /** add ellipsis */
           white-space: nowrap;
           pointer-events: none;
+        }
+
+        .wrapper > .content > .attachements > a > span.size {
+          font-family: var(--font-main), sans-serif;
+          font-weight: 500;
+          font-size: 0.75rem;
+          color: var(--text-color);
+          padding: 0;
+          min-width: 20px;
+          width: max-content;
+          display: inline-block;
         }
 
         @media all and (max-width: 660px) {

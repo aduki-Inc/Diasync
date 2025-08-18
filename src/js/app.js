@@ -6,9 +6,9 @@ import urls from "./urls.js";
 export default class AppMain extends HTMLElement {
   constructor() {
     super();
+    uis('Apps registered');
     this.content = this.getContent();
     this.shadowObj = this.attachShadow({ mode: "open" });
-    this.registerComponents();
     this.api = new APIManager(this.getAttribute('api'), 9500, 'v1');
     window.app = this;
     this.utils = utils();
@@ -39,10 +39,10 @@ export default class AppMain extends HTMLElement {
   }
 
   connectedCallback() {
-    this.setUpEvents();
+    // this.setUpEvents();
     this._setupSpecialNavs();
     this._setupNavLinks(); // Add navigation link event handlers
-    this._loadInitialContent(); // Load content based on the current URL
+    // this._loadInitialContent(); // Load content based on the current URL
   }
 
   _loadInitialContent() {
@@ -172,7 +172,7 @@ export default class AppMain extends HTMLElement {
   watchMeta = () => {
     this.mql.addEventListener('change', () => {
       this.render();
-      this.setUpEvents();
+      // this.setUpEvents();
     })
   }
 
@@ -272,11 +272,6 @@ export default class AppMain extends HTMLElement {
     }, 1000);
   }
 
-  registerComponents = () => {
-    // Register all components here
-    uis('Apps registered');
-  }
-
 
   _setupSpecialNavs() {
     if (!this.shadowRoot) {
@@ -371,20 +366,14 @@ export default class AppMain extends HTMLElement {
         ${this.getMainNav()}
         <section class="flow">
           <div id="content-container" class="content-container">
-            ${this.getLoader()}
+            <!-- ${this.getLoader()} -->
+            ${this.getStoreContainer()}
           </div>
           ${this.getFooter()}
         </section>
         ${this.getSidebar()}
       `;
     }
-  }
-
-  setContent = container => {
-    setTimeout(() => {
-      // set the content
-      container.innerHTML = this.content;
-    }, 1000);
   }
 
   getMainNav = () => {
@@ -1153,16 +1142,17 @@ export default class AppMain extends HTMLElement {
   getToast = (status, text) => {
     return /* html */`
       <div id="toast" class="${status === true ? 'success' : 'error'}">
-        <div id="img">${status === true ? this.getSuccessToast() : this.getErrorToast()}</div>
+        <div id="img">${status === true ? this.getSuccesToast() : this.getErrorToast()}</div>
         <div id="desc">${text}</div>
       </div>
     `;
   }
 
-  getSuccessToast = () => {
+  getSuccesToast = () => {
     return /* html */`
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" class="injected-svg" data-src="https://cdn.hugeicons.com/icons/checkmark-circle-02-solid-standard.svg" xmlns:xlink="http://www.w3.org/1999/xlink" role="img" color="currentColor">
         <path fill-rule="evenodd" clip-rule="evenodd" d="M11.75 22.5C5.81294 22.5 1 17.6871 1 11.75C1 5.81294 5.81294 1 11.75 1C17.6871 1 22.5 5.81294 22.5 11.75C22.5 17.6871 17.6871 22.5 11.75 22.5ZM16.5182 9.39018C16.8718 8.9659 16.8145 8.33534 16.3902 7.98177C15.9659 7.62821 15.3353 7.68553 14.9818 8.10981L10.6828 13.2686L8.45711 11.0429C8.06658 10.6524 7.43342 10.6524 7.04289 11.0429C6.65237 11.4334 6.65237 12.0666 7.04289 12.4571L10.0429 15.4571C10.2416 15.6558 10.5146 15.7617 10.7953 15.749C11.076 15.7362 11.3384 15.606 11.5182 15.3902L16.5182 9.39018Z" fill="currentColor"></path>
+      </svg>
     `;
   }
 
@@ -1182,16 +1172,21 @@ export default class AppMain extends HTMLElement {
     `;
   }
 
-  getAccess = () => {
-    return /*html*/`
-      <access-popup api="/auth/login" next="${this.getAttribute('url')}"></access-popup>
-    `
+  getProductFeed = () => {
+    return /* html */`
+      <products-feed name="Market Products" kind="all" all="457">
+        <p>Users can track the performance of their shares, view historical data, and analyze trends to make informed decisions.</p> 
+        <p> This section is designed to help users manage their investment portfolio effectively and stay updated with the latest market insights.</p>
+      </products-feed>
+    `;
   }
 
-  getDelete = (items, url) => {
-    return /*html*/`
-      <delete-popup url="${url}">${items}</delete-popup>
-    `
+  // store
+  getStoreContainer = () => {
+    return /* html */`
+      <store-container name="Marketplace" desc="This section provides a detailed overview of all the products available in the marketplace.">
+      </store-container>
+    `;
   }
 
   _expandDropdown(parentLi) {

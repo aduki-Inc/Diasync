@@ -4,10 +4,11 @@ export default class StoreContainer extends HTMLElement {
 
     // lets create our shadow root
     this.shadowObj = this.attachShadow({ mode: 'open' });
-    this.app = window.app;
-    this.utils = this.app.utils;
+    this.app = window.app || {};
+    this.number = this.app?.utils?.number;
+    this.date = this.app?.utils?.date;
     this.selected = true;
-    this.active_tab = null;
+    this.activeSection = 'products';
     this.mql = window.matchMedia("(max-width: 700px)");
     this.owner = true;
     this.render();
@@ -19,8 +20,27 @@ export default class StoreContainer extends HTMLElement {
   }
 
   connectedCallback() {
-    this.activateTabController(this.shadowObj.querySelector(".tabs"));
+    this.activateSectionController(this.shadowObj.querySelector(".modern-tabs"));
     this.setHeader(this.mql);
+
+    // Initialize tab indicator position after render
+    setTimeout(() => {
+      const tabs = this.shadowObj.querySelector(".modern-tabs");
+      if (tabs) this.updateTabIndicator(tabs);
+    }, 0);
+
+    // Handle window resize to recalculate indicator position
+    this.resizeHandler = () => {
+      const tabs = this.shadowObj.querySelector(".modern-tabs");
+      if (tabs) this.updateTabIndicator(tabs);
+    };
+    window.addEventListener('resize', this.resizeHandler);
+  }
+
+  disconnectedCallback() {
+    if (this.resizeHandler) {
+      window.removeEventListener('resize', this.resizeHandler);
+    }
   }
 
   watchMql() {
@@ -33,46 +53,177 @@ export default class StoreContainer extends HTMLElement {
   setHeader = mql => {
     if (mql.matches) {
       this.app.setHeader({
-        sectionTitle: 'Store',
-        description: 'Flamecos & Coorporation',
+        sectionTitle: 'Pharmacy',
+        description: 'HealthCare Plus Pharmacy',
       });
     }
   }
 
-  activateTabController = tabs => {
-    // get the active tab
-    this.getOrSetActiveTab(tabs);
+  activateSectionController = tabs => {
+    if (!tabs) return;
 
-    // add click event listener to the tabs
-    tabs.querySelectorAll("li").forEach(tab => {
+    // Initialize the sliding indicator position
+    this.updateTabIndicator(tabs);
+
+    // add click event listener to the modern tabs
+    tabs.querySelectorAll(".tab-item").forEach(tab => {
       tab.addEventListener("click", e => {
         e.preventDefault();
         e.stopPropagation();
-        // remove the active class from the active tab
-        this.active_tab.classList.remove("active");
 
-        // set the new active tab
-        this.active_tab = tab;
-        this.active_tab.classList.add("active");
+        // remove active class from all tabs
+        tabs.querySelectorAll(".tab-item").forEach(t => t.classList.remove("active"));
 
-        //TODO: hide the tab content
+        // set the new active section
+        tab.classList.add("active");
+        this.activeSection = tab.dataset.section;
+
+        // Update sliding indicator position
+        this.updateTabIndicator(tabs);
+
+        // Update content based on active section
+        this.updateSectionContent();
       });
     });
   }
 
-  getOrSetActiveTab = tabs => {
-    // get the active tab
-    let activeTab = tabs.querySelector("li.active");
+  updateTabIndicator = (tabs) => {
+    const activeTab = tabs.querySelector(".tab-item.active");
+    const indicator = tabs.querySelector(".tab-indicator");
 
-    if (!activeTab) {
-      // if no active tab, set the first tab as active
-      activeTab = tabs.querySelector("li");
-      activeTab.classList.add("active");
-      this.active_tab = activeTab;
+    if (activeTab && indicator) {
+      const tabsContainer = tabs;
+      const containerRect = tabsContainer.getBoundingClientRect();
+      const activeRect = activeTab.getBoundingClientRect();
+
+      const leftOffset = activeRect.left - containerRect.left - 4; // Account for container padding
+      const width = activeRect.width;
+
+      indicator.style.transform = `translateX(${leftOffset}px)`;
+      indicator.style.width = `${width}px`;
+    }
+  }
+
+  updateSectionContent = () => {
+    const contentContainer = this.shadowObj.querySelector(".section-content");
+    if (contentContainer) {
+      contentContainer.innerHTML = this.getSectionContent();
+    }
+  }
+
+  getStoreStatus = () => {
+    const now = new Date();
+    const currentDay = now.getDay(); // 0 = Sunday, 1 = Monday, etc.
+    const currentHour = now.getHours();
+    const currentMinute = now.getMinutes();
+    const currentTime = currentHour * 60 + currentMinute; // Current time in minutes
+
+    // Store hours: Monday-Friday: 8:00-22:00, Saturday: 9:00-20:00, Sunday: Closed
+    const storeHours = {
+      0: null, // Sunday - Closed
+      1: { open: 8 * 60, close: 22 * 60 }, // Monday
+      2: { open: 8 * 60, close: 22 * 60 }, // Tuesday
+      3: { open: 8 * 60, close: 22 * 60 }, // Wednesday
+      4: { open: 8 * 60, close: 22 * 60 }, // Thursday
+      5: { open: 8 * 60, close: 22 * 60 }, // Friday
+      6: { open: 9 * 60, close: 20 * 60 }  // Saturday
+    };
+
+    const todayHours = storeHours[currentDay];
+
+    // If closed today (Sunday)
+    if (!todayHours) {
+      // Find next opening day (Monday)
+      const nextDay = 1; // Monday
+      const nextOpen = storeHours[nextDay];
+      const daysUntilOpen = (nextDay - currentDay + 7) % 7 || 7;
+
+      if (daysUntilOpen === 1) {
+        const hoursUntilOpen = 24 - currentHour + Math.floor(nextOpen.open / 60);
+        const minutesUntilOpen = (60 - currentMinute + (nextOpen.open % 60)) % 60;
+        return {
+          isOpen: false,
+          status: 'closed',
+          message: `Closed - Opens tomorrow at ${this.formatTime(nextOpen.open)}`,
+          timeUntil: `${hoursUntilOpen}h ${minutesUntilOpen}m`
+        };
+      } else {
+        return {
+          isOpen: false,
+          status: 'closed',
+          message: `Closed - Opens Monday at ${this.formatTime(nextOpen.open)}`,
+          timeUntil: `${daysUntilOpen} days`
+        };
+      }
     }
 
-    // else set the active tab
-    this.active_tab = activeTab;
+    // If store is open today
+    if (currentTime >= todayHours.open && currentTime < todayHours.close) {
+      const minutesUntilClose = todayHours.close - currentTime;
+      const hoursUntilClose = Math.floor(minutesUntilClose / 60);
+      const minsUntilClose = minutesUntilClose % 60;
+
+      return {
+        isOpen: true,
+        status: 'open',
+        message: `Open - Closes at ${this.formatTime(todayHours.close)}`,
+        timeUntil: hoursUntilClose > 0 ? `${hoursUntilClose}h ${minsUntilClose}m` : `${minsUntilClose}m`
+      };
+    }
+
+    // If store is closed but will open today
+    if (currentTime < todayHours.open) {
+      const minutesUntilOpen = todayHours.open - currentTime;
+      const hoursUntilOpen = Math.floor(minutesUntilOpen / 60);
+      const minsUntilOpen = minutesUntilOpen % 60;
+
+      return {
+        isOpen: false,
+        status: 'closed',
+        message: `Closed - Opens at ${this.formatTime(todayHours.open)}`,
+        timeUntil: hoursUntilOpen > 0 ? `${hoursUntilOpen}h ${minsUntilOpen}m` : `${minsUntilOpen}m`
+      };
+    }
+
+    // If store is closed for the day
+    return {
+      isOpen: false,
+      status: 'closed',
+      message: 'Closed for today',
+      timeUntil: 'Opens tomorrow'
+    };
+  }
+
+  formatTime = (minutes) => {
+    const hours = Math.floor(minutes / 60);
+    const mins = minutes % 60;
+    const period = hours >= 12 ? 'PM' : 'AM';
+    const displayHour = hours > 12 ? hours - 12 : hours === 0 ? 12 : hours;
+    return `${displayHour}:${mins.toString().padStart(2, '0')} ${period}`;
+  }
+
+  getStoreStatusDisplay = () => {
+    const status = this.getStoreStatus();
+    const statusClass = status.isOpen ? 'open' : 'closed';
+    const statusIcon = status.isOpen ?
+      `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+         <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5"/>
+         <path d="M9 12L11 14L15 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+       </svg>` :
+      `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+         <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5"/>
+         <path d="M15 9L9 15M9 9L15 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+       </svg>`;
+
+    return /* html */`
+      <div class="status-indicator ${statusClass}">
+        <div class="status-icon">${statusIcon}</div>
+        <div class="status-content">
+          <div class="status-main">${status.message}</div>
+          <div class="status-time">${status.isOpen ? 'Closing in' : 'Opening in'} ${status.timeUntil}</div>
+        </div>
+      </div>
+    `;
   }
 
   getTemplate() {
@@ -85,51 +236,123 @@ export default class StoreContainer extends HTMLElement {
   getBody = () => {
     return /* html */`
       ${this.getHeader(this.mql)}
-      <div class="sticky">
-        ${this.getSearch(this.mql)}
-        ${this.getTab()}
+      <div class="search-section">
+        ${this.getMore(this.mql)}
       </div>
-      <div class="products">
-        ${this.getProducts()}
+      <div class="section-content">
+        ${this.getSectionContent()}
       </div>
     `
   }
 
   getHeader = mql => {
+    const today = new Date().getDay(); // 0 = Sunday, 1 = Monday, etc.
+    const dayHeaders = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+
     return /* html */`
-      <div class="header">
-        <div class="cover">
-          <div class="image">
-            <img src="https://images.unsplash.com/photo-1453614512568-c4024d13c247?q=80&w=1632&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="store image">
+      <div class="pharmacy-header">
+        <div class="cover-section">
+          <div class="store-banner">
+            <img src="https://images.unsplash.com/photo-1576671081837-49000212a370?q=80&w=2126&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="pharmacy interior">
+            <div class="pharmacy-logo">
+              <img src="https://images.unsplash.com/photo-1559757148-5c350d0d3c56?q=80&w=1931&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="pharmacy logo">
+            </div>
           </div>
-          <div class="avatar">
-            <img src="/images/shops/shop.jpg" alt="store avatar">
-          </div>
-          <div class="info">
-            <h3 class="title">The Flamecos & Co.</h3>
-            <span class="address">
-              <span class="address">1234, 5th avenue, New York</span>
-              <span class="country">United States</span>
-            </span>
-            <p class="description">
-              Discover the latest trends in fashion with our exclusive collection of clothes, shoes, and accessories. <br> We offer a wide variety of styles to suit every taste and occasion.
+          <div class="pharmacy-info">
+            <h3 class="pharmacy-name">HealthCare Plus Pharmacy</h3>
+            <div class="location-info">
+              <span class="address">1245 Medical Center Drive</span>
+              <span class="city">Karen, Nairobi 10001</span>
+            </div>
+            <p class="pharmacy-description">
+              Your trusted neighborhood pharmacy providing quality medications, health consultations,
+              and wellness services. We're committed to your health and well-being with 24/7 emergency services.
             </p>
+            <div class="pharmacy-credentials">
+              <span class="license">License: #PHM2024-NY-1245</span>
+              <div class="opening-hours">
+                <div class="store-status">
+                  ${this.getStoreStatusDisplay()}
+                </div>
+                <div class="hours-header">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5"/>
+                    <path d="M12 7V12L15 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  <span class="hours-title">Weekly Schedule</span>
+                </div>
+                <div class="hours-table">
+                  <ul class="opening-schedule">
+                    <li class="schedule-day holiday ${today === 0 ? 'current-day' : ''}">
+                      <div class="day-name">SUN</div>
+                      <div class="day-hours">
+                        <div class="closed-indicator">Closed</div>
+                      </div>
+                    </li>
+                    <li class="schedule-day regular ${today === 1 ? 'current-day' : ''}">
+                      <div class="day-name">MON</div>
+                      <div class="day-hours">
+                        <div class="open-time">8:00 AM</div>
+                        <div class="close-time">10:00 PM</div>
+                      </div>
+                    </li>
+                    <li class="schedule-day regular ${today === 2 ? 'current-day' : ''}">
+                      <div class="day-name">TUE</div>
+                      <div class="day-hours">
+                        <div class="open-time">8:00 AM</div>
+                        <div class="close-time">10:00 PM</div>
+                      </div>
+                    </li>
+                    <li class="schedule-day regular ${today === 3 ? 'current-day' : ''}">
+                      <div class="day-name">WED</div>
+                      <div class="day-hours">
+                        <div class="open-time">8:00 AM</div>
+                        <div class="close-time">10:00 PM</div>
+                      </div>
+                    </li>
+                    <li class="schedule-day regular ${today === 4 ? 'current-day' : ''}">
+                      <div class="day-name">THU</div>
+                      <div class="day-hours">
+                        <div class="open-time">8:00 AM</div>
+                        <div class="close-time">10:00 PM</div>
+                      </div>
+                    </li>
+                    <li class="schedule-day regular ${today === 5 ? 'current-day' : ''}">
+                      <div class="day-name">FRI</div>
+                      <div class="day-hours">
+                        <div class="open-time">8:00 AM</div>
+                        <div class="close-time">10:00 PM</div>
+                      </div>
+                    </li>
+                    <li class="schedule-day holiday ${today === 6 ? 'current-day' : ''}">
+                      <div class="day-name">SAT</div>
+                      <div class="day-hours">
+                        <div class="open-time">9:00 AM</div>
+                        <div class="close-time">8:00 PM</div>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
         <div class="stats">
-          <div class="followers">
-            <span class="number">${this.utils.number.withCommas(363234)}</span>
-            <span class="label">Followers</span>
+          <div class="stat">
+            <span class="number">${this.number.withCommas(12450)}</span>
+            <span class="label">Medications</span>
           </div>
-          <span class="line"></span>
-          <div class="products">
-            <span class="number">${this.utils.number.withCommas(7369)}</span>
-            <span class="label">Products</span>
+          <div class="stat">
+            <span class="number">${this.number.withCommas(8)}</span>
+            <span class="label">Services</span>
           </div>
-          <span class="line"></span>
-          <div class="orders">
-            <span class="number">${this.utils.number.withCommas(634)}</span>
-            <span class="label">Orders</span>
+          <div class="stat">
+            <span class="number">${this.number.withCommas(15680)}</span>
+            <span class="label">Customers</span>
+          </div>
+          <div class="stat">
+            <span class="number">4.8</span>
+            <span class="label">Rating</span>
           </div>
         </div>
         ${mql.matches ? this.getActions(this.owner) : ""}
@@ -140,104 +363,206 @@ export default class StoreContainer extends HTMLElement {
   getActions = owner => {
     if (owner) {
       return /* html */`
-        <div class="actions">
-          <button class="btn btn-products">Products</button>
-          <button class="btn btn-orders">Orders</button>
-          <button class="btn btn-manage">Manage</button>
+        <div class="pharmacy-actions">
+          <button class="action-btn primary">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="currentColor" fill="none">
+              <path d="M2.5 9.5H6.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+              <path d="M2.5 14.5H6.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+              <path d="M2.5 19.5H18.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+              <path d="M18.5355 13.0355L21.5 16M20 9.5C20 6.73858 17.7614 4.5 15 4.5C12.2386 4.5 10 6.73858 10 9.5C10 12.2614 12.2386 14.5 15 14.5C17.7614 14.5 20 12.2614 20 9.5Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            <span class="action-label">Inventory</span>
+          </button>
+          <button class="action-btn secondary">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="currentColor" fill="none">
+              <path d="M14.5 17.5V7.5H7.5001C5.1431 7.5 3.9646 7.5 3.23237 8.23222C2.50013 8.96445 2.50012 10.1429 2.5001 12.5L2.50006 16.5C2.50004 18.857 2.50003 20.0355 3.23226 20.7678C3.9645 21.5 5.14302 21.5 7.50006 21.5H10.5C12.3856 21.5 13.3284 21.5 13.9142 20.9142C14.5 20.3284 14.5 19.3856 14.5 17.5Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+              <path d="M14.4999 16.5H16.4999C18.8569 16.5 20.0355 16.5 20.7677 15.7678C21.4999 15.0355 21.4999 13.857 21.4999 11.5V7.5C21.4999 5.14298 21.4999 3.96447 20.7677 3.23223C20.0355 2.5 18.8569 2.5 16.4999 2.5H9.50006L9.5002 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+              <path d="M5.50006 12.5H9.00006M5.50006 16.5H11.5001" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+              <path d="M9.50006 2.5L14.5001 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            <span class="action-label">Orders</span>
+          </button>
+          <button class="action-btn secondary">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="currentColor" fill="none">
+              <circle cx="12" cy="18" r="3" stroke="currentColor" stroke-width="1.5"></circle>
+              <path d="M12 15V10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
+              <path d="M22 13C22 7.47715 17.5228 3 12 3C6.47715 3 2 7.47715 2 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
+            </svg>
+            <span class="action-label">Analytics</span>
+          </button>
         </div>
       `
     } else {
       return /* html */`
-        <div class="actions">
-          <button class="btn btn-follow">Follow</button>
-          <button class="btn btn-call">Call</button>
-          <button class="btn btn-inquire">Inquire</button>
+        <div class="pharmacy-actions">
+          <button class="action-btn primary">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M6.62 10.79C6.76 8.82 7.95 7.26 9.58 6.56C10.72 6.05 12.05 6.05 13.19 6.56C14.82 7.26 16.01 8.82 16.15 10.79C16.21 11.64 16.18 12.5 16.06 13.35C15.93 14.2 15.71 15.03 15.41 15.84L12 20.22L8.59 15.84C8.29 15.03 8.07 14.2 7.94 13.35C7.82 12.5 7.79 11.64 7.85 10.79H6.62ZM12 9C11.45 9 11 9.45 11 10S11.45 11 12 11 13 10.55 13 10 12.55 9 12 9Z" fill="currentColor"/>
+            </svg>
+            Visit Store
+          </button>
+          <button class="action-btn secondary">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M6.5 10.5C6.5 11.61 5.61 12.5 4.5 12.5S2.5 11.61 2.5 10.5 3.39 8.5 4.5 8.5 6.5 9.39 6.5 10.5ZM21.5 10.5C21.5 11.61 20.61 12.5 19.5 12.5S17.5 11.61 17.5 10.5 18.39 8.5 19.5 8.5 21.5 9.39 21.5 10.5ZM14.09 10.95L13 7.95C12.66 7.04 11.54 6.5 10.5 6.5S8.34 7.04 8 7.95L6.91 10.95L5 17H19L17.09 10.95H14.09Z" fill="currentColor"/>
+            </svg>
+            Call Pharmacy
+          </button>
+          <button class="action-btn secondary">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M20 4H4C2.9 4 2 4.9 2 6V18C2 19.1 2.9 20 4 20H20C21.1 20 22 19.1 22 18V6C22 4.9 21.1 4 20 4ZM20 8L12 13L4 8V6L12 11L20 6V8Z" fill="currentColor"/>
+            </svg>
+            Consult
+          </button>
         </div>
       `
     }
   }
 
-  getSearch = mql => {
-    if (mql.matches) {
-      return /* html */`
-        ${this.getForm()}
-      `;
-    }
-    else {
-      return /* html */`
-        <div class="search-actions">
-          ${this.getActions(this.owner)}
-          ${this.getForm()}
-        </div>
-      `;
-    }
-  }
-
-  getForm = () => {
+  getMore = mql => {
     return /* html */`
-      <form action="" method="get" class="search">
-        <div class="contents">
-          <input type="text" name="q" id="query" placeholder="Search in this store..." />
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="11.7666" cy="11.7667" r="8.98856" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"  stroke-linejoin="round" />
-            <path d="M18.0183 18.4853L21.5423 22.0001" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-          </svg>
-          <button type="submit">Search</button>
+      <div class="more-container">
+        <div class="tabs-section">
+          ${this.getModernTabs()}
         </div>
-      </form>
+        ${!mql.matches ? this.getActions(this.owner) : ''}
+      </div>
+      ${mql.matches ? this.getActions(this.owner) : ''}
     `;
   }
 
-  getTab = () => {
+  getModernTabs = () => {
     return /* html */`
-      <ul class="tabs">
-        <li class="tab">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="currentColor" fill="none">
-            <path d="M12.5 3H11.5C7.02166 3 4.78249 3 3.39124 4.39124C2 5.78249 2 8.02166 2 12.5C2 16.9783 2 19.2175 3.39124 20.6088C4.78249 22 7.02166 22 11.5 22C15.9783 22 18.2175 22 19.6088 20.6088C21 19.2175 21 16.9783 21 12.5V11.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
-            <path d="M22 5.5C22 7.433 20.433 9 18.5 9C16.567 9 15 7.433 15 5.5C15 3.567 16.567 2 18.5 2C20.433 2 22 3.567 22 5.5Z" stroke="currentColor" stroke-width="1.8" />
-            <path d="M7 11H11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-            <path d="M7 16H15" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-          </svg>
-          <span class="text">All</span>
-        </li>
-        <li class="tab active">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="currentColor" fill="none">
-            <path d="M3.06164 15.1933L3.42688 13.1219C3.85856 10.6736 4.0744 9.44952 4.92914 8.72476C5.78389 8 7.01171 8 9.46734 8H14.5327C16.9883 8 18.2161 8 19.0709 8.72476C19.9256 9.44952 20.1414 10.6736 20.5731 13.1219L20.9384 15.1933C21.5357 18.5811 21.8344 20.275 20.9147 21.3875C19.995 22.5 18.2959 22.5 14.8979 22.5H9.1021C5.70406 22.5 4.00504 22.5 3.08533 21.3875C2.16562 20.275 2.4643 18.5811 3.06164 15.1933Z" stroke="currentColor" stroke-width="1.5" />
-            <path d="M7.5 8L7.66782 5.98618C7.85558 3.73306 9.73907 2 12 2C14.2609 2 16.1444 3.73306 16.3322 5.98618L16.5 8" stroke="currentColor" stroke-width="1.5" />
-            <path d="M15 11C14.87 12.4131 13.5657 13.5 12 13.5C10.4343 13.5 9.13002 12.4131 9 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-          </svg>
-          <span class="text">What's New</span>
-        </li>
-        <li class="tab">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="currentColor" fill="none">
-            <path d="M7.69171 19.6161C8.28274 19.6161 8.57825 19.6161 8.84747 19.716C8.88486 19.7298 8.92172 19.7451 8.95797 19.7617C9.21897 19.8815 9.42793 20.0904 9.84585 20.5083C10.8078 21.4702 11.2887 21.9512 11.8805 21.9955C11.96 22.0015 12.04 22.0015 12.1195 21.9955C12.7113 21.9512 13.1923 21.4702 14.1541 20.5083C14.5721 20.0904 14.781 19.8815 15.042 19.7617C15.0783 19.7451 15.1151 19.7298 15.1525 19.716C15.4218 19.6161 15.7173 19.6161 16.3083 19.6161H16.4173C17.9252 19.6161 18.6792 19.6161 19.1476 19.1476C19.6161 18.6792 19.6161 17.9252 19.6161 16.4173V16.3083C19.6161 15.7173 19.6161 15.4218 19.716 15.1525C19.7298 15.1151 19.7451 15.0783 19.7617 15.042C19.8815 14.781 20.0904 14.5721 20.5083 14.1541C21.4702 13.1923 21.9512 12.7113 21.9955 12.1195C22.0015 12.04 22.0015 11.96 21.9955 11.8805C21.9512 11.2887 21.4702 10.8078 20.5083 9.84585C20.0904 9.42793 19.8815 9.21897 19.7617 8.95797C19.7451 8.92172 19.7298 8.88486 19.716 8.84747C19.6161 8.57825 19.6161 8.28274 19.6161 7.69171V7.58269C19.6161 6.07479 19.6161 5.32083 19.1476 4.85239C18.6792 4.38394 17.9252 4.38394 16.4173 4.38394H16.3083C15.7173 4.38394 15.4218 4.38394 15.1525 4.28405C15.1151 4.27018 15.0783 4.25491 15.042 4.23828C14.781 4.11855 14.5721 3.90959 14.1541 3.49167C13.1923 2.52977 12.7113 2.04882 12.1195 2.00447C12.04 1.99851 11.96 1.99851 11.8805 2.00447C11.2887 2.04882 10.8078 2.52977 9.84585 3.49167C9.42793 3.90959 9.21897 4.11855 8.95797 4.23828C8.92172 4.25491 8.88486 4.27018 8.84747 4.28405C8.57825 4.38394 8.28274 4.38394 7.69171 4.38394H7.58269C6.07479 4.38394 5.32083 4.38394 4.85239 4.85239C4.38394 5.32083 4.38394 6.07479 4.38394 7.58269V7.69171C4.38394 8.28274 4.38394 8.57825 4.28405 8.84747C4.27018 8.88486 4.25491 8.92172 4.23828 8.95797C4.11855 9.21897 3.90959 9.42793 3.49167 9.84585C2.52977 10.8078 2.04882 11.2887 2.00447 11.8805C1.99851 11.96 1.99851 12.04 2.00447 12.1195C2.04882 12.7113 2.52977 13.1923 3.49167 14.1541C3.90959 14.5721 4.11855 14.781 4.23828 15.042C4.25491 15.0783 4.27018 15.1151 4.28405 15.1525C4.38394 15.4218 4.38394 15.7173 4.38394 16.3083V16.4173C4.38394 17.9252 4.38394 18.6792 4.85239 19.1476C5.32083 19.6161 6.07479 19.6161 7.58269 19.6161H7.69171Z" stroke="currentColor" stroke-width="1.5" />
-            <path d="M15 9L9 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-            <path d="M15 15H14.9892M9.01076 9H9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-          </svg>
-          <span class="text">Offers</span>
-        </li>
-      </ul>
+      <div class="modern-tabs">
+        <div class="tab-indicator"></div>
+        <div class="tab-item active" data-section="products">
+          <span class="tab-label">Products</span>
+          <span class="tab-count">${this.number.withCommas(12450)}</span>
+        </div>
+        <div class="tab-item" data-section="services">
+          <span class="tab-label">Services</span>
+          <span class="tab-count">${this.number.withCommas(13)}</span>
+        </div>
+      </div>
+    `;
+  }
+
+  getSectionContent = () => {
+    if (this.activeSection === 'services') {
+      return `<div class="services-container">${this.getServices()}</div>`;
+    }
+    return `<div class="products">${this.getProducts()}</div>`;
+  }
+
+  getServices = () => {
+    return /* html */`
+      <div class="services-grid">
+        <div class="service-card">
+          <div class="service-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 2L13.09 8.26L22 9L13.09 9.74L12 16L10.91 9.74L2 9L10.91 8.26L12 2Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+            </svg>
+          </div>
+          <h4>Prescription Consultation</h4>
+          <p>Expert consultation with licensed pharmacists for medication guidance and drug interactions.</p>
+          <div class="service-price">Free</div>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M19.5 14.25V11.625C19.5 9.76104 17.989 8.25 16.125 8.25H15.75C14.5074 8.25 13.5 7.24264 13.5 6V5.625C13.5 3.76104 11.989 2.25 10.125 2.25H8.625C6.76104 2.25 5.25 3.76104 5.25 5.625V21L12 17.25L18.75 21V18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <h4>Health Screening</h4>
+          <p>Blood pressure monitoring, diabetes screening, and basic health assessments.</p>
+          <div class="service-price">$25</div>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M8 12H16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M12 16V8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <h4>Vaccination Services</h4>
+          <p>Flu shots, COVID-19 vaccines, and other immunizations administered by certified professionals.</p>
+          <div class="service-price">$45</div>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 1V23M1 12H23" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              <circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.5"/>
+            </svg>
+          </div>
+          <h4>Medication Synchronization</h4>
+          <p>Coordinate all your prescriptions to be ready on the same day for convenient pickup.</p>
+          <div class="service-price">Free</div>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M3 9L12 2L21 9V20C21 20.5523 20.5523 21 20 21H4C3.44772 21 3 20.5523 3 20V9Z" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M9 21V12H15V21" stroke="currentColor" stroke-width="1.5"/>
+            </svg>
+          </div>
+          <h4>Home Delivery</h4>
+          <p>Free prescription delivery service within 5-mile radius, same-day delivery available.</p>
+          <div class="service-price">Free</div>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M15.5 14H14.71L14.43 13.73C15.41 12.59 16 11.11 16 9.5C16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16C11.11 16 12.59 15.41 13.73 14.43L14 14.71V15.5L19 20.49L20.49 19L15.5 14ZM9.5 14C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14Z" fill="currentColor"/>
+            </svg>
+          </div>
+          <h4>Drug Information</h4>
+          <p>Comprehensive medication information, side effects, and drug interaction database access.</p>
+          <div class="service-price">Free</div>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 6V12L16 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5"/>
+            </svg>
+          </div>
+          <h4>24/7 Emergency Support</h4>
+          <p>Round-the-clock emergency prescription services and urgent medication needs.</p>
+          <div class="service-price">Available</div>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M9 12L11 14L15 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <h4>Insurance Verification</h4>
+          <p>Quick insurance verification and prior authorization assistance for prescriptions.</p>
+          <div class="service-price">Free</div>
+        </div>
+      </div>
     `;
   }
 
   getProducts = () => {
     return /* html */`
-      <div is="product-wrapper" product-image="/images/product/product-8.webp" name="Fresh Tea and is a very long name" last="33.25" store="The Vines Inn" reviews="120" average-review="4.5" wished="true" in-cart="0" quantity="45" price="33.25" store-country="KE"></div>
-      <div is="product-wrapper" product-image="/images/product/product-1.webp" name="Apple Fresh" last="9625.00" store="Wendy's" reviews="85" average-review="3.8" wished="false" in-cart="2" quantity="32" price="9115.00" store-country="US"></div>
-      <div is="product-wrapper" product-image="/images/product/product-2.webp" name="Banana Fresh" last="15.50" store="Trader Joe's" reviews="200" average-review="4.8" wished="true" in-cart="0" quantity="50" price="10.25" store-country="KE"></div>
-      <div is="product-wrapper" product-image="/images/product/product-4.webp" name="Orange Fresh" last="20.75" store="Whole Foods" reviews="150" average-review="4.3" wished="false" in-cart="1" quantity="65" price="20.75" store-country="US"></div>
-      <div is="product-wrapper" product-image="/images/product/product-5.webp" name="Grapes Fresh" last="18.00" store="Safeway" reviews="6987" average-review="4.1" wished="true" in-cart="0" quantity="73" price="32.50" store-country="US"></div>
-      <div is="product-wrapper" product-image="/images/product/product-6.webp" name="Mango Fresh" last="22.50" store="Kroger" reviews="110" average-review="4.6" wished="false" in-cart="0" quantity="48" price="19.25" store-country="KE"></div>
-      <div is="product-wrapper" product-image="/images/product/fruits/10.jpg" name="Strawberry Fresh" last="30.00" store="Publix" reviews="130" average-review="4.7" wished="true" in-cart="0" quantity="32" price="55.40" store-country="US"></div>
-      <div is="product-wrapper" product-image="/images/product/fruits/11.jpg" name="Blueberry Fresh" last="28.00" store="Albertsons" reviews="95" average-review="4.2" wished="false" in-cart="0" quantity="0" price="13.80" store-country="KE"></div>
-      <div is="product-wrapper" product-image="/images/product/fruits/12.jpg" name="Watermelon Fresh" last="35.00" store="Sprouts" reviews="140" average-review="4.4" wished="true" in-cart="0" quantity="38" price="45.00" store-country="KE"></div>
-      <div is="product-wrapper" product-image="/images/product/product-7.webp" name="Peach Fresh" last="27.00" store="H-E-B" reviews="105" average-review="4.3" wished="false" in-cart="0" quantity="15" price="14.25" store-country="US"></div>
-      <div is="product-wrapper" product-image="/images/product/fruits/14.jpg" name="Cherry Fresh" last="32.00" store="Aldi" reviews="115" average-review="3.5" wished="true" in-cart="3" quantity="44" price="19.60" store-country="KE"></div>
-      <div is="product-wrapper" product-image="/images/product/fruits/15.jpg" name="Pomegranate Fresh" last="40.00" store="Costco" reviews="125" average-review="4.6" wished="false" in-cart="1" quantity="36" price="28.75" store-country="US"></div>
-      <div is="product-wrapper" product-image="/images/product/product-8.webp" name="Kiwi Fresh" last="24.00" store="Sam's Club" reviews="100" average-review="4.2" wished="true" in-cart="0" quantity="29" price="12.80" store-country="KE"></div>
-      <div is="product-wrapper" product-image="/images/product/fruits/17.jpg" name="Papaya Fresh" last="26.00" store="Meijer" reviews="80" average-review="2.0" wished="false" in-cart="0" quantity="41" price="9.20" store-country="US"></div>
-      <div is="product-wrapper" product-image="/images/product/fruits/22.jpg" name="Guava Fresh" last="19.00" store="Wegmans" reviews="70" average-review="3.9" wished="true" in-cart="0" quantity="0" price="7.90" store-country="KE"></div>
-      <div is="product-wrapper" product-image="/images/product/fruits/19.jpg" name="Lychee Fresh" last="29.00" store="Hy-Vee" reviews="60" average-review="3.1" wished="false" in-cart="0" quantity="13" price="17.30" store-country="KE"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug1.jpg" name="Paracetamol 500mg Tablets - Pain & Fever Relief" last="5048.50" store="HealthCare Plus Pharmacy" reviews="32894" average-review="4.7" wished="true" in-cart="0" quantity="150" price="4598.50" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug2.jpg" name="Ibuprofen 400mg Capsules - Anti-inflammatory" last="712.25" store="HealthCare Plus Pharmacy" reviews="185" average-review="4.3" wished="false" in-cart="2" quantity="89" price="152.25" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug3.jpg" name="Amoxicillin 250mg Syrup - Antibiotic" last="824.75" store="HealthCare Plus Pharmacy" reviews="9546" average-review="4.5" wished="true" in-cart="0" quantity="45" price="247.75" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug4.jpg" name="Dextromethorphan Cough Syrup - Respiratory Relief" last="215.80" store="HealthCare Plus Pharmacy" reviews="142" average-review="4.2" wished="false" in-cart="1" quantity="67" price="15.80" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug5.jpg" name="Multivitamin Complex Tablets - Daily Nutrition" last="8628.50" store="HealthCare Plus Pharmacy" reviews="489" average-review="4.6" wished="true" in-cart="0" quantity="200" price="28.50" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug6.jpg" name="Antiseptic Solution 100ml - Wound Care" last="995.90" store="HealthCare Plus Pharmacy" reviews="176" average-review="4.4" wished="false" in-cart="0" quantity="120" price="995.90" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug4.jpg" name="Adhesive Bandages Pack - First Aid" last="8766.75" store="HealthCare Plus Pharmacy" reviews="234" average-review="4.8" wished="true" in-cart="0" quantity="85" price="6.75" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug3.jpg" name="Cetirizine 10mg Tablets - Allergy Relief" last="418.40" store="HealthCare Plus Pharmacy" reviews="167" average-review="4.1" wished="false" in-cart="0" quantity="0" price="188.40" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug2.jpg" name="Insulin Injection Pen - Diabetes Management" last="1825.00" store="HealthCare Plus Pharmacy" reviews="89" average-review="4.9" wished="true" in-cart="0" quantity="12" price="7125.00" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug1.jpg" name="Aspirin 325mg Tablets - Cardiovascular Health" last="191.30" store="HealthCare Plus Pharmacy" reviews="29468" average-review="4.0" wished="false" in-cart="0" quantity="156" price="181.30" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug2.jpg" name="Calcium Carbonate Antacid - Digestive Health" last="7814.60" store="HealthCare Plus Pharmacy" reviews="203" average-review="3.8" wished="true" in-cart="3" quantity="78" price="128974.60" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug3.jpg" name="Lubricating Eye Drops - Vision Care" last="8722.90" store="HealthCare Plus Pharmacy" reviews="134" average-review="4.3" wished="false" in-cart="1" quantity="54" price="22.90" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug6.jpg" name="Digital Thermometer - Health Monitoring" last="1435.75" store="HealthCare Plus Pharmacy" reviews="112" average-review="4.5" wished="true" in-cart="0" quantity="28" price="6435.75" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug4.jpg" name="Probiotic Capsules 30ct - Gut Health" last="1742.20" store="HealthCare Plus Pharmacy" reviews="91" average-review="3.9" wished="false" in-cart="0" quantity="63" price="42.20" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug5.jpg" name="Hand Sanitizer 250ml - Hygiene Protection" last="187.45" store="HealthCare Plus Pharmacy" reviews="456" average-review="4.2" wished="true" in-cart="0" quantity="0" price="7.45" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug1.jpg" name="Omega-3 Fish Oil Capsules - Heart Health" last="3431.80" store="HealthCare Plus Pharmacy" reviews="178" average-review="4.4" wished="false" in-cart="0" quantity="94" price="31.80" store-country="Kenya"></div>
     `;
   }
 
@@ -256,7 +581,8 @@ export default class StoreContainer extends HTMLElement {
           gap: 0;
         }
 
-        .header {
+        /* Pharmacy Header Styles */
+        .pharmacy-header {
           display: flex;
           flex-flow: column;
           gap: 0;
@@ -265,7 +591,7 @@ export default class StoreContainer extends HTMLElement {
           margin: 0;
         }
 
-        .header > .cover {
+        .pharmacy-header > .cover-section {
           display: flex;
           flex-flow: column;
           gap: 0;
@@ -275,111 +601,314 @@ export default class StoreContainer extends HTMLElement {
           margin: 0;
         }
 
-        .header > .cover > .image {
+        .pharmacy-header > .cover-section > .store-banner {
           width: 100%;
-          height: 160px;
-          border-radius: 10px;
+          height: 180px;
+          border-radius: 12px;
           overflow: hidden;
+          position: relative;
         }
 
-        .header > .cover > .image > img {
+        .pharmacy-header > .cover-section > .store-banner > img {
           width: 100%;
           height: 100%;
           object-fit: cover;
         }
 
-        .header > .cover > .avatar {
-          width: 110px;
-          height: 110px;
+        .pharmacy-header > .cover-section .pharmacy-logo {
+          width: 120px;
+          height: 120px;
+          position: absolute;
+          top: 50%;
+          left: 20px;
+          transform: translateY(-50%);
           border-radius: 50%;
           overflow: hidden;
-          margin: -68px 0 0 20px;
+          margin: 0;
           background: var(--background);
           display: flex;
           justify-content: center;
           align-items: center;
+          border: 4px solid var(--background);
+          box-shadow: var(--box-shadow);
         }
 
-        .header > .cover > .avatar > img {
-          width: calc(100% - 10px);
-          height: calc(100% - 10px);
+        .pharmacy-header > .cover-section .pharmacy-logo > img {
+          width: calc(100% - 8px);
+          height: calc(100% - 8px);
           object-fit: cover;
           border-radius: 50%;
         }
 
-        .header > .cover > .info {
+        .pharmacy-header > .cover-section > .pharmacy-info {
           width: 100%;
-          padding: 0;
+          padding: 10px 0 0;
           margin: 0;
           display: flex;
           flex-flow: column;
-          gap: 0;
+          gap: 8px;
         }
 
-        .header > .cover > .info > .title {
-          font-size: 1.5rem;
-          font-weight: 500;
+        .pharmacy-header > .cover-section > .pharmacy-info > .pharmacy-name {
+          font-size: 1.6rem;
+          font-weight: 600;
           line-height: 1.3;
           font-family: var(--font-main), sans-serif;
           color: var(--title-color);
           margin: 0;
         }
 
-        .header > .cover > .info > .address {
+        .pharmacy-header > .cover-section > .pharmacy-info > .location-info {
           display: flex;
           flex-flow: column;
-          gap: 0;
-          margin: 0 0 5px 0;
-          color: var(--gray-color);
+          gap: 2px;
+          margin: 0;
         }
 
-        .header > .cover > .info > .address > .address {
+        .pharmacy-header > .cover-section > .pharmacy-info > .location-info > .address {
           font-size: 1rem;
           font-weight: 400;
-          margin: 0;
-          color: var(--gray-color);
-          font-family: var(--font-main), sans-serif;
-          line-height: 1.3;
-        }
-
-        .header > .cover > .info > .address > .country {
-          font-size: 1rem;
-          font-weight: 500;
-          margin: 0;
-          color: var(--gray-color);
-          font-family: var(--font-read), sans-serif;
-          line-height: 1.3;
-        }
-
-        .header > .cover > .info > .description {
-          font-size: 1rem;
-          font-weight: 400;
-          margin: 0;
           color: var(--text-color);
           font-family: var(--font-main), sans-serif;
           line-height: 1.3;
         }
 
-        .header > .stats {
+        .pharmacy-header > .cover-section > .pharmacy-info > .location-info > .city {
+          font-size: 1rem;
+          font-weight: 500;
+          color: var(--accent-color);
+          font-family: var(--font-read), sans-serif;
+          line-height: 1.3;
+        }
+
+        .pharmacy-header > .cover-section > .pharmacy-info > .pharmacy-description {
+          font-size: 1rem;
+          font-weight: 400;
+          margin: 5px 0;
+          color: var(--text-color);
+          font-family: var(--font-main), sans-serif;
+          line-height: 1.4;
+        }
+
+        .pharmacy-header > .cover-section > .pharmacy-info > .pharmacy-credentials {
+          display: flex;
+          flex-flow: column;
+          gap: 4px;
+          margin: 0;
+        }
+
+        .pharmacy-header > .cover-section > .pharmacy-info > .pharmacy-credentials > span {
+          font-size: 0.9rem;
+          font-weight: 500;
+          color: var(--gray-color);
+          font-family: var(--font-text), sans-serif;
+        }
+
+        .pharmacy-header > .cover-section > .pharmacy-info > .pharmacy-credentials > .license {
+          color: var(--accent-color);
+        }
+
+        /* Store Status and Opening Hours Styles */
+        .opening-hours {
+          display: flex;
+          flex-flow: column;
+          gap: 12px;
+          margin-top: 20px;
+        }
+
+        .store-status {
+          margin-bottom: 15px;
+        }
+
+        .status-indicator {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          padding: 12px 16px;
+          border-radius: 12px;
+          transition: all 0.3s ease;
+          position: relative;
+          overflow: hidden;
+        }
+
+        .status-indicator.open {
+          background: var(--upvote-background);
+          border: var(--action-border);
+          color: var(--action-color);
+        }
+
+        .status-indicator.closed {
+          background: var(--downvote-background);
+          border: var(--error-border);
+          color: var(--error-color);
+        }
+
+        .status-icon {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 24px;
+          height: 24px;
+          border-radius: 50%;
+          flex-shrink: 0;
+          transition: all 0.3s ease;
+        }
+
+        .status-indicator.open .status-icon {
+          background: var(--revenue-background);
+          color: var(--action-color);
+        }
+
+        .status-indicator.closed .status-icon {
+          background: var(--error-color);
+          color: var(--white-color);
+        }
+
+        .status-content {
+          display: flex;
+          flex-flow: column;
+          gap: 2px;
+          flex: 1;
+        }
+
+        .status-main {
+          font-size: 1rem;
+          font-weight: 600;
+          font-family: var(--font-main), sans-serif;
+          line-height: 1.2;
+        }
+
+        .status-time {
+          font-size: 0.875rem;
+          font-weight: 400;
+          font-family: var(--font-text), sans-serif;
+          opacity: 0.8;
+          line-height: 1.2;
+        }
+
+        .hours-header {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          padding: 8px 0;
+          color: var(--text-color);
+        }
+
+        .hours-header svg {
+          width: 18px;
+          height: 18px;
+          color: var(--accent-color);
+        }
+
+        .hours-title {
+          font-size: 0.95rem;
+          font-weight: 500;
+          font-family: var(--font-main), sans-serif;
+        }
+
+        .hours-table {
+          width: 100%;
+          margin-top: 8px;
+        }
+
+        .opening-schedule {
+          list-style: none;
+          padding: 0;
+          margin: 0;
+          display: flex;
+          gap: 8px;
+          flex-wrap: wrap;
+          justify-content: space-between;
+        }
+
+        .schedule-day {
+          flex: 1;
+          min-width: 80px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          padding: 12px 8px;
+          border-radius: 0;
+          transition: all 0.3s ease;
+          position: relative;
+          overflow: hidden;
+        }
+
+        .schedule-day.regular {
+          border-right: var(--action-border);
+          color: var(--action-color);
+        }
+
+        .schedule-day:first-child {
+          border-left: var(--rating-border);
+        }
+
+        .schedule-day.holiday {
+          border-right: var(--rating-border);
+          color: var(--rating-color);
+        }
+
+        .schedule-day.current-day {
+          transform: scale(1.05);
+          z-index: 2;
+        }
+
+        .day-name {
+          font-size: 0.8rem;
+          font-weight: 600;
+          font-family: var(--font-main), sans-serif;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+          margin-bottom: 8px;
+        }
+
+        .day-hours {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 2px;
+        }
+
+        .open-time, .close-time {
+          font-size: 0.75rem;
+          font-weight: 500;
+          font-family: var(--font-text), sans-serif;
+          line-height: 1.1;
+          opacity: 0.9;
+        }
+
+        .closed-indicator {
+          font-size: 0.8rem;
+          font-weight: 600;
+          font-family: var(--font-main), sans-serif;
+          text-transform: uppercase;
+          letter-spacing: 0.3px;
+        }
+
+        /* Pharmacy Stats Styles */
+        .pharmacy-header > .stats {
           display: flex;
           flex-flow: row;
           align-items: center;
           justify-content: start;
-          gap: 50px;
+          gap: 20px;
           width: 100%;
-          padding: 15px 0;
+          padding: 30px 0 12px;
           margin: 0;
         }
 
-        .header > .stats > div {
+        .pharmacy-header > .stats > div {
           display: flex;
           flex-flow: column;
+          background: var(--gray-background);
+          border-radius: 12px;
+          padding: 12px 16px;
+          min-width: 120px;
           gap: 0;
           margin: 0;
-          padding: 0;
         }
 
-        .header > .stats > div > .number {
+        .pharmacy-header > .stats > div > .number {
           font-size: 1.15rem;
           font-weight: 500;
           margin: 0;
@@ -388,7 +917,7 @@ export default class StoreContainer extends HTMLElement {
           line-height: 1.3;
         }
 
-        .header > .stats > div > .label {
+        .pharmacy-header > .stats > div > .label {
           font-size: 1rem;
           font-weight: 400;
           margin: 0;
@@ -397,7 +926,7 @@ export default class StoreContainer extends HTMLElement {
           line-height: 1.3;
         }
 
-        .header > .stats > .line {
+        .pharmacy-header > .stats > .line {
           display: inline-block;
           width: 2px;
           height: 30px;
@@ -405,389 +934,293 @@ export default class StoreContainer extends HTMLElement {
           background: var(--tab-background);
         }
 
-        .actions {
-          display: flex;
-          flex-flow: row;
-          gap: 20px;
-          padding: 0;
-          margin: 0;
-        }
-
-        .actions > .btn {
-          padding: 7px 18px;
-          border-radius: 12px;
-          width: max-content;
-          background: var(--gray-background);
-          font-size: 0.9rem;
-          color: var(--text-color);
-          border: none;
-          /* border: var(--border); */
-          font-weight: 500;
-          font-family: var(--font-main), sans-serif;
-          cursor: pointer;
-          transition: all 0.3s ease;
-        }
-
-        .actions > .btn.btn-products {
-          background: var(--que-background);
-        }
-
-        .actions > .btn.btn-orders {
-          background: var(--tab-background);
-        }
-
-        div.sticky {
-          padding: 10px 0 0;
-          display: flex;
-          flex-flow: column;
-          gap: 5px;
-          margin: 0;
-          width: 100%;
-          z-index: 2;
-          position: sticky;
-          top: 0;
-          background: var(--background);
-        }
-
-        div.search-actions {
-          /* border: 1px solid red; */
+        /* More Container Styles */
+        .more-container {
           display: flex;
           flex-flow: row;
           align-items: center;
           justify-content: space-between;
           gap: 20px;
-        }
-
-        form.search {
-          padding: 0;
-          background: var(--background);
-          display: flex;
-          flex-flow: column;
-          align-items: center;
-          justify-content: center;
-          gap: 5px;
-          width: 100%;
-        }
-
-        form.search > svg {
-          position: absolute;
-          left: -12px;
-          top: calc(50% - 15px);
-          color: var(--text-color);
-          cursor: pointer;
-          width: 40px;
-          height: 40px;
-        }
-
-        form.search > svg:hover {
-          color: var(--accent-color);
-        }
-
-        form.search > .contents {
-          padding: 0;
-          display: flex;
-          flex-flow: row;
-          align-items: center;
-          flex-wrap: nowrap;
-          gap: 0;
-          margin: 0;
-          width: 100%;
-          position: relative;
-        }
-
-        form.search > .contents > input {
-          border: var(--input-border-focus);
-          background-color: var(--background) !important;
-          display: flex;
-          flex-flow: row;
-          align-items: center;
-          font-family: var(--font-text),sans-serif;
-          color: var(--text-color);
-          font-size: 1rem;
-          padding: 8px 10px 8px 35px;
-          gap: 0;
-          width: 100%;
-          outline: none;
-          border-radius: 12px;
-        }
-
-        form.search > .contents > input:-webkit-autofill,
-        form.search > .contents > input:-webkit-autofill:hover,
-        form.search > .contents > input:-webkit-autofill:focus {
-          -webkit-box-shadow: 0 0 0 1000px var(--background) inset;
-          -webkit-text-fill-color: var(--text-color) !important;
-          transition: background-color 5000s ease-in-out 0s;
-          color: var(--text-color) !important;
-        }
-
-        form.search > .contents > input:-webkit-autofill {
-          filter: none;
-          color: var(--text-color) !important;
-        }
-
-        form.search > .contents > svg {
-          position: absolute;
-          height: 18px;
-          color: var(--gray-color);
-          width: 18px;
-          left: 10px;
-          top: 50%;
-          transform: translateY(-50%);
-        }
-
-        form.search > .contents > button {
-          position: absolute;
-          right: 10px;
-          top: calc(50% - 13px);
-          border: none;
-          cursor: pointer;
-          color: var(--white-color);
-          font-family: var(--font-text), sans-serif;
-          background: var(--accent-linear);
-          height: 26px;
-          width: max-content;
-          padding: 0 10px;
-          font-size: 0.9rem;
-          font-weight: 400;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 0;
-          border-radius: 10px;
-        }
-
-        ul.tabs {
           border-bottom: var(--border);
-          display: flex;
-          flex-flow: row;
-          gap: 15px;
-          padding: 10px 0 10px;
           margin: 0;
-          width: 100%;
-          list-style: none;
-          overflow-x: auto;
-          overflow-y: hidden;
-          white-space: nowrap;
-          scrollbar-width: 0;
-          -ms-overflow-style: none;
-          z-index: 2;
+          padding: 0;
+          position: sticky;
+          top: 90px;
           background: var(--background);
+          z-index: 10;
         }
 
-        ul.tabs::-webkit-scrollbar {
-          display: none;
-          visibility: hidden;
-        }
-
-        ul.tabs > li.tab {
+        /* Modern Tabs Styles */
+        .modern-tabs {
+          position: relative;
           display: flex;
-          flex-flow: row;
+          padding: 0;
+          gap: 20px;
+          width: fit-content;
+          margin: 0;
+          border-bottom: 2px solid var(--border-color);
+        }
+
+        .modern-tabs > .tab-indicator {
+          position: absolute;
+          bottom: -2px;
+          left: 0;
+          height: 3px;
+          border-radius: 5px;
+          background: var(--accent-color);
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          z-index: 1;
+        }
+
+        .modern-tabs > .tab-item {
+          position: relative;
+          display: flex;
           align-items: center;
-          gap: 5px;
-          padding: 5px 0;
-          border-radius: 12px;
-          /*background: var(--gray-background);*/
-          color: var(--text-color);
+          gap: 0;
+          padding: 10px 0;
           font-family: var(--font-main), sans-serif;
           font-size: 0.95rem;
           font-weight: 500;
           cursor: pointer;
-          transition: 0.3s;
+          transition: all 0.2s ease;
+          color: var(--gray-color);
+          z-index: 2;
+          background: transparent;
+          border: none;
         }
 
-        ul.tabs > li.tab > span.count,
-        ul.tabs > li.tab > svg {
-          display: none;
+        .modern-tabs > .tab-item.active {
+          color: var(--accent-color);
+          font-weight: 600;
         }
 
-        ul.tabs > li.tab.active {
-          background: var(--tab-background);
-          padding: 5px 10px;
+        .modern-tabs > .tab-item:not(.active):hover {
           color: var(--text-color);
         }
 
-        ul.tabs > li.tab.active > span.count,
-        ul.tabs > li.tab.active > svg,
-        ul.tabs > li.tab:not(.active):hover > span.count,
-        ul.tabs > li.tab:not(.active):hover > svg {
-          display: flex;
+        .modern-tabs > .tab-item > .tab-label {
+          font-size: 1.15rem;
+          transition: all 0.2s ease;
         }
 
-        /* style hover tab: but don't touch tab with active class */
-        ul.tabs > li.tab:not(.active):hover {
-          background: var(--tab-background);
-          padding: 5px 10px;
-          color: var(--text-color);
-        }
-
-        ul.tabs > li.tab > svg {
-          width: 19px;
-          height: 19px;
-        }
-
-        ul.tabs > li.tab > .text {
-          font-size: 1rem;
-          padding: 0 5px 0 0;
+        .modern-tabs > .tab-item > .tab-count {
+          font-size: 0.8rem;
           font-weight: 500;
-        }
-
-        ul.tabs > li.tab > .count {
-          font-size: 0.85rem;
-          display: none;
-          align-items: center;
-          justify-content: center;
+         /* background: var(--gray-background); */
+          color: var(--gray-color);
+          font-family: var(--font-read), sans-serif;
+          display: inline-block;
+          padding: 2px 8px 0;
+          border-radius: 0;
           text-align: center;
-          font-weight: 500;
-          background: var(--accent-linear);
-          font-family: var(--font-text), sans-serif;
-          color: var(--white-color);
-          padding: 1px 7px 2px;
-          border-radius: 10px;
+          transition: all 0.2s ease;
         }
 
-        .products {
+        .modern-tabs > .tab-item.active > .tab-count {
+          color: var(--accent-color);
+        }
+
+        /* Pharmacy Actions Styles */
+        .pharmacy-actions {
+          display: flex;
+          flex-flow: row;
+          gap: 15px;
+          padding: 0;
+        }
+
+        .pharmacy-actions > .action-btn {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          padding: 5px 12px 6px;
+          border-radius: 12px;
+          border: none;
+          font-size: 0.9rem;
+          font-weight: 500;
+          font-family: var(--font-main), sans-serif;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          text-decoration: none;
+        }
+
+        .pharmacy-actions > .action-btn {
+          background: var(--gray-background);
+          color: var(--text-color);
+          border: var(--border);
+        }
+
+        .pharmacy-actions > .action-btn:hover {
+          background: var(--tab-background);
+          border-color: var(--accent-color);
+        }
+
+        .pharmacy-actions > .action-btn svg {
+          width: 18px;
+          height: 18px;
+        }
+
+        /* Services Container Styles */
+        .services-container {
           padding: 20px 0;
-          max-width: 100%;
-          display:flex;
-          flex-flow: row wrap;
+          width: 100%;
+        }
+
+        .services-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
           gap: 20px;
-          justify-content: space-between;
+          padding: 0;
           margin: 0;
         }
 
-        .pagination {
-          z-index: 0;
+        .service-card {
+          background: var(--background);
+          border: var(--border);
+          border-radius: 12px;
+          padding: 20px;
           display: flex;
-          flex-flow: row;
-          gap: 10px;
+          flex-flow: column;
+          gap: 12px;
+          transition: all 0.3s ease;
+          box-shadow: var(--box-shadow);
+        }
+
+        .service-card:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 8px 25px -8px var(--accent-color);
+          border-color: var(--accent-color);
+        }
+
+        .service-card > .service-icon {
+          width: 50px;
+          height: 50px;
+          background: var(--accent-alt);
+          border-radius: 12px;
+          display: flex;
+          align-items: center;
           justify-content: center;
-          padding: 15px 0 20px;
+          color: var(--accent-color);
+        }
+
+        .service-card > h4 {
+          font-size: 1.1rem;
+          font-weight: 600;
+          color: var(--title-color);
+          font-family: var(--font-main), sans-serif;
+          margin: 0;
+          line-height: 1.3;
+        }
+
+        .service-card > p {
+          font-size: 0.95rem;
+          font-weight: 400;
+          color: var(--text-color);
+          font-family: var(--font-main), sans-serif;
+          margin: 0;
+          line-height: 1.4;
+        }
+
+        .service-card > .service-price {
+          font-size: 1rem;
+          font-weight: 600;
+          color: var(--accent-color);
+          font-family: var(--font-main), sans-serif;
+          margin-top: auto;
+        }
+
+        /* Products Styles - Keeping Your Original Layout */
+        .products {
+          padding: 20px 0;
+          max-width: 100%;
+          display: block;
+          columns: 230px auto;
+          column-gap: 10px;
+          margin: 0;
+        }
+
+        .products > * {
+          break-inside: avoid;
+          margin-bottom: 10px;
+          display: block;
+          width: 100%;
+        }
+
+        .section-content {
+          padding: 0;
           margin: 0;
           width: 100%;
         }
 
-        .pagination > .previous {
-          display: flex;
-          flex-flow: row;
-          gap: 5px;
-          align-items: center;
-        }
-
-        .pagination > .nexts {
-          display: flex;
-          flex-flow: row;
-          gap: 5px;
-          align-items: center;
-        }
-
-        .pagination button {
-          font-size: 0.9rem;
-          outline: none;
-          border: none;
-          background: none;
-          font-family: var(--font-text), sans-serif;
-        }
-
-        .pagination > button.current,
-        .pagination > .nexts > .page,
-        .pagination > .previous > .page {
-          padding: 0;
-          height: 30px;
-          width: 30px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          border-radius: 50px;
-          color: var(--text-color);
-          border: var(--action-border);
-          cursor: pointer;
-          transition: 0.3s;
-        }
-
-        .pagination > .nexts > button.large,
-        .pagination > .previous > button.large,
-        .pagination > button.large {
-          padding: 0;
-          height: 30px;
-          width: max-content;
-          padding: 0 10px;
-        }
-
-        .pagination > button.current {
-          color: var(--white-color);
-          background: var(--accent-linear);
-          cursor: default;
-        }
-
-        .pagination > .previous > .prev:hover,
-        .pagination > .nexts > .next:hover {
-          background: var(--tab-background);
-          border: none;
-        }
-
-        .pagination > .previous > .start {
-          margin-right: 10px;
-          border: none;
-          background: var(--tab-background);
-        }
-
-        .pagination > .nexts > .end {
-          margin-left: 10px;
-          border: none;
-          background: var(--tab-background);
-        }
-
-        .pagination > .previous > .page.current,
-        .pagination > .nexts > .page.current {
-          background: var(--accent-linear);
-          color: var(--white-color);
-        }
-
-        /* at 700px */
+        /* Mobile Styles */
         @media all and (max-width: 700px) {
           :host {
             padding: 70px 10px;
           }
-          /* reset all cursor: pointer */
-          a,
-          .actions > .btn,
-          ul.tabs > li.tab,
-          .pagination > button,
-          .pagination > .previous > .prev,
-          .pagination > .nexts > .next,
-          .pagination > .previous > .start,
-          .pagination > .nexts > .end,
-          .pagination > .previous > .page,
-          .pagination > .nexts > .page {
+
+          /* Reset cursors for mobile */
+          .pharmacy-actions > .action-btn,
+          .modern-tabs > .tab-item {
             cursor: default !important;
           }
 
-          div.sticky {
+          .search-section {
             position: sticky;
             top: 60px;
+            padding: 15px 0 10px;
           }
 
-          .actions {
+          .tabs-section {
+            position: sticky;
+            top: 135px;
+            padding: 0 0 10px;
+          }
+
+          .search-container-wrapper {
+            flex-direction: column;
+            gap: 10px;
+          }
+
+          .pharmacy-actions {
             display: flex;
             flex-flow: row;
-            gap: 20px;
+            gap: 10px;
             padding: 0;
-            margin: 5px 0 10px;
+            margin: 0;
+            width: 100%;
+            justify-content: center;
           }
 
-          .header > .stats {
+          .modern-tabs {
+            width: 100%;
+            margin: 0;
+          }
+
+          .modern-tabs > .tab-item {
+            flex: 1;
+            justify-content: center;
+            padding: 10px 16px;
+          }
+
+          .pharmacy-header > .pharmacy-stats {
             display: flex;
             flex-flow: row;
             align-items: center;
-            justify-content: start;
-            gap: 30px;
-            width: 100%;
-            padding: 15px 0;
-            margin: 0;
+            justify-content: space-between;
+            gap: 15px;
+            padding: 12px 15px;
           }
 
-          ul.tabs {
-            padding: 10px 0;
+          .pharmacy-header > .pharmacy-stats > .stat-item > .stat-number {
+            font-size: 1.1rem;
+          }
+
+          .pharmacy-header > .pharmacy-stats > .stat-item > .stat-label {
+            font-size: 0.8rem;
+          }
+
+          .services-grid {
+            grid-template-columns: 1fr;
+            gap: 15px;
           }
 
           .products {
@@ -799,18 +1232,132 @@ export default class StoreContainer extends HTMLElement {
             margin: 0;
           }
 
-          .pagination {
-            padding: 5px 0 25px;
+          /* Mobile Opening Hours Styles */
+          .status-indicator {
+            padding: 10px 12px;
+            gap: 10px;
+          }
+
+          .status-main {
+            font-size: 0.9rem;
+          }
+
+          .status-time {
+            font-size: 0.8rem;
+          }
+
+          .hours-table {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+          }
+
+          .opening-schedule {
+            gap: 6px;
+            min-width: 500px;
+            padding: 0 4px;
+          }
+
+          .schedule-day {
+            min-width: 65px;
+            padding: 10px 6px;
+          }
+
+          .day-name {
+            font-size: 0.75rem;
+            margin-bottom: 6px;
+          }
+
+          .open-time, .close-time {
+            font-size: 0.7rem;
+          }
+
+          .closed-indicator {
+            font-size: 0.75rem;
           }
         }
+
         @media (max-width: 480px) {
-          .products {
-            padding: 20px 0;
-            max-width: 100%;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
+
+          .pharmacy-header > .pharmacy-stats {
             gap: 10px;
-            margin: 0;
+            padding: 10px 12px;
+          }
+
+          .pharmacy-actions {
+            flex-wrap: wrap;
+            gap: 8px;
+          }
+
+          .pharmacy-actions > .action-btn {
+            padding: 8px 12px;
+            font-size: 0.85rem;
+            flex: 1;
+            min-width: calc(50% - 4px);
+          }
+
+          .modern-tabs > .tab-item {
+            padding: 8px 12px;
+          }
+
+          .modern-tabs > .tab-item > .tab-label {
+            font-size: 0.9rem;
+          }
+
+          .products {
+            grid-template-columns: 1fr 1fr;
+          }
+
+          /* Extra Small Mobile Opening Hours */
+          .status-indicator {
+            padding: 8px 10px;
+            gap: 8px;
+            flex-direction: column;
+            text-align: center;
+          }
+
+          .status-content {
+            align-items: center;
+          }
+
+          .status-main {
+            font-size: 0.85rem;
+          }
+
+          .status-time {
+            font-size: 0.75rem;
+          }
+
+          .hours-header {
+            padding: 6px 0;
+            margin-bottom: 8px;
+          }
+
+          .hours-title {
+            font-size: 0.85rem;
+          }
+
+          .opening-schedule {
+            gap: 4px;
+            min-width: 450px;
+            flex-wrap: nowrap;
+          }
+
+          .schedule-day {
+            min-width: 55px;
+            padding: 8px 4px;
+          }
+
+          .day-name {
+            font-size: 0.7rem;
+            margin-bottom: 4px;
+          }
+
+          .open-time, .close-time {
+            font-size: 0.65rem;
+          }
+
+          .closed-indicator {
+            font-size: 0.7rem;
           }
         }
       </style>

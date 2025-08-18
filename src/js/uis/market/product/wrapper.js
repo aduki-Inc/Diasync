@@ -6,27 +6,18 @@ export default class ProductWrapper extends HTMLDivElement {
     this.app = window.app;
     // lets create our shadow root
     this.shadowObj = this.attachShadow({ mode: 'open' });
-    this.utils = window.app.utils;
-    this.quantity = this.utils.number.parseInteger(this.getAttribute('quantity'));
-    this.inCart = this.utils.number.parseInteger(this.getAttribute('in-cart'));
-    this.price = this.utils.number.parse(this.getAttribute('price'));
-    this.lastPrice = this.utils.number.parse(this.getAttribute('last'));
-    this.storeCountry = this.getAttribute('store-country');
-    this.userCountry = this.getCountryCode();
+    this.app = window.app || {};
+    this.number = this.app?.utils?.number;
+    this.date = this.app?.utils?.date;
+    this.quantity = this.number.parseInteger(this.getAttribute('quantity'));
+    this.inCart = this.number.parseInteger(this.getAttribute('in-cart'));
+    this.price = this.number.parse(this.getAttribute('price'));
+    this.lastPrice = this.number.parse(this.getAttribute('last'));
     this.render();
   }
 
   render() {
     this.shadowObj.innerHTML = this.getTemplate();
-  }
-
-  getCountryCode = () => {
-    // get country from local storage
-    const country = localStorage.getItem('country');
-    if (!country) return 'KE';
-
-    // get the country code
-    return country.countryCode;
   }
 
   connectedCallback() {
@@ -59,7 +50,7 @@ export default class ProductWrapper extends HTMLDivElement {
   }
 
   getOffer = () => {
-    const discount = this.utils.number.parse(this.calculateDiscount(this.price, this.lastPrice));
+    const discount = this.number.parse(this.calculateDiscount(this.price, this.lastPrice));
     if (discount === 0 || discount < 1) return '';
     return /* html */`
       <div class="offer">
@@ -73,16 +64,16 @@ export default class ProductWrapper extends HTMLDivElement {
     return /* html */`
       <span class="was">
         <span class="strike"></span>
-        <span class="currency">乇</span>
-        <span class="price">${this.utils.number.shorten(this.lastPrice)}</span>
+        <span class="currency">Ksh</span>
+        <span class="price">${this.number.shorten(this.lastPrice)}</span>
       </span>
     `;
   }
 
   // Todo: Fix mobile prices when number is 1k or more
   getBody() {
-    const ratingsInt = this.utils.number.parseInteger(this.getAttribute('reviews'))
-    const reviews = this.utils.number.shorten(ratingsInt)
+    const ratingsInt = this.number.parseInteger(this.getAttribute('reviews'))
+    const reviews = this.number.shorten(ratingsInt)
     let ratingsText = ratingsInt > 1 ? `${reviews} reviews` : `${reviews} review`
     if (ratingsInt < 1) ratingsText = `No reviews yet`
     return /* html */`
@@ -93,9 +84,6 @@ export default class ProductWrapper extends HTMLDivElement {
 			<div class="details">
         <div class="content">
           <span class="review">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="currentColor" fill="none">
-              <path d="M13.7276 3.44418L15.4874 6.99288C15.7274 7.48687 16.3673 7.9607 16.9073 8.05143L20.0969 8.58575C22.1367 8.92853 22.6167 10.4206 21.1468 11.8925L18.6671 14.3927C18.2471 14.8161 18.0172 15.6327 18.1471 16.2175L18.8571 19.3125C19.417 21.7623 18.1271 22.71 15.9774 21.4296L12.9877 19.6452C12.4478 19.3226 11.5579 19.3226 11.0079 19.6452L8.01827 21.4296C5.8785 22.71 4.57865 21.7522 5.13859 19.3125L5.84851 16.2175C5.97849 15.6327 5.74852 14.8161 5.32856 14.3927L2.84884 11.8925C1.389 10.4206 1.85895 8.92853 3.89872 8.58575L7.08837 8.05143C7.61831 7.9607 8.25824 7.48687 8.49821 6.99288L10.258 3.44418C11.2179 1.51861 12.7777 1.51861 13.7276 3.44418Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-            </svg>
             <span class="number">${this.getAttribute('average-review')}</span>
             <span class="sp">•</span>
             <span class="people">${ratingsText}</span>
@@ -103,51 +91,22 @@ export default class ProductWrapper extends HTMLDivElement {
         </div>
         <div class="name">
           <span class="name">${this.getAttribute('name')}</span>
-          <span class="store">
-            <span class="by">by</span>
-            <span class="store-name">${this.getAttribute('store')}</span>
-          </span>
+          <span class="store">${this.getAttribute('store')}</span>
         </div>
 				<div class="price">
           <span class="value">
-            <span class="currency">乇</span>
-            <span class="price">${this.utils.number.balanceWithCommas(this.getAttribute("price"))}</span>
+            <span class="currency">Ksh</span>
+            <span class="price">${this.number.balanceWithCommas(this.getAttribute("price"))}</span>
           </span>
           ${this.getWasPrice()}
         </div>
-        ${this.checkCountry()}
+        <span class="country-info">
+          <span class="text">Local dispatch from ${this.getAttribute('store-country')}</span>
+        </span>
 				<!-- Button Box -->
         ${this.getButtons()}
 			</div>
     `
-  }
-
-  // check if store and user are within the same country
-  checkCountry = () => {
-    const isSameCoutry = this.storeCountry.toLowerCase() === this.userCountry.toLowerCase();
-
-    if (isSameCoutry) {
-      return /* html */`
-        <span class="country-info">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="currentColor" fill="none">
-            <path d="M22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12Z" stroke="currentColor" stroke-width="1.5" />
-            <path d="M8 12.5L10.5 15L16 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-          </svg>
-          <span class="text">Local dispatch</span>
-        </span>
-      `;
-    } else {
-      return /* html */`
-        <span class="country-info">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="currentColor" fill="none">
-            <path d="M10 9.50003L5.27531 4.47565C4.85705 4.0245 4.92403 3.69496 5.41729 3.40965C6.34454 2.8733 7.06689 2.85873 8.04428 3.39511L12.949 6.08675C13.2982 6.27836 13.6406 6.47259 14 6.57855" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-            <path d="M12.5 13.6632L14.6103 20.4697C14.7826 21.0255 15.086 21.1263 15.556 20.8568C16.4396 20.3501 16.7958 19.765 16.8197 18.7107L16.9395 13.4198C16.9555 12.7131 16.9526 12.0215 17.5 11.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-            <path d="M8.32846 10.9843L10.2154 9.60557L14.6377 6.38136L14.6416 6.37851L14.6491 6.37301C14.7535 6.29661 16.3094 5.16238 17.1919 4.77581C18.2765 4.30067 19.2869 4.52156 20.3739 4.82515C20.9362 4.98218 21.2173 5.06069 21.4202 5.20717C21.742 5.43958 21.9513 5.79728 21.9943 6.18852C22.0215 6.4351 21.9498 6.71459 21.8065 7.27356L21.8065 7.27358C21.5294 8.35431 21.2181 9.32819 20.2588 10.0175C19.4782 10.5784 17.7045 11.341 17.5856 11.3919L17.5771 11.3955L17.5726 11.3974L12.5317 13.5645L10.3782 14.4876L10.3782 14.4876C9.5974 14.8223 9.207 14.9896 8.94139 15.3002C8.31933 16.0275 8.23148 17.3438 7.99931 18.2494C7.87101 18.7498 7.16748 19.6171 6.54058 19.4869C6.15355 19.4065 6.14613 18.922 6.09796 18.6131L5.6342 15.6389C5.5233 14.9276 5.51479 14.9131 4.94599 14.4627L2.56757 12.5793C2.32053 12.3836 1.89903 12.135 2.022 11.7641C2.22119 11.1633 3.33408 10.9957 3.83747 11.1363C4.74834 11.3907 5.94747 11.9738 6.89684 11.8058C7.3022 11.7341 7.64428 11.4842 8.32844 10.9843L8.32846 10.9843Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-          </svg>
-          <span class="text">Global dispatch</span>
-        </span>
-      `;
-    }
   }
 
   getButtons = () => {
@@ -156,7 +115,8 @@ export default class ProductWrapper extends HTMLDivElement {
     return /* html */`
       <div class="buttons">
         <button class="button add ${className}">${html}</button>
-        <button class="button wish ${wishClass}">${wishHtml}</button>
+        <!--<button class="button wish ${wishClass}">${wishHtml}</button>-->
+        <button class="button view">view</button>
 			</div>
     `;
   }
@@ -194,7 +154,7 @@ export default class ProductWrapper extends HTMLDivElement {
     } else {
       return {
         html: /* html */`
-          <span class="text">Add to Cart</span>
+          <span class="text">Buy</span>
         `,
         class: ''
       };
@@ -345,14 +305,12 @@ export default class ProductWrapper extends HTMLDivElement {
 
         :host {
           border: var(--border);
-          display: flex;
-          flex-flow: column;
-          align-items: center;
-          justify-content: center;
+          break-inside: avoid;
+          margin-bottom: 10px;
+          display: block;
+          width: 100%;
           gap: 0;
           padding: 0;
-          width: 250px;
-          min-width: 250px;
           border-radius: 8px;
         }
 
@@ -412,7 +370,7 @@ export default class ProductWrapper extends HTMLDivElement {
         .details > .content .review {
           width: 100%;
           padding: 0;
-          margin: 0 -2px 0 -2px;
+          margin: 0 0 0 1px;
           color: var(--gray-color);
           display: flex;
           align-items: center;
@@ -423,7 +381,7 @@ export default class ProductWrapper extends HTMLDivElement {
         .details > .content .review .sp {
           color: var(--gray-color);
           font-family: var(--font-mono), monospace;
-          font-size: 1.5rem;
+          font-size: 1.3rem;
           font-weight: 500;
           display: inline-block;
           margin-top: 2px;
@@ -431,7 +389,7 @@ export default class ProductWrapper extends HTMLDivElement {
 
         .details > .content .review .number {
           color: var(--gray-color);
-          font-family: var(--font-main), sans-serif;
+          font-family: var(--font-read), sans-serif;
           font-size: 1rem;
           font-weight: 500;
         }
@@ -467,47 +425,40 @@ export default class ProductWrapper extends HTMLDivElement {
 
         .details div.name span.name {
           color: var(--text-color);
+          font-family: var(--font-main), sans-serif;
           width: 100%;
           font-weight: 500;
-          font-size: 1.1rem;
+          font-size: 1rem;
           line-height: 1.4;
+          display: inline-block;
+          padding: 0 0 2px 0;
           cursor: pointer;
 
-          /* prevent overflow add ellipsis */
-          white-space: nowrap;
+          /* prevent overflow add ellipsis after 2 lines */
           overflow: hidden;
           text-overflow: ellipsis;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
+          display: -webkit-box;
+          -webkit-box-pack: start;
         }
 
         .details div.name span.store {
           width: 100%;
-          display: flex;
-          align-items: center;
-          justify-content: start;
-          gap: 3px;
-          margin: 0;
-          padding: 0;
-        }
-
-        .details div.name span.store span.by {
-          color: var(--gray-color);
-          font-size: 0.9rem;
-          font-weight: 400;
-          font-family: var(--font-mono), monospace;
-        }
-
-        .details div.name span.store span.store-name {
-          width: calc(100% - 20px);
+          display: inline-flex;
+          padding: 2px 0;
           color: var(--gray-color);
           font-family: var(--font-read), sans-serif;
-          font-size: 0.9rem;
-          font-weight: 400;
+          font-size: 0.85rem;
+          font-weight: 500;
           cursor: pointer;
-
-          /* prevent overflow add ellipsis */
-          white-space: nowrap;
+          /* prevent overflow add ellipsis after 2 lines */
           overflow: hidden;
           text-overflow: ellipsis;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
+          display: -webkit-box;
+          -webkit-box-pack: start;
         }
 
         .details p.name > a {
@@ -523,8 +474,7 @@ export default class ProductWrapper extends HTMLDivElement {
           width: 100%;
           display: flex;
           align-items: center;
-          justify-content: space-between;
-          gap: 7px;
+          gap: 10px;
           margin: 10px 0 0 0;
           padding: 0;
         }
@@ -533,22 +483,22 @@ export default class ProductWrapper extends HTMLDivElement {
           display: flex;
           align-items: center;
           justify-content: start;
-          gap: 8px;
+          gap: 5px;
         }
 
         .details div.price span.value span.currency {
           color: var(--anchor-color);
           display: inline-block;
-          margin: -2px 0 0 0;
-          font-size: 1.12rem;
+          /* margin: -2px 0 0 0; */
+          font-size: 1.15rem;
           font-family: var(--font-text), sans-serif;
-          font-weight: 700;
+          font-weight: 600;
           letter-spacing: 0.2px;
         }
 
         .details div.price span.value span.price {
           color: var(--anchor-color);
-          font-size: 1.32rem;
+          font-size: 1.15rem;
           font-family: var(--font-main), sans-serif;
           font-weight: 600;
           letter-spacing: 0.2px;
@@ -579,16 +529,15 @@ export default class ProductWrapper extends HTMLDivElement {
 
         .details div.price > .was span.currency {
           color: var(--gray-color);
-          font-size: 1rem;
+          font-size: 0.9rem;
           font-family: var(--font-text), sans-serif;
           font-weight: 500;
           display: inline-block;
-          margin: -2px 0 0 0;
         }
 
         .details div.price > .was span.price {
           color: var(--gray-color);
-          font-size: 1rem;
+          font-size: 0.9rem;
           font-family: var(--font-main), sans-serif;
           font-weight: 500;
         }
@@ -622,7 +571,7 @@ export default class ProductWrapper extends HTMLDivElement {
           align-items: center;
           width: 100%;
           justify-content: space-between;
-          gap: 15px;
+          gap: 10px;
           margin: 0;
           padding: 10px 0 0 0;
         }
@@ -646,24 +595,25 @@ export default class ProductWrapper extends HTMLDivElement {
           flex-flow: row;
           align-items: center;
           gap: 5px;
-          height: 35px;
           text-transform: capitalize;
           justify-content: center;
-          padding: 5px 12px 6px;
+          padding: 8px 15px;
           width: max-content;
           border-radius: 12px;
         }
 
         .buttons > .button.add {
           display: flex;
-          padding: 8px 20px;
-          width: cal(100% - 70px);
-          min-width: calc(100% - 70px);
+          padding: 8px 15px;
+          width: calc(50% - 5px);
+          min-width: calc(50% - 5px);
           border-radius: 12px;
         }
 
         .buttons > .button.view {
-          padding: 5px 15px;
+          width: calc(50% - 5px);
+          min-width: calc(50% - 5px);
+          padding: 8px 15px;
           border: var(--action-border);
           background: none;
           color: var(--gray-color);
@@ -703,8 +653,8 @@ export default class ProductWrapper extends HTMLDivElement {
         .buttons > .button.added {
           background: none;
           padding: 8px 20px;
-          width: cal(100% - 70px);
-          min-width: calc(100% - 70px);
+          width: calc(50% - 5px);
+          min-width: calc(50% - 5px);
           color: var(--accent-color);
           border: var(--action-border);
           display: flex;
@@ -726,13 +676,13 @@ export default class ProductWrapper extends HTMLDivElement {
         }
 
         .buttons > .button.added > .icon svg {
-          width: 20px;
-          height: 20px;
+          width: 18px;
+          height: 18px;
         }
 
         .buttons > .button.added > .quantity {
           color: inherit;
-          font-size: 1.15rem;
+          font-size: 0.9rem;
           font-weight: 500;
           font-family: var(--font-main), sans-serif;
         }
