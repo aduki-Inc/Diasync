@@ -5,7 +5,9 @@ export default class CartContainer extends HTMLElement {
     // lets create our shadow root
     this.shadowObj = this.attachShadow({ mode: 'open' });
     this.app = window.app;
-    this.utils = this.app.utils;
+    this.app = window.app || {};
+    this.number = this.app?.utils?.number;
+    this.date = this.app?.utils?.date;
     this.mql = window.matchMedia('(max-width: 700px)');
     this.totalAmmount = 0.00
     this.render();
@@ -57,7 +59,6 @@ export default class CartContainer extends HTMLElement {
   allItems = () => {
     const total = this.shadowObj.querySelector('.cart-items > .totals > .price > .ammount');
     const items = this.shadowObj.querySelectorAll('.cart-items > div.items > div');
-    console.log(items)
     // IF items is empty make the current innerHTML empty
     if (items.length === 0) {
       this.setAttribute('empty', 'true');
@@ -66,10 +67,25 @@ export default class CartContainer extends HTMLElement {
 
     let totalPrice = 0.00;
     items.forEach(item => {
-      totalPrice += item.getTotal();
+      let itemTotal = 0.00;
+      // If the item has a callable getTotal (upgraded custom element), use it
+      if (item && typeof item.getTotal === 'function') {
+        try {
+          itemTotal = Number(item.getTotal()) || 0.00;
+        } catch (e) {
+          itemTotal = 0.00;
+        }
+      } else {
+        // Fallback: compute from attributes (quantity * price)
+        const q = this.number?.parseInteger(item.getAttribute('quantity')) || 0;
+        const p = this.number?.parse(item.getAttribute('price')) || 0.00;
+        itemTotal = q * p;
+      }
+
+      totalPrice += itemTotal;
     })
 
-    if (total) total.textContent = this.utils.number.balanceWithCommas(totalPrice);
+    if (total) total.textContent = this.number.balanceWithCommas(totalPrice);
   }
 
   getTemplate() {
@@ -89,11 +105,8 @@ export default class CartContainer extends HTMLElement {
     }
     return /* html */`
       <div class="full">
-        <p class="head">Cart</p>
         <h1 class="title">Your cart items</h1>
-        <p class="text">
-          ${this.getAttribute('desc')}
-        </p>
+        <div class="text">${this.innerHTML}</div>
       </div>
     `;
   }
@@ -106,11 +119,11 @@ export default class CartContainer extends HTMLElement {
     if (total) {
       if (add) {
         this.totalAmmount += value
-        total.textContent = this.utils.number.balanceWithCommas(this.totalAmmount)
+        total.textContent = this.number.balanceWithCommas(this.totalAmmount)
       } else {
         this.totalAmmount -= value
         if (this.totalAmmount < 0) this.totalAmmount = 0;
-        total.textContent = this.utils.number.balanceWithCommas(this.totalAmmount)
+        total.textContent = this.number.balanceWithCommas(this.totalAmmount)
       }
     }
   }
@@ -119,19 +132,21 @@ export default class CartContainer extends HTMLElement {
     return /* html */`
       <div class="cart-items">
         <div class="items">
-          <div is="cart-item" name="Pinapple Freash" quantity="25" price="78.12" image-src="/images/product/fruits/10.jpg" store="Some Store" stock="30"></div>
-          <div is="cart-item" name="Some other item Ganders Inn and it is very long description" quantity="2" price="12.74" image-src="/images/product/fruits/11.jpg" store="The Ganders Inn" stock="12"></div>
-          <div is="cart-item" name="Avacado" quantity="2" price="33.25" image-src="/images/product/fruits/12.jpg" store="The Ganders Inn and it is very long description" stock="12"></div>
-          <div is="cart-item" name="Pinapple Freash" quantity="1" price="228.09" image-src="/images/product/fruits/4.jpg" store="Amazone" stock="0"></div>
-          <div is="cart-item" name="Pinapple Freash" quantity="1" price="4.45" image-src="/images/product/fruits/5.jpg" store="Femar's Collections" stock="12"></div>
-          <div is="cart-item" name="Pinapple Freash" quantity="1" price="33.46" image-src="/images/product/fruits/8.jpg" store="Femar's Collections" stock="12"></div>
-          <div is="cart-item" name="Pinapple Freash" quantity="1" price="6367.54" image-src="/images/product/fruits/18.jpg" store="Honey's Store" stock="12"></div>
-          <div is="cart-item" name="Pinapple Freash" quantity="1" price="44.37" image-src="/images/product/fruits/9.jpg" store="Kingstone Drinks" stock="12"></div>
+          <div is="cart-item" name="Paracetamol 500mg" location="Nairobi, Kenya" quantity="2" price="65.50" image-src="/src/img/products/drug1.jpg" store="HealthPlus Pharmacy" stock="120"></div>
+          <div is="cart-item" name="Amoxicillin 500mg" location="Nairobi, Kenya" quantity="1" price="172.50" image-src="/src/img/products/drug2.jpg" store="CityCare Pharmacy" stock="60"></div>
+          <div is="cart-item" name="Ibuprofen 200mg" location="Nairobi, Kenya" quantity="3" price="8966.75" image-src="/src/img/products/drug3.jpg" store="Wellness Pharmacy" stock="90"></div>
+          <div is="cart-item" name="Cetirizine 10mg" location="Nairobi, Kenya" quantity="1" price="4384.00" image-src="/src/img/products/drug4.jpg" store="GreenCross Pharmacy" stock="40"></div>
+          <div is="cart-item" name="Multivitamins 30s" location="Nairobi, Kenya" quantity="2" price="15.00" image-src="/src/img/products/drug5.jpg" store="HealthPlus Pharmacy" stock="30"></div>
+          <div is="cart-item" name="Omeprazole 20mg" location="Nairobi, Kenya" quantity="1" price="48.25" image-src="/src/img/products/drug1.jpg" store="CityCare Pharmacy" stock="20"></div>
+          <div is="cart-item" name="Metformin 500mg" location="Nairobi, Kenya" quantity="2" price="69.50" image-src="/src/img/products/drug2.jpg" store="Wellness Pharmacy" stock="50"></div>
+          <div is="cart-item" name="Loperamide 2mg" location="Nairobi, Kenya" quantity="1" price="423.25" image-src="/src/img/products/drug3.jpg" store="GreenCross Pharmacy" stock="100"></div>
+          <div is="cart-item" name="Azithromycin 250mg" location="Nairobi, Kenya" quantity="1" price="114.99" image-src="/src/img/products/drug4.jpg" store="HealthPlus Pharmacy" stock="15"></div>
+          <div is="cart-item" name="Salbutamol Inhaler" location="Nairobi, Kenya" quantity="1" price="221.00" image-src="/src/img/products/drug5.jpg" store="CityCare Pharmacy" stock="5"></div>
         </div>
         <div class="totals">
           <p class="head">Total</p>
           <div class="price">
-            <span class="currency">乇</span>
+            <span class="currency">Ksh</span>
             <span class="ammount">0.0</span>
           </div>
           <p class="text">
@@ -192,18 +207,16 @@ export default class CartContainer extends HTMLElement {
           height: max-content;
         }
 
-        .empty,
-        .full {
-          margin: 0;
-          padding: 15px 0;
+        .empty, .full {
+          margin: 0 0 15px 0;
+          padding: 15px 0 10px 0;
           width: 100%;
           display: flex;
           flex-flow: column;
-          align-items: center;
-          justify-content: center;
+          align-items: start;
           color: var(--text-color);
-          text-align: center;
           gap: 0;
+          border-bottom: var(--action-border);
         }
 
         .empty > p.head,
@@ -220,11 +233,24 @@ export default class CartContainer extends HTMLElement {
         .full > h1.title {
           line-height: 1.3;
           text-shadow: var(--text-shadow);
-          margin: 8px 0;
+          margin: 0 0 5px 0;
           font-size: 2rem;
           font-family: var(--font-main), sans-serif;
           line-height: 1.3;
           font-weight: 500;
+        }
+
+        div.text {
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+        }
+
+        div.text > * {
+          margin: 0;
+          padding: 0;
+          font-size: 1rem;
+          line-height: 1.4;
         }
 
         .empty > p.text,
@@ -270,7 +296,7 @@ export default class CartContainer extends HTMLElement {
           align-items: center;
           color: var(--text-color);
           text-align: center;
-          gap: 0;
+          gap: 20px;
         }
 
         .cart-items > .items {
@@ -279,7 +305,7 @@ export default class CartContainer extends HTMLElement {
           flex-flow: column;
           align-items: center;
           justify-content: center;
-          gap: 0;
+          gap: 10px;
         }
 
         .cart-items > .totals {
@@ -314,14 +340,14 @@ export default class CartContainer extends HTMLElement {
         }
 
         .cart-items .totals > .price > .currency {
-          font-size: 2rem;
-          font-weight: 800;
+          font-size: 2.3rem;
+          font-weight: 600;
           color: var(--accent-color);
         }
 
         .cart-items .totals > .price > .ammount {
           font-size: 2.3rem;
-          font-weight: 500;
+          font-weight: 600;
           color: var(--accent-color);
         }
 

@@ -1,10 +1,7 @@
 export default class ProductWrapper extends HTMLDivElement {
   constructor() {
-
-    // We are not even going to touch this.
     super();
     this.app = window.app;
-    // lets create our shadow root
     this.shadowObj = this.attachShadow({ mode: 'open' });
     this.app = window.app || {};
     this.number = this.app?.utils?.number;
@@ -309,6 +306,7 @@ export default class ProductWrapper extends HTMLDivElement {
           margin-bottom: 10px;
           display: block;
           width: 100%;
+          min-width: 250px;
           gap: 0;
           padding: 0;
           border-radius: 8px;
@@ -332,6 +330,7 @@ export default class ProductWrapper extends HTMLDivElement {
           height: 100%;
           width: 100%;
           object-fit: cover;
+          filter: var(--image-dimming);
         }
 
         .image .offer {
@@ -612,10 +611,9 @@ export default class ProductWrapper extends HTMLDivElement {
 
         .buttons > .button.view {
           width: calc(50% - 5px);
+          padding: 9px 15px;
           min-width: calc(50% - 5px);
-          padding: 8px 15px;
-          border: var(--action-border);
-          background: none;
+          background: var(--gray-background);
           color: var(--gray-color);
         }
 
@@ -623,7 +621,6 @@ export default class ProductWrapper extends HTMLDivElement {
           border: var(--action-border);
           background: none;
           color: var(--gray-color);
-          padding: 5px 15px 4px;
         }
 
         .buttons > .button.wish.wished {
@@ -647,16 +644,23 @@ export default class ProductWrapper extends HTMLDivElement {
         .buttons > .button.add.out {
           pointer-events: none;
           opacity: 0.5;
+          padding: 8px 15px;
           cursor: not-allowed !important;
+
+          /* prevent text from overflowing */
+          text-overflow: ellipsis;
+          overflow: hidden;
+          white-space: nowrap;
+          font-size: 0.85rem;
         }
 
         .buttons > .button.added {
           background: none;
-          padding: 8px 20px;
+          padding: 7px 20px;
           width: calc(50% - 5px);
           min-width: calc(50% - 5px);
           color: var(--accent-color);
-          border: var(--action-border);
+          border: var(--border);
           display: flex;
           flex-flow: row;
           align-items: center;
@@ -851,6 +855,4 @@ export default class ProductWrapper extends HTMLDivElement {
       </style>
     `
   }
-
-  // Todo: Add a method to calculate the discount percentage
 }

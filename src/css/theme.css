@@ -39,8 +39,7 @@ Author URL(my site): https://github.com/fescii
   --font-small: "Sen";
 
   /* Shadows */
-  --box-shadow: 0 0 0 1px #ffffff25, 0 2px 2px #0000000a,
-    0 8px 16px -4px #0000000a;
+  --box-shadow: 0 0 0 1px #ffffff25, 0 2px 2px #0000000a, 0 8px 16px -4px #0000000a;
   --text-shadow: 0 2px 4px #0000000a;
   --footer-shadow: 0 -2px 4px #0000000a;
   --header-shadow: 0 2px 4px #00000001;
@@ -69,8 +68,11 @@ Author URL(my site): https://github.com/fescii
   --button-background: #35464921;
   --nav-background: #578fca31;
   --gray-background: #e7e7e7d7;
+  --item-background: #cdd0d325;
+  --selected-background: #2f657744;
   --upvote-background: #a1e3f95d;
   --downvote-background: #ffc8b75c;
+  --warn-background: #c86e203a;
 
   --investment-background: #f3f3f3;
   --holding-background: #f3f3f3;
@@ -78,6 +80,7 @@ Author URL(my site): https://github.com/fescii
   --revenue-background: #a1e3f95d;
 
   --rating-background: #ffab5da9;
+  --offer-background: #ffab5d49;
   --review-background: #f5f7fa;
 
   /* Colors */
@@ -108,6 +111,9 @@ Author URL(my site): https://github.com/fescii
   --shot-anchor-color: #3d8fe5;
   --shot-background: #57575752;
   --shot-active-background: #ff932f5d;
+
+  /* image dimming */
+  --image-dimming: unset;
 
   /* Chat Colors */
   --pin-linear-gradient: linear-gradient(
@@ -251,232 +257,6 @@ Author URL(my site): https://github.com/fescii
   );
 }
 
-/* Dark Theme */
-@media (prefers-color-scheme: none) {
-  :root {
-    /* Shadows for dark theme */
-    --box-shadow: 0 0 0 1px #ffffff15, 0 2px 2px #0000001a,
-      0 8px 16px -4px #0000002a;
-    --text-shadow: 0 2px 4px #0000001a;
-    --footer-shadow: 0 -2px 4px #0000001a;
-    --header-shadow: 0 2px 4px #00000005;
-
-    /* Scrollbar */
-    --scroll-bar-background: #2a2a2a;
-    --scroll-bar-linear: linear-gradient(#4788c7, #7fb8e8);
-
-    /* Borders */
-    --input-border: 1px solid #4788c74f;
-    --input-border-focus: 1px solid #4788c79a;
-    --input-border-error: 1px solid #e555559a;
-    --anchor-border: 1px solid #7fb8e8cf;
-    --border: thin solid #ffffff20;
-    --action-border: thin solid #4788c783;
-    --error-border: thin solid #e5555575;
-    --rating-border: thin solid #e69d45b1;
-
-    /* Backgrounds */
-    --background: #0f0f0f;
-    --action-background: #578fcaf2;
-    --dot-background: #578fcae9;
-    --que-background: #4788c775;
-    --tab-background: #7fb8e86d;
-    --attachement-background: var(--gray-background);
-    --button-background: #4788c745;
-    --nav-background: #35464955;
-    --gray-background: #2a2a2ae7;
-    --upvote-background: #7fb8e86d;
-    --downvote-background: #e55555cc;
-
-    --investment-background: #2a2a2a;
-    --holding-background: #2a2a2a;
-    --loan-background: #e5555575;
-    --revenue-background: #7fb8e86d;
-
-    --rating-background: #e69d45d9;
-    --review-background: #3a3a3a;
-
-    /* Colors */
-    --accent-color: #4788c7;
-    --accent-alt: #5891d1;
-    --alt-color: #7fb8e8;
-    --action-color: #7fb8e8;
-    --white-color: #ffffff;
-    --dark-white: #e5e5e5;
-    --gray-color: #b5bcc9;
-    --icon-color: #d0d0d0;
-    --text-color: #f0f0f0;
-    --nav-color: #e8ebed;
-    --label-color: #f1f5fb;
-    --read-color: #f8f9fa;
-    --title-color: #ffffff;
-    --error-color: #e55555;
-    --warn-color: #dd7926;
-    --anchor-color: #5aa3dd;
-    --rating-color: #e69d45;
-
-    /* Reels Colors - already well suited for dark theme */
-    --shot-text-color: #a9aab0;
-    --shot-read-color: #a5a3a3;
-    --shot-title-color: #c8c8c9;
-    --shot-alt-color: #e69d45;
-    --shot-error-color: #e55555;
-    --shot-anchor-color: #5aa3dd;
-    --shot-background: #5a5a5a72;
-    --shot-active-background: #e69d456d;
-
-    /* Chat Colors */
-    --pin-linear-gradient: linear-gradient(
-      to bottom,
-      #0f0f0f00,
-      #0f0f0f08,
-      #0f0f0f12,
-      #0f0f0f1f,
-      #0f0f0f2d,
-      #0f0f0f3d,
-      #0f0f0f4f,
-      #0f0f0f63,
-      #0f0f0f78,
-      #0f0f0f8e,
-      #0f0f0fa5,
-      #0f0f0fbd,
-      #0f0f0fd6,
-      #0f0f0fef,
-      #0f0f0f
-    );
-    --pin-text-color: #e3e4e6;
-    --pin-gray-color: #8b92a0;
-    --pin-background-even: linear-gradient(135deg, #2a3e2a 0%, #3a4a3a 100%);
-    --pin-background-odd: linear-gradient(135deg, #2a3a4a 0%, #3a4a5a 100%);
-    --chat-background: #2a2a2a;
-    --you-background: #2a4d3e;
-    --reply-background: #3a3a3a;
-    --chat-hover: #3a3a3a;
-    --chat-you-delivered: var(--accent-color);
-    --typing-color: rgba(139 146 160 / 1);
-    --message-background: linear-gradient(
-      rgb(132, 73, 184) 0%,
-      rgb(93, 52, 144) 50%,
-      rgb(35, 89, 215) 100%
-    );
-
-    /* Modal */
-    --modal-background: #0f0f0fb3;
-    --modal-shadow: 0 12px 48px #00000053;
-    --modal-border: 1px solid #ffffff32;
-    --modal-overlay: #c9a3e8b3;
-
-    /* Linear Gradients for dark theme */
-    --action-linear: linear-gradient(#7fb8e8, #4788c7);
-    --rating-linear: linear-gradient(
-      103.53deg,
-      #e69d45 -6.72%,
-      #dd7926 109.77%
-    );
-    --button-linear: linear-gradient(#6b7280, #4b5563);
-    --warn-linear: linear-gradient(103.53deg, #dd7926 -6.72%, #e55555 109.77%);
-    --light-linear: linear-gradient(90deg, #5891d1 0%, #354649 100%);
-    --error-linear: linear-gradient(103.53deg, #dd7926 -6.72%, #e55555 109.77%);
-    --second-linear: linear-gradient(0deg, #7fb8e8 0%, #5891d1 100%);
-    --tab-linear: linear-gradient(0deg, #7fb8e8ee 0%, #5891d1cc 100%);
-    --accent-linear: linear-gradient(
-      103.53deg,
-      #7fb8e8 -6.72%,
-      #4788c7 109.77%
-    );
-    --alt-linear: linear-gradient(
-      78deg,
-      #7fb8e8 -50%,
-      #7fb8e8 -20%,
-      #75aee0 5%,
-      #6ba4d8 20%,
-      #4788c7 40%,
-      #3e7cb8 57.79%,
-      #3570a9 70%,
-      #5891d1 76.05%,
-      #4f7bb8 85%,
-      #42639c 88.54%,
-      #354649 95%,
-      #354649
-    );
-    --loader-gradient: linear-gradient(
-      -45deg,
-      #2a2a2a,
-      #262626,
-      #222222,
-      #1e1e1e,
-      #1a1a1a,
-      #242424,
-      #2e2e2e,
-      #333333,
-      #2f2f2f,
-      #2b2b2b,
-      #272727,
-      #232323,
-      #1f1f1f,
-      #1a1a1a,
-      #1e1e1e,
-      #222222,
-      #262626,
-      #2a2a2a
-    );
-    --fade-linear-gradient: linear-gradient(
-      180deg,
-      #0f0f0f00,
-      #0f0f0f08,
-      #0f0f0f12,
-      #0f0f0f1f,
-      #0f0f0f2d,
-      #0f0f0f3d,
-      #0f0f0f4f,
-      #0f0f0f63,
-      #0f0f0f78,
-      #0f0f0f8e,
-      #0f0f0fa5,
-      #0f0f0fbd,
-      #0f0f0fd6,
-      #0f0f0fef,
-      #0f0f0f
-    );
-    --controls-gradient-left: linear-gradient(
-      -90deg,
-      #0f0f0f00,
-      #0f0f0f08,
-      #0f0f0f12,
-      #0f0f0f1f,
-      #0f0f0f2d,
-      #0f0f0f3d,
-      #0f0f0f4f,
-      #0f0f0f63,
-      #0f0f0f78,
-      #0f0f0f8e,
-      #0f0f0fa5,
-      #0f0f0fbd,
-      #0f0f0fd6,
-      #0f0f0fef,
-      #0f0f0f
-    );
-    --controls-gradient-right: linear-gradient(
-      90deg,
-      #0f0f0f00,
-      #0f0f0f08,
-      #0f0f0f12,
-      #0f0f0f1f,
-      #0f0f0f2d,
-      #0f0f0f3d,
-      #0f0f0f4f,
-      #0f0f0f63,
-      #0f0f0f78,
-      #0f0f0f8e,
-      #0f0f0fa5,
-      #0f0f0fbd,
-      #0f0f0fd6,
-      #0f0f0fef,
-      #0f0f0f
-    );
-  }
-}
-
 *,
 *:after,
 *:before {
@@ -516,34 +296,38 @@ Author URL(my site): https://github.com/fescii
   --scroll-bar-linear: linear-gradient(#4788c7, #7fb8e8);
 
   /* Borders */
-  --input-border: 1px solid #4788c74f;
+  --input-border: 1px solid #4e84b9d2;
   --input-border-focus: 1px solid #4788c79a;
-  --input-border-error: 1px solid #e555559a;
+  --input-border-error: 1px solid #d74a4a9a;
   --anchor-border: 1px solid #7fb8e8cf;
-  --border: thin solid #ffffff20;
-  --action-border: thin solid #4788c7a4;
-  --error-border: thin solid #e5555575;
-  --rating-border: thin solid #e69d45b1;
+  --border: thin solid #79818a56;
+  --action-border: thin solid #6185aae0;
+  --error-border: thin solid #d74a4a75;
+  --rating-border: thin solid #d38e3eb1;
 
   /* Backgrounds */
-  --background: #0f0f0f;
-  --action-background: #578fcaf2;
+  --background: #000000;
+  --action-background: #578fcac7;
   --dot-background: #578fcae9;
   --que-background: #4788c775;
-  --tab-background: #7fb8e86d;
+  --tab-background: #7fb9e833;
   --attachement-background: var(--gray-background);
   --button-background: #4788c745;
   --nav-background: #35464955;
-  --gray-background: #2a2a2ae7;
-  --upvote-background: #7fb8e86d;
-  --downvote-background: #e55555cc;
+  --gray-background: #8fa8c431;
+  --item-background: #6b7c8f25;
+  --selected-background: #7fb9e833;
+  --upvote-background: #7fb9e82c;
+  --downvote-background: #d74a4acc;
+  --warn-background: #c86e203a;
 
   --investment-background: #2a2a2a;
   --holding-background: #2a2a2a;
-  --loan-background: #e5555575;
+  --loan-background: #d74a4a75;
   --revenue-background: #7fb8e86d;
 
-  --rating-background: #e69d45d9;
+  --rating-background: #d38e3ed9;
+  --offer-background: #b6864f86;
   --review-background: #3a3a3a;
 
   /* Colors */
@@ -553,27 +337,30 @@ Author URL(my site): https://github.com/fescii
   --action-color: #7fb8e8;
   --white-color: #ffffff;
   --dark-white: #e5e5e5;
-  --gray-color: #b5bcc9;
-  --icon-color: #d0d0d0;
-  --text-color: #f0f0f0;
-  --nav-color: #e8ebed;
-  --label-color: #f1f5fb;
-  --read-color: #f8f9fa;
-  --title-color: #ffffff;
-  --error-color: #e55555;
-  --warn-color: #dd7926;
+  --gray-color: #9e9eac;
+  --icon-color: #c6c8cc;
+  --text-color: #bcc6ce;
+  --nav-color: #dde2e5;
+  --label-color: #e1e6ea;
+  --read-color: #eef0f1;
+  --title-color: #f6f7f8;
+  --error-color: #d74a4a;
+  --warn-color: #c86e20;
   --anchor-color: #5aa3dd;
-  --rating-color: #e69d45;
+  --rating-color: #d38e3e;
 
   /* Reels Colors - already well suited for dark theme */
   --shot-text-color: #a9aab0;
   --shot-read-color: #a5a3a3;
   --shot-title-color: #c8c8c9;
-  --shot-alt-color: #e69d45;
-  --shot-error-color: #e55555;
+  --shot-alt-color: #d38e3e;
+  --shot-error-color: #d74a4a;
   --shot-anchor-color: #5aa3dd;
   --shot-background: #5a5a5a72;
-  --shot-active-background: #e69d456d;
+  --shot-active-background: #d38e3e6d;
+
+  /* Image Dimming */
+  --image-dimming: brightness(0.9) contrast(1.0);
 
   /* Chat Colors */
   --pin-linear-gradient: linear-gradient(
@@ -595,13 +382,13 @@ Author URL(my site): https://github.com/fescii
     #0f0f0f
   );
   --pin-text-color: #e3e4e6;
-  --pin-gray-color: #8b92a0;
-  --pin-background-even: linear-gradient(135deg, #2a3e2a 0%, #3a4a3a 100%);
-  --pin-background-odd: linear-gradient(135deg, #2a3a4a 0%, #3a4a5a 100%);
-  --chat-background: #2a2a2a;
-  --you-background: #2a4d3e;
-  --reply-background: #3a3a3a;
-  --chat-hover: #3a3a3a;
+  --pin-gray-color: #808690;
+  --pin-background-even: linear-gradient(135deg, #252f27 0%, #353e38 100%);
+  --pin-background-odd: linear-gradient(135deg, #252d3a 0%, #353e4a 100%);
+  --chat-background: #232425;
+  --you-background: #213f34;
+  --reply-background: #333333;
+  --chat-hover: #333333;
   --chat-you-delivered: var(--accent-color);
   --typing-color: rgba(139 146 160 / 1);
   --message-background: linear-gradient(
@@ -611,18 +398,18 @@ Author URL(my site): https://github.com/fescii
   );
 
   /* Modal */
-  --modal-background: #0f0f0fb3;
+  --modal-background: #000000b3;
   --modal-shadow: 0 12px 48px #00000053;
   --modal-border: 1px solid #ffffff32;
-  --modal-overlay: #c9a3e8b3;
+  --modal-overlay: #bfa0d3b3;
 
   /* Linear Gradients for dark theme */
   --action-linear: linear-gradient(#7fb8e8, #4788c7);
-  --rating-linear: linear-gradient(103.53deg, #e69d45 -6.72%, #dd7926 109.77%);
-  --button-linear: linear-gradient(#6b7280, #4b5563);
-  --warn-linear: linear-gradient(103.53deg, #dd7926 -6.72%, #e55555 109.77%);
+  --rating-linear: linear-gradient(103.53deg, #d38e3e -6.72%, #c86e20 109.77%);
+  --button-linear: linear-gradient(#606672, #3f4b5a);
+  --warn-linear: linear-gradient(103.53deg, #c86e20 -6.72%, #d74a4a 109.77%);
   --light-linear: linear-gradient(90deg, #5891d1 0%, #354649 100%);
-  --error-linear: linear-gradient(103.53deg, #dd7926 -6.72%, #e55555 109.77%);
+  --error-linear: linear-gradient(103.53deg, #c86e20 -6.72%, #d74a4a 109.77%);
   --second-linear: linear-gradient(0deg, #7fb8e8 0%, #5891d1 100%);
   --tab-linear: linear-gradient(0deg, #7fb8e8ee 0%, #5891d1cc 100%);
   --accent-linear: linear-gradient(103.53deg, #354649 -6.72%, #3674b5 109.77%);

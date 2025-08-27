@@ -14,6 +14,7 @@ export default class AppMain extends HTMLElement {
     this.utils = utils();
     this.urls = urls;
     this.mql = window.matchMedia('(max-width: 660px)');
+    this.initTheme();
     this.render();
     this.currentUrl = this.getAttribute('url');
     window.addEventListener('popstate', this.handlePopState);
@@ -36,6 +37,14 @@ export default class AppMain extends HTMLElement {
     // Check if a cookie named: x-account-token exists
     const token = document.cookie.split('; ').find(row => row.startsWith('x-account-token='));
     return !!token;
+  }
+
+  initTheme() {
+    // Get saved theme from localStorage, default to light
+    const savedTheme = localStorage.getItem('user-theme') || 'light';
+
+    // Set the theme on document
+    document.documentElement.setAttribute('data-theme', savedTheme);
   }
 
   connectedCallback() {
@@ -367,9 +376,8 @@ export default class AppMain extends HTMLElement {
         <section class="flow">
           <div id="content-container" class="content-container">
             <!-- ${this.getLoader()} -->
-            ${this.getStoreContainer()}
+            ${this.getCartContainer()}
           </div>
-          ${this.getFooter()}
         </section>
         ${this.getSidebar()}
       `;
@@ -381,19 +389,10 @@ export default class AppMain extends HTMLElement {
       <section class="nav">
         ${this.getLogoNav()}
         ${this.getMainLinksNav()}
-        ${this.getOrdersNav()}
-        ${this.getPaymentsNav()}
-        ${this.getBookingsNav()}
-        ${this.getMeetingsNav()}
         ${this.getProvidersNav()}
-        ${this.getVisitCare()}
-        ${this.getPharmacyNav()}
-        ${this.getAmbulanceNav()}
-        ${this.getSubscriptionsNav()}
-        ${this.getDependentsNav()}
-        ${this.getHealthReportsNav()}
-        ${this.getSettingsNav()}
-        ${this.getSupportNav()}
+        ${this.getBookingsNav()}
+        ${this.getOrdersNav()}
+        ${this.getMeetingsNav()}
         ${this.getTweakNav()}
       </section>
     `;
@@ -426,23 +425,23 @@ export default class AppMain extends HTMLElement {
             <span class="text">Home</span>
           </a>
         </li>
-         <li class="metrics">
-          <a href="/metrics">
+        <li class="payments">
+          <a href="/payments">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="currentColor" fill="none">
-              <circle cx="12" cy="18" r="3" stroke="currentColor" stroke-width="1.8"></circle>
-              <path d="M12 15V10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
-              <path d="M22 13C22 7.47715 17.5228 3 12 3C6.47715 3 2 7.47715 2 13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
+              <path d="M3 8.5H15C17.8284 8.5 19.2426 8.5 20.1213 9.37868C21 10.2574 21 11.6716 21 14.5V15.5C21 18.3284 21 19.7426 20.1213 20.6213C19.2426 21.5 17.8284 21.5 15 21.5H9C6.17157 21.5 4.75736 21.5 3.87868 20.6213C3 19.7426 3 18.3284 3 15.5V8.5Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+              <path d="M15 8.49833V4.1103C15 3.22096 14.279 2.5 13.3897 2.5C13.1336 2.5 12.8812 2.56108 12.6534 2.67818L3.7623 7.24927C3.29424 7.48991 3 7.97203 3 8.49833" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+              <path d="M17.5 15.5C17.7761 15.5 18 15.2761 18 15C18 14.7239 17.7761 14.5 17.5 14.5M17.5 15.5C17.2239 15.5 17 15.2761 17 15C17 14.7239 17.2239 14.5 17.5 14.5M17.5 15.5V14.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
             </svg>
-            <span class="text">Metrics</span>
+            <span class="text">Payments</span>
           </a>
         </li>
-        <li class="performance">
-          <a href="/performance">
+        <li class="pharmacy">
+          <a href="/pharmacy">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="currentColor" fill="none">
-              <path d="M20 13V8H15" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
-              <path d="M20 8L15 13C14.1174 13.8826 13.6762 14.3238 13.1346 14.3726C13.045 14.3807 12.955 14.3807 12.8654 14.3726C12.3238 14.3238 11.8826 13.8826 11 13C10.1174 12.1174 9.67615 11.6762 9.13457 11.6274C9.04504 11.6193 8.95496 11.6193 8.86543 11.6274C8.32385 11.6762 7.88256 12.1174 7 13L4 16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+              <path d="M2.35139 13.2135C1.99837 10.9162 1.82186 9.76763 2.25617 8.74938C2.69047 7.73112 3.65403 7.03443 5.58114 5.64106L7.02099 4.6C9.41829 2.86667 10.6169 2 12 2C13.3831 2 14.5817 2.86667 16.979 4.6L18.4189 5.64106C20.346 7.03443 21.3095 7.73112 21.7438 8.74938C22.1781 9.76763 22.0016 10.9162 21.6486 13.2135L21.3476 15.1724C20.8471 18.4289 20.5969 20.0572 19.429 21.0286C18.2611 22 16.5537 22 13.1388 22H10.8612C7.44633 22 5.73891 22 4.571 21.0286C3.40309 20.0572 3.15287 18.4289 2.65243 15.1724L2.35139 13.2135Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"></path>
+              <path d="M12 10V16M9 13L15 13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
             </svg>
-            <span class="text">Performance</span>
+            <span class="text">Pharmacy</span>
           </a>
         </li>
       </ul>
@@ -451,8 +450,8 @@ export default class AppMain extends HTMLElement {
 
   getBookingsNav = () => {
     return /* html */`
-      <ul class="special nav opened">
-        <li class="bookings active">
+      <ul class="special nav">
+        <li class="bookings">
           <div class="link-section">
             <span class="left">
               <svg id="other" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -469,36 +468,16 @@ export default class AppMain extends HTMLElement {
               </svg>
               <span class="text">Bookings</span>
             </span>
-            <span class="right">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="currentColor" fill="none">
-                <path d="M18 9.00005C18 9.00005 13.5811 15 12 15C10.4188 15 6 9 6 9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-              </svg>
-            </span>
           </div>
           <ul class="dropdown">
             <li class="no-show">
-              <a href="/bookings/missed"><span class="text">Missed</span></a>
+              <a href="/bookings/online"><span class="text">Online</span></a>
             </li>
             <li class="in-person">
               <a href="/bookings/in-person"><span class="text">Physical</span></a>
             </li>
-            <li class="pending">
-              <a href="/bookings/pending"><span class="text">Pending</span></a>
-            </li>
-            <li class="cancelled">
-              <a href="/bookings/cancelled"><span class="text">Cancelled</span></a>
-            </li>
-            <li class="confirmed">
-              <a href="/bookings/confirmed"><span class="text">Confirmed</span></a>
-            </li>
-            <li class="completed">
-              <a href="/bookings/completed"><span class="text">Completed</span></a>
-            </li>
-            <li class="rescheduled">
-              <a href="/bookings/rescheduled"><span class="text">Rescheduled</span></a>
-            </li>
-            <li class="telemedicine">
-              <a href="/bookings/telemedicine"><span class="text">Telemedicine</span></a>
+            <li class="upcoming">
+              <a href="/bookings/upcoming"><span class="text">Upcoming</span></a>
             </li>
           </ul>
         </li>
@@ -518,33 +497,16 @@ export default class AppMain extends HTMLElement {
               </svg>
               <span class="text">Meetings</span>
             </span>
-            <span class="right">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="currentColor" fill="none">
-                <path d="M18 9.00005C18 9.00005 13.5811 15 12 15C10.4188 15 6 9 6 9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-              </svg>
-            </span>
           </div>
           <ul class="dropdown">
-            <li class="live">
-              <a href="/meetings/live"><span class="text">Live</span></a>
-            </li>
-            <li class="hitory">
-              <a href="/meetings/history"><span class="text">History</span></a>
+            <li class="all">
+              <a href="/meetings/all"><span class="text">Meetings</span></a>
             </li>
             <li class="upcoming">
               <a href="/meetings/upcoming"><span class="text">Upcoming</span></a>
             </li>
-            <li class="scheduled">
-              <a href="/meetings/scheduled"><span class="text">Scheduled</span></a>
-            </li>
-            <li class="completed">
-              <a href="/meetings/completed"><span class="text">Completed</span></a>
-            </li>
             <li class="recordings">
               <a href="/meetings/recordings"><span class="text">Recordings</span></a>
-            </li>
-            <li class="transcripts">
-              <a href="/meetings/transcripts"><span class="text">Transcripts</span></a>
             </li>
           </ul>
         </li>
@@ -568,135 +530,16 @@ export default class AppMain extends HTMLElement {
               </svg>
               <span class="text">Providers</span>
             </span>
-            <span class="right">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="currentColor" fill="none">
-                <path d="M18 9.00005C18 9.00005 13.5811 15 12 15C10.4188 15 6 9 6 9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-              </svg>
-            </span>
           </div>
           <ul class="dropdown">
-            <li class="verification-status">
-              <a href="/providers/status"><span class="text">Status</span></a>
-            </li>
-            <li class="clinics">
-              <a href="/providers/clinics"><span class="text">Clinics</span></a>
-            </li>
-            <li class="ratings">
-              <a href="/providers/ratings"><span class="text">Ratings</span></a>
-            </li>
             <li class="doctors">
               <a href="/providers/doctors"><span class="text">Doctors</span></a>
-            </li>
-            <li class="kmpdc-verified">
-              <a href="/providers/verified"><span class="text">Verified</span></a>
-            </li>
-            <li class="directory">
-              <a href="/providers/directory"><span class="text">Directory</span></a>
             </li>
             <li class="hospitals">
               <a href="/providers/hospitals"><span class="text">Hospitals</span></a>
             </li>
             <li class="specialists">
               <a href="/providers/specialists"><span class="text">Specialists</span></a>
-            </li>
-            <li class="compliance">
-              <a href="/providers/compliance"><span class="text">Compliance</span></a>
-            </li>
-          </ul>
-        </li>
-      </ul>
-    `;
-  }
-
-  getPharmacyNav = () => {
-    return /* html */`
-      <ul class="special nav">
-        <li class="pharmacy">
-          <div class="link-section">
-            <span class="left">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="currentColor" fill="none">
-                <path d="M2.35139 13.2135C1.99837 10.9162 1.82186 9.76763 2.25617 8.74938C2.69047 7.73112 3.65403 7.03443 5.58114 5.64106L7.02099 4.6C9.41829 2.86667 10.6169 2 12 2C13.3831 2 14.5817 2.86667 16.979 4.6L18.4189 5.64106C20.346 7.03443 21.3095 7.73112 21.7438 8.74938C22.1781 9.76763 22.0016 10.9162 21.6486 13.2135L21.3476 15.1724C20.8471 18.4289 20.5969 20.0572 19.429 21.0286C18.2611 22 16.5537 22 13.1388 22H10.8612C7.44633 22 5.73891 22 4.571 21.0286C3.40309 20.0572 3.15287 18.4289 2.65243 15.1724L2.35139 13.2135Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"></path>
-                <path d="M12 10V16M9 13L15 13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
-              </svg>
-              <span class="text">Pharmacy</span>
-            </span>
-            <span class="right">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="currentColor" fill="none">
-                <path d="M18 9.00005C18 9.00005 13.5811 15 12 15C10.4188 15 6 9 6 9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-              </svg>
-            </span>
-          </div>
-          <ul class="dropdown">
-            <li class="orders">
-              <a href="/pharmacy/orders"><span class="text">Orders</span></a>
-            </li>
-            <li class="pending">
-              <a href="/pharmacy/pending"><span class="text">Pending</span></a>
-            </li>
-            <li class="fulfilled">
-              <a href="/pharmacy/fulfilled"><span class="text">Fulfilled</span></a>
-            </li>
-            <li class="delivered">
-              <a href="/pharmacy/delivered"><span class="text">Delivered</span></a>
-            </li>
-            <li class="processing">
-              <a href="/pharmacy/processing"><span class="text">Processing</span></a>
-            </li>
-            <li class="pharmacies">
-              <a href="/pharmacy/pharmacies"><span class="text">Pharmacies</span></a>
-            </li>
-            <li class="prescriptions">
-              <a href="/pharmacy/prescriptions"><span class="text">Prescriptions</span></a>
-            </li>
-          </ul>
-        </li>
-      </ul>
-    `;
-  }
-
-  getAmbulanceNav = () => {
-    return /* html */`
-      <ul class="special nav">
-        <li class="ambulance">
-          <div class="link-section">
-            <span class="left">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="currentColor" fill="none">
-                <path d="M11 18H15M13.5 8H14.4429C15.7533 8 16.4086 8 16.9641 8.31452C17.5196 8.62904 17.89 9.20972 18.6308 10.3711C19.1502 11.1854 19.6955 11.7765 20.4622 12.3024C21.2341 12.8318 21.6012 13.0906 21.8049 13.506C22 13.9038 22 14.375 22 15.3173C22 16.5596 22 17.1808 21.651 17.5755C21.636 17.5925 21.6207 17.609 21.6049 17.625C21.2375 18 20.6594 18 19.503 18H19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
-                <path d="M5 18C3.58579 18 2.87868 18 2.43934 17.5607C2 17.1213 2 16.4142 2 15V8C2 6.58579 2 5.87868 2.43934 5.43934C2.87868 5 3.58579 5 5 5H10.5C11.9142 5 12.6213 5 13.0607 5.43934C13.5 5.87868 13.5 6.58579 13.5 8V18H9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
-                <path d="M22 15H21" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
-                <path d="M8 9V13M10 11L6 11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
-                <circle cx="17" cy="18" r="2" stroke="currentColor" stroke-width="1.8"></circle>
-                <circle cx="7" cy="18" r="2" stroke="currentColor" stroke-width="1.8"></circle>
-              </svg>
-              <span class="text">Ambulance</span>
-            </span>
-            <span class="right">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="currentColor" fill="none">
-                <path d="M18 9.00005C18 9.00005 13.5811 15 12 15C10.4188 15 6 9 6 9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-              </svg>
-            </span>
-          </div>
-          <ul class="dropdown">
-            <li class="dispatch">
-              <a href="/ambulance/dispatch"><span class="text">Dispatch</span></a>
-            </li>
-            <li class="requests">
-              <a href="/ambulance/requests"><span class="text">Requests</span></a>
-            </li>
-            <li class="en-route">
-              <a href="/ambulance/en-route"><span class="text">En Route</span></a>
-            </li>
-            <li class="on-scene">
-              <a href="/ambulance/on-scene"><span class="text">On Scene</span></a>
-            </li>
-            <li class="transport">
-              <a href="/ambulance/transport"><span class="text">Transport</span></a>
-            </li>
-            <li class="completed">
-              <a href="/ambulance/completed"><span class="text">Completed</span></a>
-            </li>
-            <li class="emergency">
-              <a href="/ambulance/emergency"><span class="text">Emergency</span></a>
             </li>
           </ul>
         </li>
@@ -706,8 +549,8 @@ export default class AppMain extends HTMLElement {
 
   getOrdersNav = () => {
     return /* html */`
-      <ul class="special nav">
-        <li class="orders">
+      <ul class="special nav opened">
+        <li class="orders active">
           <div class="link-section">
             <span class="left">
               <svg id="other" width="24" height="25" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -716,42 +559,16 @@ export default class AppMain extends HTMLElement {
               </svg>
               <span class="text">Orders</span>
             </span>
-            <span class="right">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="currentColor" fill="none">
-                <path d="M18 9.00005C18 9.00005 13.5811 15 12 15C10.4188 15 6 9 6 9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-              </svg>
-            </span>
           </div>
           <ul class="dropdown">
-            <li class="all">
-              <a href="/orders/all"><span class="text">All</span></a>
-            </li>
             <li class="basket">
-              <a href="/orders/basket"><span class="text">Basket</span></a>
+              <a href="/orders/basket"><span class="text">Cart</span></a>
             </li>
-             <li class="shipped">
-              <a href="/orders/shipped"><span class="text">Shipped</span></a>
-            </li>
-            <li class="pending">
-              <a href="/orders/pending"><span class="text">Pending</span></a>
-            </li>
-            <li class="delivered">
-              <a href="/orders/delivered"><span class="text">Delivered</span></a>
+            <li class="all">
+              <a href="/orders/all"><span class="text">Orders</span></a>
             </li>
             <li class="refunded">
               <a href="/orders/refunded"><span class="text">Refunded</span></a>
-            </li>
-            <li class="cancelled">
-              <a href="/orders/cancelled"><span class="text">Cancelled</span></a>
-            </li>
-            <li class="confirmed">
-              <a href="/orders/confirmed"><span class="text">Confirmed</span></a>
-            </li>
-            <li class="completed">
-              <a href="/orders/completed"><span class="text">Completed</span></a>
-            </li>
-            <li class="processing">
-              <a href="/orders/processing"><span class="text">Processing</span></a>
             </li>
           </ul>
         </li>
@@ -772,316 +589,16 @@ export default class AppMain extends HTMLElement {
               </svg>
               <span class="text">Payments</span>
             </span>
-            <span class="right">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="currentColor" fill="none">
-                <path d="M18 9.00005C18 9.00005 13.5811 15 12 15C10.4188 15 6 9 6 9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-              </svg>
-            </span>
           </div>
           <ul class="dropdown">
-            <li class="failed">
-              <a href="/payments/failed"><span class="text">Failed</span></a>
-            </li>
             <li class="history">
               <a href="/payments/history"><span class="text">History</span></a>
             </li>
-            <li class="refunds">
-              <a href="/payments/refunds"><span class="text">Refunds</span></a>
+            <li class="account">
+              <a href="/payments/account"><span class="text">Account</span></a>
             </li>
             <li class="methods">
               <a href="/payments/methods"><span class="text">Methods</span></a>
-            </li>
-            <li class="pending">
-              <a href="/payments/pending"><span class="text">Pending</span></a>
-            </li>
-            <li class="receipts">
-              <a href="/payments/receipts"><span class="text">Receipts</span></a>
-            </li>
-            <li class="completed">
-              <a href="/payments/completed"><span class="text">Completed</span></a>
-            </li>
-          </ul>
-        </li>
-      </ul>
-    `;
-  }
-
-  getSubscriptionsNav = () => {
-    return /* html */`
-      <ul class="special nav">
-        <li class="subscriptions">
-          <div class="link-section">
-            <span class="left">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="currentColor" fill="none">
-                <path d="M3.3457 16.1976L16.1747 3.36866M18.6316 11.0556L16.4321 13.2551M14.5549 15.1099L13.5762 16.0886" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
-                <path d="M3.17467 16.1411C1.60844 14.5749 1.60844 12.0355 3.17467 10.4693L10.4693 3.17467C12.0355 1.60844 14.5749 1.60844 16.1411 3.17467L20.8253 7.85891C22.3916 9.42514 22.3916 11.9645 20.8253 13.5307L13.5307 20.8253C11.9645 22.3916 9.42514 22.3916 7.85891 20.8253L3.17467 16.1411Z" stroke="currentColor" stroke-width="1.8" />
-                <path d="M4 22H20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
-              </svg>
-              <span class="text">Subscriptions</span>
-            </span>
-            <span class="right">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="currentColor" fill="none">
-                <path d="M18 9.00005C18 9.00005 13.5811 15 12 15C10.4188 15 6 9 6 9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-              </svg>
-            </span>
-          </div>
-          <ul class="dropdown">
-            <li class="plans">
-              <a href="/subscriptions/plans"><span class="text">Plans</span></a>
-            </li>
-            <li class="active">
-              <a href="/subscriptions/active"><span class="text">Active</span></a>
-            </li>
-            <li class="billing">
-              <a href="/subscriptions/billing"><span class="text">Billing</span></a>
-            </li>
-            <li class="history">
-              <a href="/subscriptions/history"><span class="text">History</span></a>
-            </li>
-            <li class="expired">
-              <a href="/subscriptions/expired"><span class="text">Expired</span></a>
-            </li>
-            <li class="pending">
-              <a href="/subscriptions/pending"><span class="text">Pending</span></a>
-            </li>
-            <li class="cancelled">
-              <a href="/subscriptions/cancelled"><span class="text">Cancelled</span></a>
-            </li>
-          </ul>
-        </li>
-      </ul>
-    `;
-  }
-
-  getVisitCare = () => {
-    return /* html */`
-      <ul class="special nav">
-        <li class="subscriptions">
-          <div class="link-section">
-            <span class="left">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="currentColor" fill="none">
-                <path d="M19.4626 3.99352C16.7809 2.3486 14.4404 3.01148 13.0344 4.06738C12.4578 4.50033 12.1696 4.7168 12 4.7168C11.8304 4.7168 11.5422 4.50033 10.9656 4.06738C9.55962 3.01148 7.21909 2.3486 4.53744 3.99352C1.01807 6.1523 0.221719 13.2742 8.33953 19.2827C9.88572 20.4272 10.6588 20.9994 12 20.9994C13.3412 20.9994 14.1143 20.4272 15.6605 19.2827C23.7783 13.2742 22.9819 6.1523 19.4626 3.99352Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
-                <path d="M16 13H15C14.5447 13 14.0655 13.0352 13.6569 12.7214C13.5011 12.6017 13.3977 12.4363 13.191 12.1056L11.5 9L8.5 14L6.94338 11.8321C6.68722 11.5247 6.43747 11.213 6.09845 11.0897C5.85189 11 5.56792 11 5 11H3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-              </svg>
-              <span class="text">AfterCare</span>
-            </span>
-            <span class="right">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="currentColor" fill="none">
-                <path d="M18 9.00005C18 9.00005 13.5811 15 12 15C10.4188 15 6 9 6 9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-              </svg>
-            </span>
-          </div>
-          <ul class="dropdown">
-            <li class="plans">
-              <a href="/subscriptions/plans"><span class="text">Plans</span></a>
-            </li>
-            <li class="active">
-              <a href="/subscriptions/active"><span class="text">Active</span></a>
-            </li>
-            <li class="billing">
-              <a href="/subscriptions/billing"><span class="text">Billing</span></a>
-            </li>
-            <li class="history">
-              <a href="/subscriptions/history"><span class="text">History</span></a>
-            </li>
-            <li class="expired">
-              <a href="/subscriptions/expired"><span class="text">Expired</span></a>
-            </li>
-            <li class="pending">
-              <a href="/subscriptions/pending"><span class="text">Pending</span></a>
-            </li>
-            <li class="cancelled">
-              <a href="/subscriptions/cancelled"><span class="text">Cancelled</span></a>
-            </li>
-          </ul>
-        </li>
-      </ul>
-    `;
-  }
-
-  getDependentsNav = () => {
-    return /* html */`
-      <ul class="special nav">
-        <li class="dependents">
-          <div class="link-section">
-            <span class="left">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="currentColor" fill="none">
-                <path d="M13 11C13 8.79086 11.2091 7 9 7C6.79086 7 5 8.79086 5 11C5 13.2091 6.79086 15 9 15C11.2091 15 13 13.2091 13 11Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-                <path d="M11.0386 7.55773C11.0131 7.37547 11 7.18927 11 7C11 4.79086 12.7909 3 15 3C17.2091 3 19 4.79086 19 7C19 9.20914 17.2091 11 15 11C14.2554 11 13.5584 10.7966 12.9614 10.4423" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-                <path d="M15 21C15 17.6863 12.3137 15 9 15C5.68629 15 3 17.6863 3 21" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-                <path d="M21 17C21 13.6863 18.3137 11 15 11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-              </svg>
-              <span class="text">Dependents</span>
-            </span>
-            <span class="right">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="currentColor" fill="none">
-                <path d="M18 9.00005C18 9.00005 13.5811 15 12 15C10.4188 15 6 9 6 9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-              </svg>
-            </span>
-          </div>
-          <ul class="dropdown">
-            <li class="family">
-              <a href="/dependents/family"><span class="text">Family</span></a>
-            </li>
-            <li class="elderly-care">
-              <a href="/dependents/elderly"><span class="text">Elderly</span></a>
-            </li>
-            <li class="manage">
-              <a href="/dependents/manage"><span class="text">Manage</span></a>
-            </li>
-            <li class="history">
-              <a href="/dependents/history"><span class="text">History</span></a>
-            </li>
-            <li class="health-records">
-              <a href="/dependents/records"><span class="text">Records</span></a>
-            </li>
-            <li class="chronic-conditions">
-              <a href="/dependents/chronic"><span class="text">Chronic</span></a>
-            </li>
-            <li class="insurance">
-              <a href="/dependents/insurance"><span class="text">Insurance</span></a>
-            </li>
-            <li class="emergency-contacts">
-              <a href="/dependents/contacts"><span class="text">Emergency</span></a>
-            </li>
-          </ul>
-        </li>
-      </ul>
-    `;
-  }
-
-  getSettingsNav = () => {
-    return /* html */`
-      <ul class="special nav">
-        <li class="settings">
-          <div class="link-section">
-            <span class="left">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="currentColor" fill="none">
-                <path d="M16.3083 4.38394C15.7173 4.38394 15.4217 4.38394 15.1525 4.28405C15.1151 4.27017 15.0783 4.25491 15.042 4.23828C14.781 4.11855 14.5721 3.90959 14.1541 3.49167C13.1922 2.52977 12.7113 2.04882 12.1195 2.00447C12.04 1.99851 11.96 1.99851 11.8805 2.00447C11.2887 2.04882 10.8077 2.52977 9.84585 3.49166C9.42793 3.90959 9.21897 4.11855 8.95797 4.23828C8.92172 4.25491 8.88486 4.27017 8.84747 4.28405C8.57825 4.38394 8.28273 4.38394 7.69171 4.38394H7.58269C6.07478 4.38394 5.32083 4.38394 4.85239 4.85239C4.38394 5.32083 4.38394 6.07478 4.38394 7.58269V7.69171C4.38394 8.28273 4.38394 8.57825 4.28405 8.84747C4.27017 8.88486 4.25491 8.92172 4.23828 8.95797C4.11855 9.21897 3.90959 9.42793 3.49166 9.84585C2.52977 10.8077 2.04882 11.2887 2.00447 11.8805C1.99851 11.96 1.99851 12.04 2.00447 12.1195C2.04882 12.7113 2.52977 13.1922 3.49166 14.1541C3.90959 14.5721 4.11855 14.781 4.23828 15.042C4.25491 15.0783 4.27017 15.1151 4.28405 15.1525C4.38394 15.4217 4.38394 15.7173 4.38394 16.3083V16.4173C4.38394 17.9252 4.38394 18.6792 4.85239 19.1476C5.32083 19.6161 6.07478 19.6161 7.58269 19.6161H7.69171C8.28273 19.6161 8.57825 19.6161 8.84747 19.716C8.88486 19.7298 8.92172 19.7451 8.95797 19.7617C9.21897 19.8815 9.42793 20.0904 9.84585 20.5083C10.8077 21.4702 11.2887 21.9512 11.8805 21.9955C11.96 22.0015 12.0399 22.0015 12.1195 21.9955C12.7113 21.9512 13.1922 21.4702 14.1541 20.5083C14.5721 20.0904 14.781 19.8815 15.042 19.7617C15.0783 19.7451 15.1151 19.7298 15.1525 19.716C15.4217 19.6161 15.7173 19.6161 16.3083 19.6161H16.4173C17.9252 19.6161 18.6792 19.6161 19.1476 19.1476C19.6161 18.6792 19.6161 17.9252 19.6161 16.4173V16.3083C19.6161 15.7173 19.6161 15.4217 19.716 15.1525C19.7298 15.1151 19.7451 15.0783 19.7617 15.042C19.8815 14.781 20.0904 14.5721 20.5083 14.1541C21.4702 13.1922 21.9512 12.7113 21.9955 12.1195C22.0015 12.0399 22.0015 11.96 21.9955 11.8805C21.9512 11.2887 21.4702 10.8077 20.5083 9.84585C20.0904 9.42793 19.8815 9.21897 19.7617 8.95797C19.7451 8.92172 19.7298 8.88486 19.716 8.84747C19.6161 8.57825 19.6161 8.28273 19.6161 7.69171V7.58269C19.6161 6.07478 19.6161 5.32083 19.1476 4.85239C18.6792 4.38394 17.9252 4.38394 16.4173 4.38394H16.3083Z" stroke="currentColor" stroke-width="1.8" />
-                <path d="M15.5 12C15.5 13.933 13.933 15.5 12 15.5C10.067 15.5 8.5 13.933 8.5 12C8.5 10.067 10.067 8.5 12 8.5C13.933 8.5 15.5 10.067 15.5 12Z" stroke="currentColor" stroke-width="1.8" />
-              </svg>
-              <span class="text">Settings</span>
-            </span>
-            <span class="right">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="currentColor" fill="none">
-                <path d="M18 9.00005C18 9.00005 13.5811 15 12 15C10.4188 15 6 9 6 9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-              </svg>
-            </span>
-          </div>
-          <ul class="dropdown">
-            <li class="data">
-              <a href="/settings/data"><span class="text">Export</span></a>
-            </li>
-            <li class="profile">
-              <a href="/settings/profile"><span class="text">Profile</span></a>
-            </li>
-            <li class="privacy">
-              <a href="/settings/privacy"><span class="text">Privacy</span></a>
-            </li>
-            <li class="security">
-              <a href="/settings/security"><span class="text">Security</span></a>
-            </li>
-            <li class="account">
-              <a href="/settings/account"><span class="text">Account</span></a>
-            </li>
-            <li class="preferences">
-              <a href="/settings/preferences"><span class="text">Preferences</span></a>
-            </li>
-             <li class="notifications">
-              <a href="/settings/notifications"><span class="text">Notifications</span></a>
-            </li>
-          </ul>
-        </li>
-      </ul>
-    `;
-  }
-
-  getSupportNav = () => {
-    return /* html */`
-      <ul class="special nav">
-        <li class="support">
-          <div class="link-section">
-            <span class="left">
-               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="currentColor" fill="none">
-                <path d="M17 11.8045C17 11.4588 17 11.286 17.052 11.132C17.2032 10.6844 17.6018 10.5108 18.0011 10.3289C18.45 10.1244 18.6744 10.0222 18.8968 10.0042C19.1493 9.98378 19.4022 10.0382 19.618 10.1593C19.9041 10.3198 20.1036 10.6249 20.3079 10.873C21.2513 12.0188 21.7229 12.5918 21.8955 13.2236C22.0348 13.7334 22.0348 14.2666 21.8955 14.7764C21.6438 15.6979 20.8485 16.4704 20.2598 17.1854C19.9587 17.5511 19.8081 17.734 19.618 17.8407C19.4022 17.9618 19.1493 18.0162 18.8968 17.9958C18.6744 17.9778 18.45 17.8756 18.0011 17.6711C17.6018 17.4892 17.2032 17.3156 17.052 16.868C17 16.714 17 16.5412 17 16.1955V11.8045Z" stroke="currentColor" stroke-width="1.8"></path>
-                <path d="M7 11.8046C7 11.3694 6.98778 10.9782 6.63591 10.6722C6.50793 10.5609 6.33825 10.4836 5.99891 10.329C5.55001 10.1246 5.32556 10.0224 5.10316 10.0044C4.43591 9.9504 4.07692 10.4058 3.69213 10.8732C2.74875 12.019 2.27706 12.5919 2.10446 13.2237C1.96518 13.7336 1.96518 14.2668 2.10446 14.7766C2.3562 15.6981 3.15152 16.4705 3.74021 17.1856C4.11129 17.6363 4.46577 18.0475 5.10316 17.996C5.32556 17.978 5.55001 17.8757 5.99891 17.6713C6.33825 17.5167 6.50793 17.4394 6.63591 17.3281C6.98778 17.0221 7 16.631 7 16.1957V11.8046Z" stroke="currentColor" stroke-width="1.8"></path>
-                <path d="M20 10.5V9C20 5.13401 16.4183 2 12 2C7.58172 2 4 5.13401 4 9V10.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
-                <path d="M20 17.5C20 22 16 22 12 22" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
-              </svg>
-              <span class="text">Support</span>
-            </span>
-            <span class="right">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="currentColor" fill="none">
-                <path d="M18 9.00005C18 9.00005 13.5811 15 12 15C10.4188 15 6 9 6 9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-              </svg>
-            </span>
-          </div>
-          <ul class="dropdown">
-            <li class="help">
-              <a href="/support/help"><span class="text">Help</span></a>
-            </li>
-            <li class="faq">
-              <a href="/support/faq"><span class="text">Learn</span></a>
-            </li>
-            <li class="guides">
-              <a href="/support/guides"><span class="text">Guides</span></a>
-            </li>
-            <li class="tickets">
-              <a href="/support/tickets"><span class="text">Tickets</span></a>
-            </li>
-             <li class="contact">
-              <a href="/support/contact"><span class="text">Contact</span></a>
-            </li>
-            <li class="feedback">
-              <a href="/support/feedback"><span class="text">Feedback</span></a>
-            </li>
-          </ul>
-        </li>
-      </ul>
-    `;
-  }
-
-  getHealthReportsNav = () => {
-    return /* html */`
-      <ul class="special nav">
-        <li class="health-reports">
-          <div class="link-section">
-            <span class="left">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="currentColor" fill="none">
-                <path d="M7 17L7 13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
-                <path d="M12 17L12 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
-                <path d="M17 17L17 11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
-                <path d="M2.5 12C2.5 7.52166 2.5 5.28249 3.89124 3.89124C5.28249 2.5 7.52166 2.5 12 2.5C16.4783 2.5 18.7175 2.5 20.1088 3.89124C21.5 5.28249 21.5 7.52166 21.5 12C21.5 16.4783 21.5 18.7175 20.1088 20.1088C18.7175 21.5 16.4783 21.5 12 21.5C7.52166 21.5 5.28249 21.5 3.89124 20.1088C2.5 18.7175 2.5 16.4783 2.5 12Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" />
-              </svg>
-              <span class="text">Reports</span>
-            </span>
-            <span class="right">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="currentColor" fill="none">
-                <path d="M18 9.00005C18 9.00005 13.5811 15 12 15C10.4188 15 6 9 6 9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-              </svg>
-            </span>
-          </div>
-          <ul class="dropdown">
-            <li class="family-health">
-              <a href="/reports/family-health"><span class="text">Family</span></a>
-            </li>
-            <li class="remittance-impact">
-              <a href="/reports/remittance-impact"><span class="text">Impact</span></a>
-            </li>
-            <li class="health-analytics">
-              <a href="/reports/health-analytics"><span class="text">Analytics</span></a>
-            </li>
-            <li class="spending-summary">
-              <a href="/reports/spending-summary"><span class="text">Spending</span></a>
-            </li>
-            <li class="medication-tracking">
-              <a href="/reports/medication-tracking"><span class="text">Medication</span></a>
-            </li>
-            <li class="provider-performance">
-              <a href="/reports/provider-performance"><span class="text">Performance</span></a>
-            </li>
-            <li class="appointment-history">
-              <a href="/reports/appointment-history"><span class="text">Appointments</span></a>
             </li>
           </ul>
         </li>
@@ -1092,24 +609,58 @@ export default class AppMain extends HTMLElement {
   getTweakNav = () => {
     return /* html */`
       <ul class="main user nav">
-        <li class="updates">
-          <a href="/updates">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" color="currentColor" fill="none">
-              <path d="M22 5.5C22 7.433 20.433 9 18.5 9C16.567 9 15 7.433 15 5.5C15 3.567 16.567 2 18.5 2C20.433 2 22 3.567 22 5.5Z" stroke="currentColor" stroke-width="1.8" />
-              <path d="M21.9506 11C21.9833 11.3289 22 11.6625 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C12.3375 2 12.6711 2.01672 13 2.04938" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
-              <path d="M8 10H12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-              <path d="M8 15H16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+        <li class="billing">
+          <a href="/billing">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="currentColor" fill="none">
+              <path d="M3.3457 16.1976L16.1747 3.36866M18.6316 11.0556L16.4321 13.2551M14.5549 15.1099L13.5762 16.0886" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+              <path d="M3.17467 16.1411C1.60844 14.5749 1.60844 12.0355 3.17467 10.4693L10.4693 3.17467C12.0355 1.60844 14.5749 1.60844 16.1411 3.17467L20.8253 7.85891C22.3916 9.42514 22.3916 11.9645 20.8253 13.5307L13.5307 20.8253C11.9645 22.3916 9.42514 22.3916 7.85891 20.8253L3.17467 16.1411Z" stroke="currentColor" stroke-width="1.8" />
+              <path d="M4 22H20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
             </svg>
-            <span class="text">Updates</span>
+            <span class="text">Subscriptions</span>
           </a>
         </li>
-        <li class="themes">
-          <a href="/themes">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" color="currentColor" fill="none">
-              <path d="M14 19L11.1069 10.7479C9.76348 6.91597 9.09177 5 8 5C6.90823 5 6.23652 6.91597 4.89309 10.7479L2 19M4.5 12H11.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-              <path d="M21.9692 13.9392V18.4392M21.9692 13.9392C22.0164 13.1161 22.0182 12.4891 21.9194 11.9773C21.6864 10.7709 20.4258 10.0439 19.206 9.89599C18.0385 9.75447 17.1015 10.055 16.1535 11.4363M21.9692 13.9392L19.1256 13.9392C18.6887 13.9392 18.2481 13.9603 17.8272 14.0773C15.2545 14.7925 15.4431 18.4003 18.0233 18.845C18.3099 18.8944 18.6025 18.9156 18.8927 18.9026C19.5703 18.8724 20.1955 18.545 20.7321 18.1301C21.3605 17.644 21.9692 16.9655 21.9692 15.9392V13.9392Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+        <li class="dependents">
+          <a href="/dependents">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="currentColor" fill="none">
+              <path d="M13 11C13 8.79086 11.2091 7 9 7C6.79086 7 5 8.79086 5 11C5 13.2091 6.79086 15 9 15C11.2091 15 13 13.2091 13 11Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+              <path d="M11.0386 7.55773C11.0131 7.37547 11 7.18927 11 7C11 4.79086 12.7909 3 15 3C17.2091 3 19 4.79086 19 7C19 9.20914 17.2091 11 15 11C14.2554 11 13.5584 10.7966 12.9614 10.4423" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+              <path d="M15 21C15 17.6863 12.3137 15 9 15C5.68629 15 3 17.6863 3 21" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+              <path d="M21 17C21 13.6863 18.3137 11 15 11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
             </svg>
-            <span class="text">Themes</span>
+            <span class="text">Dependents</span>
+          </a>
+        </li>
+        <li class="ambulance">
+          <a href="/ambulance">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="currentColor" fill="none">
+              <path d="M11 18H15M13.5 8H14.4429C15.7533 8 16.4086 8 16.9641 8.31452C17.5196 8.62904 17.89 9.20972 18.6308 10.3711C19.1502 11.1854 19.6955 11.7765 20.4622 12.3024C21.2341 12.8318 21.6012 13.0906 21.8049 13.506C22 13.9038 22 14.375 22 15.3173C22 16.5596 22 17.1808 21.651 17.5755C21.636 17.5925 21.6207 17.609 21.6049 17.625C21.2375 18 20.6594 18 19.503 18H19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+              <path d="M5 18C3.58579 18 2.87868 18 2.43934 17.5607C2 17.1213 2 16.4142 2 15V8C2 6.58579 2 5.87868 2.43934 5.43934C2.87868 5 3.58579 5 5 5H10.5C11.9142 5 12.6213 5 13.0607 5.43934C13.5 5.87868 13.5 6.58579 13.5 8V18H9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+              <path d="M22 15H21" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+              <path d="M8 9V13M10 11L6 11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+              <circle cx="17" cy="18" r="2" stroke="currentColor" stroke-width="1.8"></circle>
+              <circle cx="7" cy="18" r="2" stroke="currentColor" stroke-width="1.8"></circle>
+            </svg>
+            <span class="text">Ambulance</span>
+          </a>
+        </li>
+        <li class="after-care">
+          <a href="/after-care">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="currentColor" fill="none">
+              <path d="M19.4626 3.99352C16.7809 2.3486 14.4404 3.01148 13.0344 4.06738C12.4578 4.50033 12.1696 4.7168 12 4.7168C11.8304 4.7168 11.5422 4.50033 10.9656 4.06738C9.55962 3.01148 7.21909 2.3486 4.53744 3.99352C1.01807 6.1523 0.221719 13.2742 8.33953 19.2827C9.88572 20.4272 10.6588 20.9994 12 20.9994C13.3412 20.9994 14.1143 20.4272 15.6605 19.2827C23.7783 13.2742 22.9819 6.1523 19.4626 3.99352Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+              <path d="M16 13H15C14.5447 13 14.0655 13.0352 13.6569 12.7214C13.5011 12.6017 13.3977 12.4363 13.191 12.1056L11.5 9L8.5 14L6.94338 11.8321C6.68722 11.5247 6.43747 11.213 6.09845 11.0897C5.85189 11 5.56792 11 5 11H3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            <span class="text">AfterCare</span>
+          </a>
+        </li>
+        <li class="support">
+          <a href="/support">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="currentColor" fill="none">
+              <path d="M17 11.8045C17 11.4588 17 11.286 17.052 11.132C17.2032 10.6844 17.6018 10.5108 18.0011 10.3289C18.45 10.1244 18.6744 10.0222 18.8968 10.0042C19.1493 9.98378 19.4022 10.0382 19.618 10.1593C19.9041 10.3198 20.1036 10.6249 20.3079 10.873C21.2513 12.0188 21.7229 12.5918 21.8955 13.2236C22.0348 13.7334 22.0348 14.2666 21.8955 14.7764C21.6438 15.6979 20.8485 16.4704 20.2598 17.1854C19.9587 17.5511 19.8081 17.734 19.618 17.8407C19.4022 17.9618 19.1493 18.0162 18.8968 17.9958C18.6744 17.9778 18.45 17.8756 18.0011 17.6711C17.6018 17.4892 17.2032 17.3156 17.052 16.868C17 16.714 17 16.5412 17 16.1955V11.8045Z" stroke="currentColor" stroke-width="1.8"></path>
+              <path d="M7 11.8046C7 11.3694 6.98778 10.9782 6.63591 10.6722C6.50793 10.5609 6.33825 10.4836 5.99891 10.329C5.55001 10.1246 5.32556 10.0224 5.10316 10.0044C4.43591 9.9504 4.07692 10.4058 3.69213 10.8732C2.74875 12.019 2.27706 12.5919 2.10446 13.2237C1.96518 13.7336 1.96518 14.2668 2.10446 14.7766C2.3562 15.6981 3.15152 16.4705 3.74021 17.1856C4.11129 17.6363 4.46577 18.0475 5.10316 17.996C5.32556 17.978 5.55001 17.8757 5.99891 17.6713C6.33825 17.5167 6.50793 17.4394 6.63591 17.3281C6.98778 17.0221 7 16.631 7 16.1957V11.8046Z" stroke="currentColor" stroke-width="1.8"></path>
+              <path d="M20 10.5V9C20 5.13401 16.4183 2 12 2C7.58172 2 4 5.13401 4 9V10.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+              <path d="M20 17.5C20 22 16 22 12 22" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+            <span class="text">Support</span>
           </a>
         </li>
       </ul>
@@ -1174,9 +725,10 @@ export default class AppMain extends HTMLElement {
 
   getProductFeed = () => {
     return /* html */`
-      <products-feed name="Market Products" kind="all" all="457">
-        <p>Users can track the performance of their shares, view historical data, and analyze trends to make informed decisions.</p> 
-        <p> This section is designed to help users manage their investment portfolio effectively and stay updated with the latest market insights.</p>
+      <products-feed name="Pharmacy Medicines" kind="pharmacy" all="124">
+        <p>Browse medicines and over-the-counter (OTC) drugs available at partnered pharmacies. <br/> Search by brand, generic name, or active ingredient.</p>
+        <p>Check real-time stock and availability at nearby pharmacies, view dosing information and safety warnings, and choose pickup or delivery options.
+        <br/>Prescription-only medicines require a valid prescription. Request prescription verification and consult a pharmacist for interactions and guidance.</p>
       </products-feed>
     `;
   }
@@ -1186,6 +738,70 @@ export default class AppMain extends HTMLElement {
     return /* html */`
       <store-container name="Marketplace" desc="This section provides a detailed overview of all the products available in the marketplace.">
       </store-container>
+    `;
+  }
+
+  getCartContainer = () => {
+    return /* html */`
+      <cart-container empty="false" name="Shopping Cart" kind="all">
+        <p>This section provides a detailed overview of all the items in your shopping cart, showing medicine names, dosages, quantities, individual prices and current stock at partner pharmacies.</p>
+        <p>For prescription-only medicines, ensure you have a valid prescription ready for verification during checkout.</p>
+      </cart-container>
+    `;
+  }
+
+  getPickupContainer = () => {
+    return /* html */`
+      <pickup-container name="Pickup Station" kind="all" desc="This section provides a detailed overview of all the pickup stations available.">
+      </pickup-container>
+    `;
+  }
+
+  getProductDetail = () => {
+    return /* html */`
+      <product-detail
+        url="/product/AMX500"
+        hex="AMX500-01" last="12.50"
+        store="HealthPlus Pharmacy" average-review="4.5" wished="false"
+        in-cart="0" quantity="120"
+        main-image="/src/img/products/drug12.jpg"
+        description="Amoxicillin 500mg capsules — a commonly prescribed penicillin antibiotic for treating a range of bacterial infections. Use exactly as directed by a healthcare professional."
+        images="/src/img/products/drug12.jpg, /src/img/products/drug13.jpg, /src/img/products/drug14.jpg, /src/img/products/drug15.jpg, /src/img/products/drug16.jpg, /src/img/products/drug17.jpg, /src/img/products/drug18.jpg, /src/img/products/drug19.jpg, /src/img/products/drug20.jpg"
+        previous-price="715.00"
+        current-price="412.50"
+        name="Amoxicillin 500mg Capsules"
+        dosages='{
+          "250mg": {"quantity": 40, "name": "250mg"},
+          "500mg": {"quantity": 120, "name": "500mg"},
+          "750mg": {"quantity": 0, "name": "750mg"}
+        }'
+        tags="antibiotic, amoxicillin, capsule, prescription"
+        specifications='{
+          "active_ingredient": "Amoxicillin",
+          "strength": "500mg",
+          "form": "capsule",
+          "manufacturer": "HealthPlus Labs",
+          "indications": "Bacterial infections - respiratory, urinary, skin",
+          "contraindications": "Penicillin allergy"
+        }'
+        reviews="1248"
+        reviews-distribution='{
+          "one": 24,
+          "two": 56,
+          "three": 142,
+          "four": 512,
+          "five": 514
+        }'
+        store-name="HealthPlus Pharmacy"
+        store-image="/src/img/products/drug1.jpg"
+        store-url="/store/healthplus-001"
+        store-location="Nairobi, Kenya"
+        store-country="KE"
+        store-hash="HPH001">
+        <p>Amoxicillin 500mg capsules — a commonly prescribed penicillin antibiotic for treating a range of bacterial infections. Use exactly as directed by a healthcare professional.</p>
+        <p>Prescription required for this medicine. Check dosage instructions, possible side effects, and interactions with other medicines. Consult your pharmacist if you have allergy history or are pregnant/breastfeeding.</p>
+        <p>Store pickup and delivery available where permitted. For prescription verification, upload a valid prescription at checkout or visit the pharmacy for in-person verification.</p>
+      </product-detail>
     `;
   }
 
@@ -1326,7 +942,7 @@ export default class AppMain extends HTMLElement {
           display: flex;
           flex-flow: column;
           gap: 5px;
-          padding: 10px 0 0 10px;
+          padding: 10px 0 20px 10px;
           height: 100dvh;
           max-height: 100dvh;
           overflow-y: scroll;
@@ -1379,12 +995,6 @@ export default class AppMain extends HTMLElement {
         section.nav > ul.nav.main > li:hover,
         section.nav > ul.nav.main > li.active {
           color: var(--accent-color);
-        }
-
-        section.nav > ul.nav.main > li.hubspot.active,
-        section.nav > ul.nav.main > li.hubspot:hover {
-          background: var(--hubspot-background);
-          color: var(--hubspot-color);
         }
 
         section.nav > ul.nav.main > li > a {
@@ -1440,7 +1050,8 @@ export default class AppMain extends HTMLElement {
 
         section.nav > ul.nav > li.logo {
           gap: 10px;
-          margin: 5px 0;
+          margin: 0;
+          border-bottom: var(--border);
         }
 
         section.nav > ul.nav > li.logo > a {
@@ -1465,6 +1076,7 @@ export default class AppMain extends HTMLElement {
         section.nav > ul.nav > li.logo > span.tooltip > span.text {
           font-family: var(--font-main), sans-serif;
           font-size: 1.5rem;
+          padding: 0 0 0 5px;
           color: transparent;
           background: var(--second-linear);
           font-weight: 700;
@@ -1484,28 +1096,25 @@ export default class AppMain extends HTMLElement {
         }
 
         section.nav > ul.nav.special > li {
-          /* This is the main li for the group (e.g., li.cache) which will get the 'collapsed' class */
           width: 100%;
           position: relative;
           border-radius: 7px;
-          /* background: var(--background-offset); /* Optional: if group needs a distinct background */
-          /* box-shadow: var(--shadow-sm); /* Optional: subtle shadow for separation */
         }
 
         section.nav > ul.nav.special > li > div.link-section {
           display: flex;
           justify-content: space-between;
           align-items: center;
-          padding: 5px; /* Padding for the clickable header */
+          padding: 10px 5px; /* Padding for the clickable header */
           cursor: pointer;
           color: var(--text-color);
-          border-radius: 7px; /* Rounded corners for the clickable area */
+          border-top: var(--border);
+          border-bottom: var(--border);
           transition: background-color 0.2s ease, color 0.2s ease;
         }
 
         section.nav > ul.nav.special > li > div.link-section:hover {
           color: var(--accent-color);
-          background: var(--tab-background); /* Consistent with normal nav item hover */
         }
 
         section.nav > ul.nav.special > li > div.link-section > span.left {
@@ -1528,6 +1137,8 @@ export default class AppMain extends HTMLElement {
 
         section.nav > ul.nav.special > li > div.link-section > span.left > span.text {
           color: inherit;
+          display: inline-block;
+          margin-top: 2px;
           font-family: var(--font-text), sans-serif;
           font-size: 1rem;
           font-weight: 500; /* Make header text slightly bolder */
@@ -1542,25 +1153,17 @@ export default class AppMain extends HTMLElement {
 
         section.nav > ul.nav.special > li > ul.dropdown {
           list-style-type: none;
-          padding: 5px 5px 5px 10px; /* Padding for the dropdown container */
+          padding: 8px 5px 5px; /* Padding for the dropdown container */
           margin: 0;
-          /* max-height: 600px; /* Set a sufficiently large max-height for open state content */
-          overflow: hidden;
-          transition: max-height 0.35s ease-in-out, opacity 0.3s ease-in-out, padding 0.3s ease-in-out, margin 0.3s ease-in-out, border-color 0.3s ease-in-out;
           opacity: 1;
           position: relative; /* Added for ::before positioning */
-          /* border-top: 1px solid var(--border-color, #e0e0e0); /* Optional separator line */
-          /* margin-top: 4px; /* Optional space between header and dropdown */
+          min-height: max-content;
+          transition: max-height 0.35s ease-out-in, opacity 0.3s ease-out-in, padding 0.3s ease-out-in, margin 0.3s ease-out-in, border-color 0.3s ease-in-out;
         }
 
-        section.nav > ul.nav.special > li.collapsed > ul.dropdown {
-          max-height: 0;
-          opacity: 0;
-          padding-top: 0;
-          padding-bottom: 0;
-          margin-top: 0;
-          margin-bottom: 0;
-          /* border-top-color: transparent; /* Hide border when collapsed */
+        /* the last dropdown item */
+        section.nav > ul.nav.special > li > ul.dropdown.last {
+          border-bottom: var(--border);
         }
 
         section.nav > ul.nav.special > li.collapsed > div.link-section > span.right > svg {
@@ -1570,7 +1173,7 @@ export default class AppMain extends HTMLElement {
         section.nav > ul.nav.special > li > ul.dropdown > li {
           width: calc(100% - 10px);
           padding: 0; /* Padding for sub-items */
-          margin: 0 0 0 5px; /* Indent sub-items */
+          margin: 0; /* Indent sub-items */
           list-style-type: none;
           position: relative;
           display: flex;
@@ -1599,39 +1202,49 @@ export default class AppMain extends HTMLElement {
           background: var(--tab-background); /* Consistent with normal nav item active/hover */
         }
 
-        section.nav > ul.nav.special > li.active {
-          /* border-left: 3px solid var(--accent-color); */ /* Vertical line for active item */
-          /* Instead of border, we use a pseudo-element for animation */
-        }
-
         section.nav > ul.nav.special > li > ul.dropdown > li::before {
-          content: '-';
+          content: '';
           position: absolute;
-          left: 5px;
+          display: inline-block;
+          width: 8px;
+          height: 1px;
+          left: 4px;
           top: 50%;
-          color: var(--gray-color);
+          background-color: var(--gray-color);
           transform: translateY(-50%);
           z-index: 1;
         }
 
         section.nav > ul.nav.special > li > ul.dropdown > li.active::before {
-          color: var(--accent-color);
-          transition: color 0.2s ease;
+          background-color: var(--accent-color);
+          transition: background-color 0.2s ease;
         }
 
         section.nav > ul.nav.special > li > ul.dropdown > li:hover::before {
-          color: var(--gray-color);
-          transition: color 0.2s ease;
+          background-color: var(--gray-color);
+          transition: background-color 0.2s ease;
         }
 
         section.flow {
           width: calc(100% - (240px + 500px + 20px));
+          height: 100dvh;
+          max-height: 100dvh;
           display: flex;
           flex-flow: column;
           max-height: max-content;
           gap: 0;
           padding: 0;
+          overflow-y: auto;
+          scrollbar-width: none;
+          position: sticky;
+          top: 0;
         }
+
+        section.flow::-webkit-scrollbar {
+          visibility: hidden;
+          display: none;
+        }
+
 
         /* Latency Panel Styles */
         section.sidebar {

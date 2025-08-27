@@ -24,8 +24,8 @@ export default class ReviewWrapper extends HTMLDivElement {
       ${this.getStyles()}
     `
   }
-  
-  getBody(){
+
+  getBody() {
     return /* html */`
       ${this.getHead()}
       ${this.getDesc()}
@@ -80,12 +80,11 @@ export default class ReviewWrapper extends HTMLDivElement {
   }
 
   getFooter = () => {
-    const verified = this.getAttribute('verified') === 'true';
     return /* html */`
       <div class="footer">
         <span class="date">${this.utils.date.formatDateTime(this.getAttribute('date'))}</span>
         <span class="sp">•</span>
-        <span class="verified">${verified ? 'Verified Purchase' : 'Unverified Purchase'}</span>
+        <span class="verified">${this.getAttribute('purpose')}</span>
       </div>
     `;
   }
@@ -185,7 +184,7 @@ export default class ReviewWrapper extends HTMLDivElement {
           color: var(--text-color);
           font-family: var(--font-main), sans-serif;
           margin: 5px  0;
-          line-height: 1.4;
+          line-height: 1.2;
         }
 
         .desc p {

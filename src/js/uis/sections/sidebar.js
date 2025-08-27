@@ -2,6 +2,7 @@ export default class Sidebar extends HTMLElement {
   constructor() {
     super();
     this.shadow = this.attachShadow({ mode: 'open' });
+    this.mql = window.matchMedia('(max-width: 700px)');
     this.user = this.getUserData();
     this.render();
   }
@@ -9,19 +10,71 @@ export default class Sidebar extends HTMLElement {
   render() {
     this.shadow.innerHTML = this.getTemplate();
   }
-
   // get user data from local storage
   getUserData() {
     try {
-      const userData = localStorage.getItem('user');
+      const userData = window.sessionStorage.getItem('user');
       return userData ? JSON.parse(userData) : null;
     } catch (error) {
-      console.error('Error retrieving user data from localStorage:', error);
+      console.error('Error retrieving user data from sessionStorage:', error);
       return null;
     }
   }
 
   connectedCallback() {
+    this.watchMql();
+    this.setupEventListeners();
+    this.initTheme();
+  }
+
+  setupEventListeners() {
+    const themeButton = this.shadow.querySelector('.link.theme');
+    if (themeButton) {
+      themeButton.addEventListener('click', () => {
+        this.toggleTheme();
+      });
+    }
+  }
+
+  initTheme() {
+    // Get saved theme from localStorage, default to light
+    const savedTheme = localStorage.getItem('user-theme') || 'light';
+
+    // Update the icon to match the theme
+    const isDark = savedTheme === 'dark';
+    this.updateThemeIcon(isDark);
+  }
+
+  toggleTheme() {
+    const switcher = this.shadow.querySelector('.theme-switcher');
+    const isDark = switcher.classList.contains('dark');
+
+    if (isDark) {
+      switcher.classList.remove('dark');
+      localStorage.setItem('user-theme', 'light');
+      document.documentElement.setAttribute('data-theme', 'light');
+    } else {
+      switcher.classList.add('dark');
+      localStorage.setItem('user-theme', 'dark');
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
+  }
+
+  updateThemeIcon(isDark) {
+    const switcher = this.shadow.querySelector('.theme-switcher');
+    if (switcher) {
+      if (isDark) {
+        switcher.classList.add('dark');
+      } else {
+        switcher.classList.remove('dark');
+      }
+    }
+  }
+
+  watchMql() {
+    this.mql.addEventListener('change', () => {
+      this.render();
+    });
   }
 
   getTemplate() {
@@ -42,11 +95,26 @@ export default class Sidebar extends HTMLElement {
           <span class="subtitle">${this.getAttribute('description')}</span>
         </div>
         <ul class="links">
-          <li class="link profile">
-            <div class="image">
-              ${this.getPicture(this.user?.picture)}
+          <li class="link cart">
+            <svg id="Bag" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M16.3638 6.86985C16.3638 4.48385 14.4298 2.54985 12.0438 2.54985C9.65783 2.53885 7.71583 4.46485 7.70483 6.85085V6.86985" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+              <path d="M14.9727 11.3738H14.9267" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+              <path d="M9.14153 11.3738H9.09553" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M12.0342 21.4894C5.52619 21.4894 4.77719 19.4394 3.31619 14.0224C1.85019 8.58842 4.79119 6.55542 12.0342 6.55542C19.2772 6.55542 22.2182 8.58842 20.7522 14.0224C19.2912 19.4394 18.5422 21.4894 12.0342 21.4894Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+            <span class="text">Cart</span>
+          </li>
+          <li class="link theme">
+            <div class="theme-switcher">
+              <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="5"/>
+                <path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72 1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+              </svg>
+              <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                <path d="M21.5 14.0784C20.3003 14.7189 18.9301 15.0821 17.4751 15.0821C12.7491 15.0821 8.91792 11.2509 8.91792 6.52485C8.91792 5.06986 9.28105 3.69968 9.92163 2.5C5.66765 3.49698 2.5 7.31513 2.5 11.8731C2.5 17.1899 6.8101 21.5 12.1269 21.5C16.6849 21.5 20.503 18.3324 21.5 14.0784Z"/>
+              </svg>
             </div>
-            <span class="text">Profile</span>
+            <span class="text">Theme</span>
           </li>
           <li class="link updates">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" color="currentColor" fill="none">
@@ -57,12 +125,11 @@ export default class Sidebar extends HTMLElement {
             </svg>
             <span class="text">Updates</span>
           </li>
-          <li class="link more">
-            <span class="icon">
-              <span class="sp"></span>
-              <span class="sp"></span>
-            </span>
-            <span class="text">More</span>
+          <li class="link profile">
+            <div class="image">
+              ${this.getPicture(this.user?.picture)}
+            </div>
+            <span class="text">Profile</span>
           </li>
         </ul>
       </header>
@@ -110,7 +177,7 @@ export default class Sidebar extends HTMLElement {
           flex-direction: column;
         }
 
-        /* Header Styles */
+         /* Header Styles */
         header.header {
           height: 70px;
           max-height: 70px;
@@ -124,13 +191,13 @@ export default class Sidebar extends HTMLElement {
           gap: 20px;
           position: sticky;
           top: 0;
-          z-index: 100;
+          z-index: 10;
           backdrop-filter: blur(10px);
         }
 
         header.header > div.header-title {
           flex: 1;
-          width: calc(100% - 170px);
+          width: calc(100% - 230px);
           display: flex;
           flex-direction: column;
           padding: 2px;
@@ -316,6 +383,58 @@ export default class Sidebar extends HTMLElement {
           color: inherit;
         }
 
+        /* Theme Switcher Styles */
+        .theme-switcher {
+          position: relative;
+          width: 24px;
+          height: 24px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .theme-switcher svg {
+          position: absolute;
+          width: 24px;
+          height: 24px;
+          transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+          transform-origin: center;
+        }
+
+        /* Light mode - show sun */
+        .theme-switcher .sun-icon {
+          opacity: 1;
+          transform: scale(1) rotate(0deg);
+          color: var(--text-color);
+        }
+
+        .theme-switcher .moon-icon {
+          opacity: 0;
+          transform: scale(0.8) rotate(180deg);
+          color: var(--text-color);
+        }
+
+        /* Dark mode - show moon */
+        .theme-switcher.dark .sun-icon {
+          opacity: 0;
+          transform: scale(0.8) rotate(-180deg);
+        }
+
+        .theme-switcher.dark .moon-icon {
+          opacity: 1;
+          transform: scale(1) rotate(0deg);
+          color: var(--text-color);
+        }
+
+        /* Hover effects */
+        header.header > ul.links > li.link.theme:hover .theme-switcher svg {
+          transform: scale(1.1) rotate(0deg);
+        }
+
+        header.header > ul.links > li.link.theme:hover .theme-switcher.dark svg {
+          transform: scale(1.1) rotate(0deg);
+        }
+
         header.header > ul.links > li.link.more > span.icon {
           display: flex;
           gap: 5px;
@@ -331,7 +450,6 @@ export default class Sidebar extends HTMLElement {
           color: inherit;
           border-radius: 50%;
         }
-
       </style>
     `;
   }

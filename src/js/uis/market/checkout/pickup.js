@@ -5,206 +5,61 @@ export default class PickupContainer extends HTMLElement {
 
     // let's create our shadow root
     this.shadowObj = this.attachShadow({ mode: "open" });
-    this.utils = window.app.utils;
-    // active tab
+    this.app = window.app || {};
+    this.number = this.app?.utils?.number;
+    this.date = this.app?.utils?.date;
     this.active_tab = null;
-    this.countries = {
-      "AF": "Afghanistan",
-      "AL": "Albania",
-      "DZ": "Algeria",
-      "AD": "Andorra",
-      "AO": "Angola",
-      "AG": "Antigua and Barbuda",
-      "AR": "Argentina",
-      "AM": "Armenia",
-      "AU": "Australia",
-      "AT": "Austria",
-      "AZ": "Azerbaijan",
-      "BS": "Bahamas",
-      "BH": "Bahrain",
-      "BD": "Bangladesh",
-      "BB": "Barbados",
-      "BY": "Belarus",
-      "BE": "Belgium",
-      "BZ": "Belize",
-      "BJ": "Benin",
-      "BT": "Bhutan",
-      "BO": "Bolivia",
-      "BA": "Bosnia and Herzegovina",
-      "BW": "Botswana",
-      "BR": "Brazil",
-      "BN": "Brunei",
-      "BG": "Bulgaria",
-      "BF": "Burkina Faso",
-      "BI": "Burundi",
-      "CV": "Cabo Verde",
-      "KH": "Cambodia",
-      "CM": "Cameroon",
-      "CA": "Canada",
-      "CF": "Central African Republic",
-      "TD": "Chad",
-      "CL": "Chile",
-      "CN": "China",
-      "CO": "Colombia",
-      "KM": "Comoros",
-      "CG": "Congo (Congo-Brazzaville)",
-      "CD": "Congo (Congo-Kinshasa/DRC)",
-      "CR": "Costa Rica",
-      "HR": "Croatia",
-      "CU": "Cuba",
-      "CY": "Cyprus",
-      "CZ": "Czech Republic (Czechia)",
-      "DK": "Denmark",
-      "DJ": "Djibouti",
-      "DM": "Dominica",
-      "DO": "Dominican Republic",
-      "EC": "Ecuador",
-      "EG": "Egypt",
-      "SV": "El Salvador",
-      "GQ": "Equatorial Guinea",
-      "ER": "Eritrea",
-      "EE": "Estonia",
-      "SZ": "Eswatini (Swaziland)",
-      "ET": "Ethiopia",
-      "FJ": "Fiji",
-      "FI": "Finland",
-      "FR": "France",
-      "GA": "Gabon",
-      "GM": "Gambia",
-      "GE": "Georgia",
-      "DE": "Germany",
-      "GH": "Ghana",
-      "GR": "Greece",
-      "GD": "Grenada",
-      "GT": "Guatemala",
-      "GN": "Guinea",
-      "GW": "Guinea-Bissau",
-      "GY": "Guyana",
-      "HT": "Haiti",
-      "HN": "Honduras",
-      "HU": "Hungary",
-      "IS": "Iceland",
-      "IN": "India",
-      "ID": "Indonesia",
-      "IR": "Iran",
-      "IQ": "Iraq",
-      "IE": "Ireland",
-      "IL": "Israel",
-      "IT": "Italy",
-      "JM": "Jamaica",
-      "JP": "Japan",
-      "JO": "Jordan",
-      "KZ": "Kazakhstan",
-      "KE": "Kenya",
-      "KI": "Kiribati",
-      "KP": "Korea (North)",
-      "KR": "Korea (South)",
-      "KW": "Kuwait",
-      "KG": "Kyrgyzstan",
-      "LA": "Laos",
-      "LV": "Latvia",
-      "LB": "Lebanon",
-      "LS": "Lesotho",
-      "LR": "Liberia",
-      "LY": "Libya",
-      "LI": "Liechtenstein",
-      "LT": "Lithuania",
-      "LU": "Luxembourg",
-      "MG": "Madagascar",
-      "MW": "Malawi",
-      "MY": "Malaysia",
-      "MV": "Maldives",
-      "ML": "Mali",
-      "MT": "Malta",
-      "MH": "Marshall Islands",
-      "MR": "Mauritania",
-      "MU": "Mauritius",
-      "MX": "Mexico",
-      "FM": "Micronesia",
-      "MD": "Moldova",
-      "MC": "Monaco",
-      "MN": "Mongolia",
-      "ME": "Montenegro",
-      "MA": "Morocco",
-      "MZ": "Mozambique",
-      "MM": "Myanmar (Burma)",
-      "NA": "Namibia",
-      "NR": "Nauru",
-      "NP": "Nepal",
-      "NL": "Netherlands",
-      "NZ": "New Zealand",
-      "NI": "Nicaragua",
-      "NE": "Niger",
-      "NG": "Nigeria",
-      "MK": "North Macedonia",
-      "NO": "Norway",
-      "OM": "Oman",
-      "PK": "Pakistan",
-      "PW": "Palau",
-      "PS": "Palestine (limited recognition)",
-      "PA": "Panama",
-      "PG": "Papua New Guinea",
-      "PY": "Paraguay",
-      "PE": "Peru",
-      "PH": "Philippines",
-      "PL": "Poland",
-      "PT": "Portugal",
-      "QA": "Qatar",
-      "RO": "Romania",
-      "RU": "Russia",
-      "RW": "Rwanda",
-      "KN": "Saint Kitts and Nevis",
-      "LC": "Saint Lucia",
-      "VC": "Saint Vincent and the Grenadines",
-      "WS": "Samoa",
-      "SM": "San Marino",
-      "ST": "Sao Tome and Principe",
-      "SA": "Saudi Arabia",
-      "SN": "Senegal",
-      "RS": "Serbia",
-      "SC": "Seychelles",
-      "SL": "Sierra Leone",
-      "SG": "Singapore",
-      "SK": "Slovakia",
-      "SI": "Slovenia",
-      "SB": "Solomon Islands",
-      "SO": "Somalia",
-      "ZA": "South Africa",
-      "SS": "South Sudan",
-      "ES": "Spain",
-      "LK": "Sri Lanka",
-      "SD": "Sudan",
-      "SR": "Suriname",
-      "SE": "Sweden",
-      "CH": "Switzerland",
-      "SY": "Syria",
-      "TJ": "Tajikistan",
-      "TZ": "Tanzania",
-      "TH": "Thailand",
-      "TL": "Timor-Leste",
-      "TG": "Togo",
-      "TO": "Tonga",
-      "TT": "Trinidad and Tobago",
-      "TN": "Tunisia",
-      "TR": "Turkey",
-      "TM": "Turkmenistan",
-      "TV": "Tuvalu",
-      "UG": "Uganda",
-      "UA": "Ukraine",
-      "AE": "United Arab Emirates",
-      "GB": "United Kingdom",
-      "US": "United States",
-      "UY": "Uruguay",
-      "UZ": "Uzbekistan",
-      "VU": "Vanuatu",
-      "VA": "Vatican City",
-      "VE": "Venezuela",
-      "VN": "Vietnam",
-      "YE": "Yemen",
-      "ZM": "Zambia",
-      "ZW": "Zimbabwe"
-    }
-    this.render(); 
+    this.countiesData = {
+      "Baringo": ["Baringo Central", "Baringo North", "Baringo South", "Eldama Ravine", "Mogotio", "Tiaty"],
+      "Bomet": ["Bomet Central", "Bomet East", "Chepalungu", "Sotik"],
+      "Bungoma": ["Bumula", "Bungoma East", "Bungoma North", "Bungoma South", "Bungoma West", "Cheptais", "Kanduyi", "Kimilili", "Mount Elgon", "Sirisia", "Tongaren"],
+      "Busia": ["Budalang'i", "Bunyala", "Butula", "Nambale", "Samia"],
+      "Elgeyo-Marakwet": ["Keiyo North", "Keiyo South", "Marakwet East", "Marakwet West"],
+      "Embu": ["Manyatta", "Mbeere North", "Mbeere South", "Runyenjes"],
+      "Garissa": ["Balambala", "Dadaab", "Fafi", "Garissa Township", "Hulugho", "Ijara"],
+      "Homa Bay": ["Homa Bay Town", "Kasipul", "Kabondo Kasipul", "Karachuonyo", "Ndhiwa", "Rangwe", "Suba"],
+      "Isiolo": ["Isiolo North", "Isiolo South"],
+      "Kajiado": ["Kajiado Central", "Kajiado East", "Kajiado North", "Kajiado West"],
+      "Kakamega": ["Butere", "Kakamega Central", "Kakamega East", "Kakamega North", "Kakamega South", "Lugari", "Malava", "Matungu", "Mumias East", "Mumias West"],
+      "Kericho": ["Ainamoi", "Belgut", "Bureti", "Kipkelion East", "Kipkelion West"],
+      "Kiambu": ["Gatundu North", "Gatundu South", "Juja", "Kabete", "Kiambaa", "Kiambu Town", "Kikuyu", "Lari", "Limuru", "Ruiru", "Thika"],
+      "Kilifi": ["Ganze", "Kaloleni", "Kilifi North", "Kilifi South", "Magarini", "Malindi", "Rabai"],
+      "Kirinyaga": ["Gichugu", "Kirinyaga Central", "Kirinyaga East", "Kirinyaga West", "Mwea"],
+      "Kisii": ["Bobasi", "Bomachoge Borabu", "Bonchari", "Kitutu Chache North", "Kitutu Chache South", "Nyamache", "South Mugirango"],
+      "Kisumu": ["Kisumu Central", "Kisumu East", "Kisumu West", "Seme", "Nyando", "Muhoroni", "Nyakach"],
+      "Kitui": ["Kitui Central", "Kitui East", "Kitui Rural", "Kitui South", "Kitui West", "Mwingi Central", "Mwingi North", "Mwingi West"],
+      "Kwale": ["Kinango", "Lunga Lunga", "Matuga"],
+      "Laikipia": ["Laikipia East", "Laikipia North", "Laikipia West"],
+      "Lamu": ["Lamu East", "Lamu West"],
+      "Machakos": ["Athi River", "Kangundo", "Kathiani", "Machakos", "Masinga", "Matungulu", "Mavoko", "Mwala", "Yatta"],
+      "Makueni": ["Kaiti", "Kibwezi East", "Kibwezi West", "Kilome", "Makueni", "Mbooni"],
+      "Mandera": ["Banisa", "Lafey", "Mandera East", "Mandera North", "Mandera South", "Mandera West"],
+      "Marsabit": ["Laisamis", "Marsabit Central", "Moyale", "North Horr", "Saku"],
+      "Meru": ["Buuri", "Igembe Central", "Igembe North", "Igembe South", "Imenti Central", "Imenti North", "Imenti South", "Meru Central", "Meru South", "Tharaka"],
+      "Migori": ["Kuria East", "Kuria West", "Migori", "Nyatike", "Rongo", "Suna East", "Suna West"],
+      "Mombasa": ["Changamwe", "Jomvu", "Kisauni", "Likoni", "Mvita", "Nyali"],
+      "Murang'a": ["Gatanga", "Kahuro", "Kandara", "Kangema", "Kigumo", "Kiharu", "Mathioya", "Murang'a South"],
+      "Nairobi": ["Dagoretti", "Embakasi", "Kamukunji", "Kasarani", "Lang'ata", "Makadara", "Mathare", "Nairobi West"],
+      "Nakuru": ["Gilgil", "Kuresoi North", "Kuresoi South", "Molo", "Naivasha", "Nakuru East", "Nakuru North", "Nakuru West", "Njoro", "Rongai", "Subukia"],
+      "Nandi": ["Aldai", "Chesumei", "Emgwen", "Mosop", "Nandi Central", "Tinderet"],
+      "Narok": ["Narok East", "Narok North", "Narok South", "Narok West", "Trans Mara East", "Trans Mara West"],
+      "Nyamira": ["Borabu", "Manga", "Masaba North", "Masaba South", "Nyamira North", "Nyamira South"],
+      "Nyandarua": ["Kipipiri", "Ndaragwa", "Ol Kalou"],
+      "Nyeri": ["Kieni East", "Kieni West", "Mathira East", "Mathira West", "Mukurweini", "Nyeri South", "Tetu"],
+      "Samburu": ["Samburu Central", "Samburu East", "Samburu North"],
+      "Siaya": ["Alego Usonga", "Gem", "Rarieda", "Siaya", "Ugenya", "Ugunja"],
+      "Taita-Taveta": ["Mwatate", "Taveta", "Voi"],
+      "Tana River": ["Bura", "Garsen"],
+      "Tharaka-Nithi": ["Chuka", "Igambang'ombe", "Maara", "Tharaka"],
+      "Trans Nzoia": ["Cherang'any", "Endebess", "Kwanza", "Saboti", "Sirisia"],
+      "Turkana": ["Loima", "Turkana Central", "Turkana East", "Turkana North", "Turkana South"],
+      "Uasin Gishu": ["Ainabkoi", "Kapseret", "Kesses", "Moiben", "Soy", "Turbo"],
+      "Vihiga": ["Emuhaya", "Hamisi", "Luanda", "Sabatia", "Vihiga"],
+      "Wajir": ["Eldas", "Tarbaj", "Wajir East", "Wajir North", "Wajir South", "Wajir West"],
+      "West Pokot": ["Kacheliba", "Pokot Central", "Pokot North", "Pokot South"],
+    };
+
+    this.render();
   }
 
   render() {
@@ -212,47 +67,43 @@ export default class PickupContainer extends HTMLElement {
   }
 
   connectedCallback() {
-    const tabs = this.shadowObj.querySelector("ul.tabs");
-    
-    if (tabs) {
-      this.activateTabController(tabs);
+    // wire county -> town change after rendering
+    const countySelect = this.shadowObj.querySelector('#county');
+    const citySelect = this.shadowObj.querySelector('#city');
+    if (countySelect && citySelect) {
+      countySelect.addEventListener('change', e => {
+        const county = e.target.value;
+        this.populateTowns(county, citySelect);
+      });
     }
+
+    const stationsContainer = this.shadowObj.querySelector(".stations");
+    if (stationsContainer) this.updateSelected(stationsContainer);
   }
 
-  activateTabController = tabs => {
-    // get the active tab
-    this.getOrSetActiveTab(tabs);
+  updateSelected = stationsContainer => {
+    const stations = stationsContainer.querySelectorAll("input[type=radio]");
 
-    // add click event listener to the tabs
-    tabs.querySelectorAll("li").forEach(tab => {
-      tab.addEventListener("click", e => {
-        e.preventDefault();
-        e.stopPropagation();
-        // remove the active class from the active tab
-        this.active_tab.classList.remove("active");
+    // update background of selected station: on change to checked
+    stations.forEach(s => {
+      // removed other stations background unless it is checked
+      s.closest(".station").style.background = s.checked ? "var(--selected-background)" : "var(--item-background)";
 
-        // set the new active tab
-        this.active_tab = tab;
-        this.active_tab.classList.add("active");
+      // add event listener for change
+      s.addEventListener('change', e => {
+        const station = s.closest(".station");
+        if (station) {
+          // remove all other stations background
+          stations.forEach(s => {
+            if (s.closest(".station") !== station) {
+              s.closest(".station").style.background = "var(--item-background)";
+            }
+          });
 
-        //TODO: hide the tab content
+          station.style.background = e.target.checked ? "var(--selected-background)" : "var(--item-background)";
+        }
       });
     });
-  }
-
-  getOrSetActiveTab = tabs => {
-    // get the active tab
-    let activeTab = tabs.querySelector("li.active");
-
-    if (!activeTab) {
-      // if no active tab, set the first tab as active
-      activeTab = tabs.querySelector("li");
-      activeTab.classList.add("active");
-      this.active_tab = activeTab;
-    }
-
-    // else set the active tab
-    this.active_tab = activeTab;
   }
 
   getTemplate = () => {
@@ -292,34 +143,49 @@ export default class PickupContainer extends HTMLElement {
   }
 
   getSearch = () => {
-		return /* html */`
+    return /* html */`
       <form action="" method="get" class="search">
-        <div class="content country">
-          <label for="country">Country</label>
-          <select name="country" id="country" class="country">
-            <option value="" disabled selected>Select Country</option>
-            ${this.populateCountries(this.countries)}
+        <div class="content county">
+          <label for="county">County</label>
+          <select name="county" id="county" class="county">
+            <option value="" disabled selected>Select County</option>
+            ${this.populateCounties(this.countiesData)}
           </select>
         </div>
         <div class="content city">
-          <label for="city">Town / City</label>
+          <label for="city">Town / Sub-county</label>
           <select name="city" id="city" class="city">
-            <option value="" disabled selected>Select City</option>
+            <option value="" disabled selected>Select Town</option>
           </select>
         </div>
       </form>
     `;
-	}
+  }
 
-  populateCountries = countries => {
-    if (!countries) return "";
+  populateCounties = counties => {
+    if (!counties) return "";
 
     let html = "";
-    for (const code in countries) {
-      html += /* html */`<option value="${code}">${countries[code]}</option>`;
+    for (const county in counties) {
+      html += /* html */`<option value="${county}">${county}</option>`;
     }
 
     return html;
+  }
+
+  populateTowns = (county, citySelect) => {
+    const towns = this.countiesData[county] || [];
+    let html = '<option value="" disabled selected>Select Town</option>';
+    towns.forEach(t => {
+      html += /* html */`<option value="${t}">${t}</option>`;
+    });
+
+    if (citySelect && citySelect.tagName) {
+      citySelect.innerHTML = html;
+    } else {
+      const cityEl = this.shadowObj.querySelector('#city');
+      if (cityEl) cityEl.innerHTML = html;
+    }
   }
 
   getStations = () => {
@@ -328,14 +194,13 @@ export default class PickupContainer extends HTMLElement {
       <div class="stations">
         <div class="station">
           <div class="input">
-            <input type="radio" name="station" id="station-1" value="station-1">
-            <span class="hex">PUPKEJD123X9</span>
+            <input type="radio" name="station" id="station-1" value="station-1" checked>
+            <span class="name">Nairobi Central Station</span>
           </div>
           <label for="station-1">
-            <h4 class="name">Nairobi Central Station</h4>
             <p class="address">45 Kimathi Street, Nairobi, Kenya</p>
             <p class="desc">Located in the heart of Nairobi, this station offers easy access to all major transport lines.</p>
-            ${this.getShiping({ global: { shipping: true, price: 1.32 }, local: { price: 3.68 } })}
+            ${this.getShiping(1.42)}
             <span class="contact">
               <button class="chat">Message</button>
               <a href="tel:+254701234567" class="phone">Call</a>
@@ -346,13 +211,12 @@ export default class PickupContainer extends HTMLElement {
         <div class="station">
           <div class="input">
             <input type="radio" name="station" id="station-2" value="station-2">
-            <span class="hex">PUPGD768JH</span>
+            <span class="name">Cape Town Pickup Point</span>
           </div>
           <label for="station-2">
-            <h4 class="name">Cape Town Pickup Point</h4>
             <p class="address">12 Bree Street, Cape Town, South Africa</p>
             <p class="desc">Perfect for tourists and locals, this station is conveniently located near the V&A Waterfront.</p>
-            ${this.getShiping({ global: { shipping: false }, local: { price: 3.68 } })}
+            ${this.getShiping(7.25)}
             <span class="contact">
               <button class="chat">Message</button>
               <a href="tel:+27712345678" class="phone">Call</a>
@@ -363,13 +227,12 @@ export default class PickupContainer extends HTMLElement {
         <div class="station">
           <div class="input">
             <input type="radio" name="station" id="station-3" value="station-3">
-            <span class="hex">PUPEGIU876GH</span>
+            <span class="name">Accra Mall Station</span>
           </div>
           <label for="station-3">
-            <h4 class="name">Accra Mall Station</h4>
             <p class="address">25 Liberation Road, Accra, Ghana</p>
             <p class="desc">Conveniently located next to the Accra Mall, offering plenty of parking and easy access.</p>
-            ${this.getShiping({ global: { shipping: true, price: 1.72 }, local: { price: 3.68 } })}
+            ${this.getShiping(13.25)}
             <span class="contact">
               <button class="chat">Message</button>
               <a href="tel:+233501234567" class="phone">Call</a>
@@ -380,13 +243,12 @@ export default class PickupContainer extends HTMLElement {
         <div class="station">
           <div class="input">
             <input type="radio" name="station" id="station-4" value="station-4">
-            <span class="hex">PUPNGJW345TY</span>
+            <span class="name">Lagos Island Depot</span>
           </div>
           <label for="station-4">
-            <h4 class="name">Lagos Island Depot</h4>
             <p class="address">17 Marina Road, Lagos, Nigeria</p>
             <p class="desc">This station is central to Lagos Island, with great connectivity to commercial hubs.</p>
-            ${this.getShiping({ global: { shipping: true, price: 1.92 }, local: { price: 3.68 } })}
+            ${this.getShiping(96.48)}
             <span class="contact">
               <button class="chat">Message</button>
               <a href="tel:+2348023456789" class="phone">Call</a>
@@ -397,13 +259,12 @@ export default class PickupContainer extends HTMLElement {
         <div class="station">
           <div class="input">
             <input type="radio" name="station" id="station-5" value="station-5">
-            <span class="hex">PUPZX987PO</span>
+            <span class="name">Addis Ababa Central</span>
           </div>
           <label for="station-5">
-            <h4 class="name">Addis Ababa Central</h4>
             <p class="address">10 Churchill Avenue, Addis Ababa, Ethiopia</p>
             <p class="desc">Ideal for travelers, this station is just a stone’s throw from Meskel Square.</p>
-            ${this.getShiping({ global: { shipping: true, price: 1.52 }, local: { price: 3.68 } })}
+            ${this.getShiping(456.48)}
             <span class="contact">
               <button class="chat">Message</button>
               <a href="tel:+251911234567" class="phone">Call</a>
@@ -414,13 +275,12 @@ export default class PickupContainer extends HTMLElement {
         <div class="station">
           <div class="input">
             <input type="radio" name="station" id="station-6" value="station-6">
-            <span class="hex">PUPTZU321QW</span>
+            <span class="name">Dar es Salaam Hub</span>
           </div>
           <label for="station-6">
-            <h4 class="name">Dar es Salaam Hub</h4>
             <p class="address">8 Julius Nyerere Road, Dar es Salaam, Tanzania</p>
             <p class="desc">Strategically placed near the ferry terminal, this station is perfect for inter-city travel.</p>
-            ${this.getShiping({ global: { shipping: true, price: 1.42 }, local: { price: 3.68 } })}
+            ${this.getShiping(56.48)}
             <span class="contact">
               <button class="chat">Message</button>
               <a href="tel:+255715123456" class="phone">Call</a>
@@ -432,48 +292,19 @@ export default class PickupContainer extends HTMLElement {
     `;
   };
 
-  getShiping = data => {
-    if (data.global.shipping) {
-      return /* html */`
-        <div class="fees">
-          <span class="fee local">
-            <span class="text">Local</span>
-            <span class="desc">Local stores</span>
-            <span class="price">
-              <span class="currency">乇</span>
-              <span class="amount">${data.local.price}</span>
-            </span>
+  getShiping = price => {
+    return /* html */`
+      <div class="fees">
+        <span class="fee local">
+          <span class="price">
+            <span class="currency">Ksh</span>
+            <span class="amount">${this.number.balanceWithCommas(price)}</span>
           </span>
-          <span class="fee global">
-            <span class="text">Global</span>
-            <span class="desc">Shipping per 1Kg</span>
-            <span class="price">
-              <span class="currency">乇</span>
-              <span class="amount">${data.global.price}</span>
-            </span>
-          </span>
-        </div>
-      `;
-    } else {
-      return /* html */`
-        <div class="fees">
-          <span class="fee local">
-            <span class="text">Local</span>
-            <span class="desc">Local stores</span>
-            <span class="price">
-              <span class="currency">乇</span>
-              <span class="amount">3.68</span>
-            </span>
-          </span>
-          <span class="fee global disabled">
-            <span class="text">Global</span>
-            <span class="desc">We do not ship from stores outside the country</span>
-          </span>
-        </div>
-      `;
-    }
+        </span>
+      </div>
+    `;
   }
-  
+
   getFooter = () => {
     return /* html */`
       <div class="footer">
@@ -572,7 +403,7 @@ export default class PickupContainer extends HTMLElement {
           --c:var(--accent-color) 90%,#0000;
           --c1:var(--accent-alt)  90%,#0000;
           --c2:var(--alt-color)  90%,#0000;
-          background: 
+          background:
             radial-gradient(circle closest-side at left  10px top 50%,var(--c)),
             radial-gradient(circle closest-side                     ,var(--c1)),
             radial-gradient(circle closest-side at right 10px top 50%,var(--c2));
@@ -589,7 +420,7 @@ export default class PickupContainer extends HTMLElement {
           padding: 10px 0 0;
           display: flex;
           flex-flow: column;
-          gap: 0;
+          gap: 10px;
           width: 100%;
         }
 
@@ -599,6 +430,7 @@ export default class PickupContainer extends HTMLElement {
           gap: 0;
           padding: 0;
           width: 100%;
+          border-bottom: var(--action-border);
         }
 
         .head > h3.title {
@@ -688,14 +520,16 @@ export default class PickupContainer extends HTMLElement {
 
         .stations {
           padding: 20px 0 5px;
-          display: column;
+          display: flex;
+          flex-flow: column;
           gap: 10px;
         }
 
         .station {
-          padding: 10px 0;
+          padding: 0;
           width: 100%;
-          border-top: var(--border);
+          /* border-top: var(--border); */
+          background: var(--item-background);
           display: flex;
           flex-flow: column;
           gap: 0;
@@ -706,10 +540,11 @@ export default class PickupContainer extends HTMLElement {
         .station > .input {
           display: flex;
           flex-flow: row;
+          width: 100%;
           gap: 5px;
-          padding: 0 0 5px;
+          padding: 10px 10px;
           align-items: center;
-          justify-content: center;
+          border-bottom: var(--border);
         }
 
         .station > .input > span.hex {
@@ -723,6 +558,16 @@ export default class PickupContainer extends HTMLElement {
           align-items: center;
           justify-content: center;
           text-align: center;
+        }
+
+        .station > .input > span.name {
+          font-size: 1rem;
+          font-family: var(--font-main), sans-serif;
+          color: var(--title-color);
+          font-weight: 500;
+          font-size: 1.1rem;
+          margin: 0;
+          padding: 0;
         }
 
         /* if the radio button is checked */
@@ -742,7 +587,7 @@ export default class PickupContainer extends HTMLElement {
         }
 
         .station > label {
-          padding: 0;
+          padding: 10px 10px;
           display: flex;
           flex-flow: column;
           width: 100%;
@@ -757,16 +602,6 @@ export default class PickupContainer extends HTMLElement {
         .station > input[type="radio"]:checked + label {
           background: var(--tab-background);
           color: var(--white-color);
-        }
-
-        .station > label > h4.name {
-          font-size: 1rem;
-          font-family: var(--font-main), sans-serif;
-          color: var(--title-color);
-          font-weight: 500;
-          font-size: 1.1rem;
-          margin: 0;
-          padding: 0;
         }
 
         .station > label > p.address {
@@ -794,24 +629,20 @@ export default class PickupContainer extends HTMLElement {
           gap: 20px;
           align-items: center;
           justify-content: flex-start;
-          padding: 10px 0 0;
+          padding: 0;
         }
 
         .station > label > .fees > span.fee {
           display: flex;
           flex-flow: column;
           gap: 0;
-          height: 90px;
-          width: calc(50% - 10px);
           align-items: flex-start;
           justify-content: flex-start;
-          background: var(--gray-background);
-          padding: 6px 10px;
-          border-radius: 10px;
+          padding: 10px 0;
         }
 
         .station > label > .fees > span.fee > span.text {
-          font-size: 1rem;
+          font-size: 1.3rem;
           font-family: var(--font-main), sans-serif;
           color: var(--text-color);
           font-weight: 500;
@@ -842,10 +673,10 @@ export default class PickupContainer extends HTMLElement {
         }
 
         .station > label > .fees > span.fee > span.price > span.currency {
-          font-size: 1.2rem;
+          font-size: 1.35rem;
           font-family: var(--font-main), sans-serif;
           color: var(--accent-color);
-          font-weight: 800;
+          font-weight: 600;
           margin: -2px 0 0;
           padding: 0;
           display: flex;
@@ -858,7 +689,7 @@ export default class PickupContainer extends HTMLElement {
           font-size: 1.35rem;
           font-family: var(--font-main), sans-serif;
           color: var(--accent-color);
-          font-weight: 500;
+          font-weight: 600;
           margin: 0;
           padding: 0;
           display: flex;
@@ -869,7 +700,7 @@ export default class PickupContainer extends HTMLElement {
 
         .station > label > span.contact {
           width: 100%;
-          padding: 10px 0 0;
+          padding: 0 0 10px;
           display: flex;
           flex-flow: row;
           gap: 20px;
@@ -883,8 +714,8 @@ export default class PickupContainer extends HTMLElement {
           font-size: 1rem;
           font-family: var(--font-main), sans-serif;
           color: var(--text-color);
-          background: var(--background);
-          border: var(--action-border);
+          border: none;
+          background: var(--gray-background);
           text-decoration: none;
           font-weight: 400;
           font-size: 0.9rem;
@@ -892,7 +723,7 @@ export default class PickupContainer extends HTMLElement {
           align-items: center;
           justify-content: center;
           cursor: pointer;
-          padding: 6px 15px;
+          padding: 7px 15px;
           border-radius: 12px;
           transition: 0.3s;
         }
@@ -905,13 +736,14 @@ export default class PickupContainer extends HTMLElement {
         }
 
         .footer {
-          border-top: var(--border);
+          border-top: var(--action-border);
           margin: 0 0 20px;
           width: 100%;
           padding: 20px 0 10px 0;
           display: flex;
           flex-flow: row;
-          justify-content: space-between;
+          gap: 50px;
+          justify-content: flex-end;
           align-items: center;
           justify-self: end;
         }
@@ -926,16 +758,16 @@ export default class PickupContainer extends HTMLElement {
           font-family: var(--font-alt);
           line-height: 1.2;
           font-size: 1.1rem;
+          padding: 13px 20px 13px 15px;
           font-weight: 500;
-          width: 130px;
+          width: 230px;
           color: var(--text-color);
           cursor: pointer;
         }
 
         .footer > .action.prev {
-          padding: 8px 20px 8px 15px;
-          background: var(--background);
-          border: var(--border);
+          background: var(--gray-background);
+          /* border: var(--border); */
         }
 
         .footer > .action.prev svg path {
@@ -943,14 +775,13 @@ export default class PickupContainer extends HTMLElement {
         }
 
         .footer > .action.next {
-          padding: 8px 18px 8px 23px;
-          color: var(--anchor-color);
-          background: var(--background);
-          border: var(--action-border);
+          color: var(--white-color);
+          background: var(--action-background);
+          /* border: var(--action-border); */
         }
 
         .footer > .action.next svg path {
-          fill: var(--anchor-color);
+          fill: var(--white-color);
         }
 
         .footer > .action.disabled {

@@ -200,7 +200,7 @@ export default class CheckoutContainer extends HTMLElement {
               data.UserData[`${input.dataset.name}`] = input.value
             }
             break;
-          
+
           case 'number':
             if (input.value.length < 9 || input.value.length > 10) {
               next = false;

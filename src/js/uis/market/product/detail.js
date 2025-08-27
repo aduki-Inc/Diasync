@@ -1,19 +1,17 @@
 export default class ProductDetail extends HTMLElement {
   constructor() {
-    // We are not even going to touch this.
     super();
-
-    // lets create our shadow root
     this.shadowObj = this.attachShadow({ mode: "open" });
     this.mql = window.matchMedia('(max-width: 700px)');
-    this.app = window.app;
-    this.utils = this.app.utils;
-    this.quantity = this.utils.number.parseInteger(this.getAttribute('quantity'));
-    this.inCart = this.utils.number.parseInteger(this.getAttribute('in-cart'));
-    this.price = this.utils.number.parse(this.getAttribute('current-price'));
-    this.lastPrice = this.utils.number.parse(this.getAttribute('previous-price'));
-    this.totalReviews = this.utils.number.parseInteger(this.getAttribute('reviews'));
-    this.averageReview = this.utils.number.parse(this.getAttribute('average-review'));
+    this.app = window.app || {};
+    this.number = this.app?.utils?.number;
+    this.date = this.app?.utils?.date;
+    this.quantity = this.number.parseInteger(this.getAttribute('quantity'));
+    this.inCart = this.number.parseInteger(this.getAttribute('in-cart'));
+    this.price = this.number.parse(this.getAttribute('current-price'));
+    this.lastPrice = this.number.parse(this.getAttribute('previous-price'));
+    this.totalReviews = this.number.parseInteger(this.getAttribute('reviews'));
+    this.averageReview = this.number.parse(this.getAttribute('average-review'));
     this.storeCountry = this.getAttribute('store-country');
     this.userCountry = this.getCountryCode();
     this.render();
@@ -53,8 +51,8 @@ export default class ProductDetail extends HTMLElement {
   setHeader = mql => {
     if (mql.matches) {
       this.app.setHeader({
-        sectionTitle: 'Product Detail',
-        description: 'Thealcoholic T-Shirt is a high-quality, stylish t-shirt made from 100% cotton. It features a classic crew neck design and is available in a range of sizes and colors. Thealcoholic T-Shirt is perfect for casual wear or as a gift for any occasion.',
+        sectionTitle: 'Product',
+        description: this.getAttribute('name')
       });
     }
   }
@@ -64,6 +62,21 @@ export default class ProductDetail extends HTMLElement {
 
     // if current is less than last > calculate discount: 2 decimal places if available
     const discount = ((last - current) / last) * 100;
+
+    // if discount is a whole number return it
+    if (discount % 1 === 0) return discount;
+
+    // if discount is not a whole number return it with 2 decimal places
+    return discount.toFixed(2);
+  }
+
+  calculatePlainDiscount = (current, last) => {
+    if (current === last || current > last) return 0;
+
+    const discount = last - current;
+
+    // if discount is negative return 0
+    if (discount < 0) return 0;
 
     // if discount is a whole number return it
     if (discount % 1 === 0) return discount;
@@ -108,44 +121,60 @@ export default class ProductDetail extends HTMLElement {
     let offer = this.calculateDiscount(this.price, this.lastPrice);
     return /* html */`
       <div class="quick-info">
-        <div class="name-info">
-          <div class="title">
-            <h2 class="name">${this.getAttribute('name')}</h2>
-            <span class="line"></span>
-          </div>
-          ${this.checkCountry()}
-          <span class="review">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="currentColor" fill="none">
-              <path d="M13.7276 3.44418L15.4874 6.99288C15.7274 7.48687 16.3673 7.9607 16.9073 8.05143L20.0969 8.58575C22.1367 8.92853 22.6167 10.4206 21.1468 11.8925L18.6671 14.3927C18.2471 14.8161 18.0172 15.6327 18.1471 16.2175L18.8571 19.3125C19.417 21.7623 18.1271 22.71 15.9774 21.4296L12.9877 19.6452C12.4478 19.3226 11.5579 19.3226 11.0079 19.6452L8.01827 21.4296C5.8785 22.71 4.57865 21.7522 5.13859 19.3125L5.84851 16.2175C5.97849 15.6327 5.74852 14.8161 5.32856 14.3927L2.84884 11.8925C1.389 10.4206 1.85895 8.92853 3.89872 8.58575L7.08837 8.05143C7.61831 7.9607 8.25824 7.48687 8.49821 6.99288L10.258 3.44418C11.2179 1.51861 12.7777 1.51861 13.7276 3.44418Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-            </svg>
-            <span class="number">${this.getAttribute('average-review')}</span>
-            <span class="sp">•</span>
-            <span class="people">
-              <span class="no">${this.utils.number.withCommas(this.getAttribute('reviews'))}</span>
-              <span class="text">${this.getReviewsPlural()}</span>
-            </span>
-          </span>
-        </div>
         ${this.getImages()}
         <div class="details">
-          <div class="top">
-            <div class="price">
-              ${this.getCurrentPrice()}
+          <div class="name-info">
+            <div class="title">
+              <h2 class="name">${this.getAttribute('name')}</h2>
               <span class="line"></span>
-              ${this.getWasPrice()}
-              <span class="line"></span>
-              <div class="save">
-                <span class="percent">${offer}%</span>
-                <span class="text">Off</span>
-              </div>
             </div>
-            ${this.getColors(this.getAttribute('colors'))}
-            ${this.getSizes(this.getAttribute('sizes'))}
+            ${this.checkCountry()}
+            <span class="review">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="currentColor" fill="none">
+                <path d="M13.7276 3.44418L15.4874 6.99288C15.7274 7.48687 16.3673 7.9607 16.9073 8.05143L20.0969 8.58575C22.1367 8.92853 22.6167 10.4206 21.1468 11.8925L18.6671 14.3927C18.2471 14.8161 18.0172 15.6327 18.1471 16.2175L18.8571 19.3125C19.417 21.7623 18.1271 22.71 15.9774 21.4296L12.9877 19.6452C12.4478 19.3226 11.5579 19.3226 11.0079 19.6452L8.01827 21.4296C5.8785 22.71 4.57865 21.7522 5.13859 19.3125L5.84851 16.2175C5.97849 15.6327 5.74852 14.8161 5.32856 14.3927L2.84884 11.8925C1.389 10.4206 1.85895 8.92853 3.89872 8.58575L7.08837 8.05143C7.61831 7.9607 8.25824 7.48687 8.49821 6.99288L10.258 3.44418C11.2179 1.51861 12.7777 1.51861 13.7276 3.44418Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+              <span class="number">${this.getAttribute('average-review')}</span>
+              <span class="sp">•</span>
+              <span class="people">
+                <span class="no">${this.number.withCommas(this.getAttribute('reviews'))}</span>
+                <span class="text">${this.getReviewsPlural()}</span>
+              </span>
+            </span>
+            <p class="description">${this.getAttribute('description')}</p>
+          </div>
+          <div class="product-info">
+            <div class="price">
+              <h3 class="details-title">Product Price</h3>
+              <div class="prices">
+                ${this.getCurrentPrice()}
+                ${this.getWasPrice()}
+              </div>
+              ${this.getSaves()}
+            </div>
+            ${this.getDosages(this.getAttribute('dosages'))}
           </div>
           ${this.getButtons()}
         </div>
       </div>
     `
+  };
+
+  getSaves = () => {
+    const offer = this.calculateDiscount(this.price, this.lastPrice);
+    const amountSaved = this.calculatePlainDiscount(this.price, this.lastPrice);
+    return /* html */`
+      <h3 class="details-title">You Save</h3>
+      <div class="saves">
+        <div class="save">
+          <span class="text">Off</span>
+          <span class="percent">${offer}%</span>
+        </div>
+        <div class="amount">
+          <span class="currency">Ksh</span>
+          <span class="value">${this.number.withCommas(amountSaved)}</span>
+        </div>
+      </div>
+    `;
   };
 
   // check if store and user are within the same country
@@ -176,80 +205,37 @@ export default class ProductDetail extends HTMLElement {
     }
   }
 
-  getColors = colors => {
-    // if colors is not available return empty string
-    if (!colors || colors === '' || colors === 'null') return '';
+  getDosages = dosages => {
+    // if dosages is not available return empty string
+    if (!dosages || dosages === '' || dosages === 'null') return '';
 
-    // if colors is available return the colors
+    // if dosages is available return the dosages
     try {
       // parse to json
-      const colorsArray = JSON.parse(colors);
+      const dosagesObjects = JSON.parse(dosages);
 
-      // loop keys in the colors
-      const keys = Object.keys(colorsArray);
+      // loop keys in the dosages
+      const keys = Object.keys(dosagesObjects);
 
-      // loop through the keys and return the colors
+      // loop through the keys and return the dosages
       const items = keys.map((key, index) => {
-        const color = colorsArray[key];
+        const dosage = dosagesObjects[key]
         const checked = index === 0 ? 'checked' : '';
-        const outOfStock = color.quantity === 0 ? 'disabled' : '';
+        const out = dosage.quantity < 1 ? 'disabled' : '';
         return /* html */`
-          <div class="color">
+          <div class="dosage">
             <label class="label" for="${key}">
-              <img src="${color.image}" alt="Color">
-              <span class="name">${color.name}</span>
+              <span class="name">${dosage.name}</span>
             </label>
-            <input type="radio" name="color" id="${key}" value="${color.name}" ${checked}
-             ${outOfStock}>
+            <input type="radio" name="dosage" id="${key}" value="${key}" ${checked} ${out}>
           </div>
         `;
       }).join('');
 
       return /* html */`
-        <div class="colors">
-          <h3 class="title">Color</h3>
-          <div class="color-options">
-            ${items}
-          </div>
-        </div>
-      `;
-
-    } catch (error) {
-      return '';
-    }
-  }
-
-  getSizes = sizes => {
-    // if sizes is not available return empty string
-    if (!sizes || sizes === '' || sizes === 'null') return '';
-
-    // if sizes is available return the sizes
-    try {
-      // parse to json
-      const sizesObjects = JSON.parse(sizes);
-
-      // loop keys in the sizes
-      const keys = Object.keys(sizesObjects);
-
-      // loop through the keys and return the sizes
-      const items = keys.map((key, index) => {
-        const size = sizesObjects[key]
-        const checked = index === 0 ? 'checked' : '';
-        const out = size.quantity < 1 ? 'disabled' : '';
-        return /* html */`
-          <div class="size">
-            <label class="label" for="${key}">
-              <span class="name">${size.name}</span>
-            </label>
-            <input type="radio" name="size" id="${key}" value="${key}" ${checked} ${out}>
-          </div>
-        `;
-      }).join('');
-
-      return /* html */`
-        <div class="sizes">
-          <h3 class="title">Size</h3>
-          <div class="size-options">
+        <div class="dosages">
+          <h3 class="title">Dosage</h3>
+          <div class="dosage-options">
             ${items}
           </div>
         </div>
@@ -268,8 +254,8 @@ export default class ProductDetail extends HTMLElement {
         <span class="text">Was</span>
         <span class="contain">
           <span class="strike"></span>
-          <span class="currency">乇</span>
-          <span class="price">${this.utils.number.balanceWithCommas(this.lastPrice)}</span>
+          <span class="currency">Ksh</span>
+          <span class="price">${this.number.balanceWithCommas(this.lastPrice)}</span>
         </span>
       </span>
     `;
@@ -280,8 +266,8 @@ export default class ProductDetail extends HTMLElement {
       <span class="value">
         <span class="text">Price</span>
         <span class="contain">
-          <span class="currency">乇</span>
-          <span class="price">${this.utils.number.balanceWithCommas(this.price)}</span>
+          <span class="currency">Ksh</span>
+          <span class="price">${this.number.balanceWithCommas(this.price)}</span>
         </span>
       </span>
     `;
@@ -320,16 +306,6 @@ export default class ProductDetail extends HTMLElement {
           <img src="${mainImage}" alt="Product Image">
         </div>
         <div class="image-options">
-          <div id="left-nav" class="nav">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-left" viewBox="0 0 16 16">
-              <path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z" />
-            </svg>
-          </div>
-          <div id="right-nav" class="nav">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-right" viewBox="0 0 16 16">
-              <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z" />
-            </svg>
-          </div>
           <div class="images">
             ${htmlImages}
           </div>
@@ -353,7 +329,6 @@ export default class ProductDetail extends HTMLElement {
     return /* html */`
       <div class="buttons">
         <button class="button add ${className}">${html}</button>
-        <button class="button buy">Buy Now</button>
         <button class="button wish ${wishClass}">${wishHtml}</button>
 			</div>
     `;
@@ -591,22 +566,22 @@ export default class ProductDetail extends HTMLElement {
 
   getProducts = () => {
     return /* html */`
-      <div is="product-wrapper" product-image="/images/product/product-8.webp" name="Fresh Tea and is a very long name" last="33.25" store="The Vines Inn" reviews="120" average-review="4.5" wished="true" in-cart="0" quantity="45" price="33.25" store-country="KE"></div>
-      <div is="product-wrapper" product-image="/images/product/product-1.webp" name="Apple Fresh" last="25.00" store="Wendy's" reviews="85" average-review="3.8" wished="false" in-cart="2" quantity="32" price="25.00" store-country="US"></div>
-      <div is="product-wrapper" product-image="/images/product/product-2.webp" name="Banana Fresh" last="15.50" store="Trader Joe's" reviews="200" average-review="4.8" wished="true" in-cart="0" quantity="50" price="10.25" store-country="KE"></div>
-      <div is="product-wrapper" product-image="/images/product/product-4.webp" name="Orange Fresh" last="20.75" store="Whole Foods" reviews="150" average-review="4.3" wished="false" in-cart="1" quantity="65" price="20.75" store-country="US"></div>
-      <div is="product-wrapper" product-image="/images/product/product-5.webp" name="Grapes Fresh" last="18.00" store="Safeway" reviews="6987" average-review="4.1" wished="true" in-cart="0" quantity="73" price="32.50" store-country="US"></div>
-      <div is="product-wrapper" product-image="/images/product/product-6.webp" name="Mango Fresh" last="22.50" store="Kroger" reviews="110" average-review="4.6" wished="false" in-cart="0" quantity="48" price="19.25" store-country="KE"></div>
-      <div is="product-wrapper" product-image="/images/product/fruits/10.jpg" name="Strawberry Fresh" last="30.00" store="Publix" reviews="130" average-review="4.7" wished="true" in-cart="0" quantity="32" price="55.40" store-country="US"></div>
-      <div is="product-wrapper" product-image="/images/product/fruits/11.jpg" name="Blueberry Fresh" last="28.00" store="Albertsons" reviews="95" average-review="4.2" wished="false" in-cart="0" quantity="0" price="13.80" store-country="KE"></div>
-      <div is="product-wrapper" product-image="/images/product/fruits/12.jpg" name="Watermelon Fresh" last="35.00" store="Sprouts" reviews="140" average-review="4.4" wished="true" in-cart="0" quantity="38" price="45.00" store-country="KE"></div>
-      <div is="product-wrapper" product-image="/images/product/product-7.webp" name="Peach Fresh" last="27.00" store="H-E-B" reviews="105" average-review="4.3" wished="false" in-cart="0" quantity="15" price="14.25" store-country="US"></div>
-      <div is="product-wrapper" product-image="/images/product/fruits/14.jpg" name="Cherry Fresh" last="32.00" store="Aldi" reviews="115" average-review="3.5" wished="true" in-cart="3" quantity="44" price="19.60" store-country="KE"></div>
-      <div is="product-wrapper" product-image="/images/product/fruits/15.jpg" name="Pomegranate Fresh" last="40.00" store="Costco" reviews="125" average-review="4.6" wished="false" in-cart="1" quantity="36" price="28.75" store-country="US"></div>
-      <div is="product-wrapper" product-image="/images/product/product-8.webp" name="Kiwi Fresh" last="24.00" store="Sam's Club" reviews="100" average-review="4.2" wished="true" in-cart="0" quantity="29" price="12.80" store-country="KE"></div>
-      <div is="product-wrapper" product-image="/images/product/fruits/17.jpg" name="Papaya Fresh" last="26.00" store="Meijer" reviews="80" average-review="2.0" wished="false" in-cart="0" quantity="41" price="9.20" store-country="US"></div>
-      <div is="product-wrapper" product-image="/images/product/fruits/22.jpg" name="Guava Fresh" last="19.00" store="Wegmans" reviews="70" average-review="3.9" wished="true" in-cart="0" quantity="0" price="7.90" store-country="KE"></div>
-      <div is="product-wrapper" product-image="/images/product/fruits/19.jpg" name="Lychee Fresh" last="29.00" store="Hy-Vee" reviews="60" average-review="3.1" wished="false" in-cart="0" quantity="13" price="17.30" store-country="KE"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug1.jpg" name="Paracetamol 500mg Tablets - Pain & Fever Relief" last="5048.50" store="HealthCare Plus Pharmacy" reviews="32894" average-review="4.7" wished="true" in-cart="0" quantity="150" price="4598.50" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug2.jpg" name="Ibuprofen 400mg Capsules - Anti-inflammatory" last="712.25" store="HealthCare Plus Pharmacy" reviews="185" average-review="4.3" wished="false" in-cart="2" quantity="89" price="152.25" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug3.jpg" name="Amoxicillin 250mg Syrup - Antibiotic" last="824.75" store="HealthCare Plus Pharmacy" reviews="9546" average-review="4.5" wished="true" in-cart="0" quantity="45" price="247.75" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug4.jpg" name="Dextromethorphan Cough Syrup - Respiratory Relief" last="215.80" store="HealthCare Plus Pharmacy" reviews="142" average-review="4.2" wished="false" in-cart="1" quantity="67" price="15.80" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug5.jpg" name="Multivitamin Complex Tablets - Daily Nutrition" last="8628.50" store="HealthCare Plus Pharmacy" reviews="489" average-review="4.6" wished="true" in-cart="0" quantity="200" price="28.50" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug6.jpg" name="Antiseptic Solution 100ml - Wound Care" last="995.90" store="HealthCare Plus Pharmacy" reviews="176" average-review="4.4" wished="false" in-cart="0" quantity="120" price="995.90" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug7.jpg" name="Adhesive Bandages Pack - First Aid" last="8766.75" store="HealthCare Plus Pharmacy" reviews="234" average-review="4.8" wished="true" in-cart="0" quantity="85" price="6.75" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug8.jpg" name="Cetirizine 10mg Tablets - Allergy Relief" last="418.40" store="HealthCare Plus Pharmacy" reviews="167" average-review="4.1" wished="false" in-cart="0" quantity="0" price="188.40" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug9.jpg" name="Insulin Injection Pen - Diabetes Management" last="1825.00" store="HealthCare Plus Pharmacy" reviews="89" average-review="4.9" wished="true" in-cart="0" quantity="12" price="7125.00" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug10.jpg" name="Aspirin 325mg Tablets - Cardiovascular Health" last="191.30" store="HealthCare Plus Pharmacy" reviews="29468" average-review="4.0" wished="false" in-cart="0" quantity="156" price="181.30" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug12.jpg" name="Calcium Carbonate Antacid - Digestive Health" last="7814.60" store="HealthCare Plus Pharmacy" reviews="203" average-review="3.8" wished="true" in-cart="3" quantity="78" price="128974.60" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug13.jpg" name="Lubricating Eye Drops - Vision Care" last="8722.90" store="HealthCare Plus Pharmacy" reviews="134" average-review="4.3" wished="false" in-cart="1" quantity="54" price="22.90" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug16.jpg" name="Digital Thermometer - Health Monitoring" last="1435.75" store="HealthCare Plus Pharmacy" reviews="112" average-review="4.5" wished="true" in-cart="0" quantity="28" price="6435.75" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug14.jpg" name="Probiotic Capsules 30ct - Gut Health" last="1742.20" store="HealthCare Plus Pharmacy" reviews="91" average-review="3.9" wished="false" in-cart="0" quantity="63" price="42.20" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug15.jpg" name="Hand Sanitizer 250ml - Hygiene Protection" last="187.45" store="HealthCare Plus Pharmacy" reviews="456" average-review="4.2" wished="true" in-cart="0" quantity="0" price="7.45" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug11.jpg" name="Omega-3 Fish Oil Capsules - Heart Health" last="3431.80" store="HealthCare Plus Pharmacy" reviews="178" average-review="4.4" wished="false" in-cart="0" quantity="94" price="31.80" store-country="Kenya"></div>
     `;
   }
 
@@ -673,7 +648,6 @@ export default class ProductDetail extends HTMLElement {
           <div class="user-reviews">
             ${this.getReviewsItems()}
           </div>
-          ${this.getPagination({ current: 17, total: 63 })}
         </div>
       </div>
     `
@@ -691,7 +665,7 @@ export default class ProductDetail extends HTMLElement {
         <span class="stars" style="width: ${percantageAverage}%;">
           ${this.getStars(5)}
         </span>
-        <p class="text">${this.utils.number.withCommas(this.totalReviews)} Reviews</p>
+        <p class="text">${this.number.withCommas(this.totalReviews)} Reviews</p>
       </div>
       <div class="individual-scores">
         <span class="score five">
@@ -753,176 +727,47 @@ export default class ProductDetail extends HTMLElement {
 
   getReviewsItems = () => {
     return /* html */`
-    <div is="product-review" user-name="John Smith" user-picture="https://randomuser.me/api/portraits/men/11.jpg" number="5" date="2024-11-15T00:00:00Z" verified="true">
+    <div is="product-review" user-name="John Smith" user-picture="https://randomuser.me/api/portraits/men/11.jpg" number="5" date="2024-11-15T00:00:00Z" purpose="Diagnosed">
       <p>Excellent product! Exceeded my expectations. Highly recommended.</p>
       <p>Will definitely purchase again.</p>
     </div>
-    <div is="product-review" user-name="Emily Johnson" user-picture="https://randomuser.me/api/portraits/women/12.jpg" number="4" date="2024-10-20T00:00:00Z" verified="true">
+    <div is="product-review" user-name="Emily Johnson" user-picture="https://randomuser.me/api/portraits/women/12.jpg" number="4" date="2024-10-20T00:00:00Z" purpose="Diagnosed">
       <p>Very satisfied with this product. Great quality and value for money.</p>
       <p>Would recommend to others.</p>
     </div>
-    <div is="product-review" user-name="Michael Brown" user-picture="https://randomuser.me/api/portraits/men/13.jpg" number="3" date="2024-09-25T00:00:00Z" verified="true">
+    <div is="product-review" user-name="Michael Brown" user-picture="https://randomuser.me/api/portraits/men/13.jpg" number="3" date="2024-09-25T00:00:00Z" purpose="Purchase">
       <p>Good product but had some issues with delivery. Overall, happy with the purchase.</p>
       <p>May consider buying again.</p>
     </div>
-    <div is="product-review" user-name="Jessica Davis" user-picture="https://randomuser.me/api/portraits/women/14.jpg" number="5" date="2024-08-30T00:00:00Z" verified="true">
+    <div is="product-review" user-name="Jessica Davis" user-picture="https://randomuser.me/api/portraits/women/14.jpg" number="5" date="2024-08-30T00:00:00Z" purpose="Prescription">
       <p>Amazing product! Works perfectly and as described. Highly recommend.</p>
       <p>Will definitely buy again.</p>
     </div>
-    <div is="product-review" user-name="David Wilson" user-picture="https://randomuser.me/api/portraits/men/15.jpg" number="4" date="2024-07-05T00:00:00Z" verified="true">
+    <div is="product-review" user-name="David Wilson" user-picture="https://randomuser.me/api/portraits/men/15.jpg" number="4" date="2024-07-05T00:00:00Z" purpose="Prescription">
       <p>Very good product. Met all my expectations. Would recommend.</p>
       <p>Happy with the purchase.</p>
     </div>
-    <div is="product-review" user-name="Sarah Miller" user-picture="https://randomuser.me/api/portraits/women/16.jpg" number="5" date="2024-06-10T00:00:00Z" verified="true">
+    <div is="product-review" user-name="Sarah Miller" user-picture="https://randomuser.me/api/portraits/women/16.jpg" number="5" date="2024-06-10T00:00:00Z" purpose="Prescription">
       <p>Outstanding product! Great quality and performance. Highly recommend.</p>
       <p>Will buy again for sure.</p>
     </div>
-    <div is="product-review" user-name="James Martinez" user-picture="https://randomuser.me/api/portraits/men/17.jpg" number="4" date="2024-05-15T00:00:00Z" verified="true">
+    <div is="product-review" user-name="James Martinez" user-picture="https://randomuser.me/api/portraits/men/17.jpg" number="4" date="2024-05-15T00:00:00Z" purpose="Prescription">
       <p>Good product overall. Had a minor issue but customer service resolved it quickly.</p>
       <p>Would consider buying again.</p>
     </div>
-    <div is="product-review" user-name="Linda Anderson" user-picture="https://randomuser.me/api/portraits/women/18.jpg" number="5" date="2024-04-20T00:00:00Z" verified="true">
+    <div is="product-review" user-name="Linda Anderson" user-picture="https://randomuser.me/api/portraits/women/18.jpg" number="5" date="2024-04-20T00:00:00Z" purpose="Prescription">
       <p>Excellent quality product. Very happy with the purchase. Highly recommend.</p>
       <p>Will definitely buy again.</p>
     </div>
-    <div is="product-review" user-name="Robert Thomas" user-picture="https://randomuser.me/api/portraits/men/19.jpg" number="4" date="2024-03-25T00:00:00Z" verified="true">
+    <div is="product-review" user-name="Robert Thomas" user-picture="https://randomuser.me/api/portraits/men/19.jpg" number="4" date="2024-03-25T00:00:00Z" purpose="Prescription">
       <p>Very good product. Met my expectations. Would recommend to others.</p>
       <p>Happy with the purchase.</p>
     </div>
-    <div is="product-review" user-name="Patricia Jackson" user-picture="https://randomuser.me/api/portraits/women/20.jpg" number="5" date="2024-02-28T00:00:00Z" verified="false">
+    <div is="product-review" user-name="Patricia Jackson" user-picture="https://randomuser.me/api/portraits/women/20.jpg" number="5" date="2024-02-28T00:00:00Z" purpose="Prescription">
       <p>Outstanding product! Great value for money. Highly recommend.</p>
       <p>Will buy again for sure.</p>
     </div>
     `;
-  }
-
-  getPagination = data => {
-    const { current, total } = data;
-
-    // if total is 1, return empty string
-    if (total < 2) return "";
-
-    const prev = this.createPrevNavigation(current);
-    const currentPage = /*html*/`<button class="page current ${current > 99 ? "large" : ""}">${current}</button>`;
-    const next = this.createNextNavigation(current, total);
-
-    return /* html */`
-      <div class="pagination">
-        ${prev}
-        ${currentPage}
-        ${next}
-      </div>
-    `;
-  }
-
-  createPrevNavigation = current => {
-    // if both current and total are not numbers, return empty string
-    if (isNaN(current)) return "";
-
-    /* if current page is 1, return empty string */
-    if (current === 1) return "";
-
-    /* if current page is less than 6, return 1 to 4 */
-    if (current < 6) {
-      let prev = "";
-      for (let i = 1; i < current; i++) {
-        prev += /* html */`<button class="page prev ${i > 99 ? "large" : ""}">${i}</button>`;
-      }
-      return /* html */`
-        <div class="previous">
-          ${prev}
-        </div>
-      `;
-    }
-
-    // anything greater than 6, return the last 3 pages and start page: 1
-    if (current >= 6) {
-      // loop to create the previous pages
-      let prev = /* html */`<button class="page prev start">1</button>`;
-      for (let i = current - 3; i < current; i++) {
-        prev += /* html */`<button class="page prev ${i > 99 ? "large" : ""}">${i}</button>`;
-      }
-
-      return /* html */`
-        <div class="previous">
-          ${prev}
-        </div>
-      `;
-    }
-  }
-
-  createNextNavigation = (current, total) => {
-    // if both current and total are not numbers, return empty string
-    if (isNaN(current) || isNaN(total)) return "";
-
-    /* if current page is the last page, return empty string */
-    if (current === total) return "";
-
-    /* if current page is less than 6, and total is less than 6, return all pages */
-    if (current < 6 && total < 6) {
-      let next = "";
-      for (let i = current + 1; i <= total; i++) {
-        next += /* html */`<button class="page next ${i > 99 ? "large" : ""}">${i}</button>`;
-      }
-
-      // return the next pages
-      return /* html */`
-        <div class="nexts">
-          ${next}
-        </div>
-      `;
-    }
-
-    /* if current page is less than 6, return after current: three after */
-    if (current < 6 && (total - current) > 3) {
-      let next = "";
-      for (let i = current + 1; i <= current + 3; i++) {
-        next += /* html */`<button class="page next ${i > 99 ? "large" : ""}">${i}</button>`;
-      }
-
-      // add last page
-      next += /* html */`<button class="page next end ${total > 99 ? "large" : ""}">${total}</button>`;
-
-      // return the next pages
-      return /* html */`
-        <div class="nexts">
-          ${next}
-        </div>
-      `;
-    }
-
-    // if page is 6 or greater, and is less than the total by 3,2,1: return the last 3 pages
-    if (current >= 6 && (total - current) <= 3) {
-      let next = "";
-      for (let i = current + 1; i <= total; i++) {
-        next += /* html */`<button class="page next">${i}</button>`;
-      }
-
-      // return the next pages
-      return /* html */`
-        <div class="nexts">
-          ${next}
-        </div>
-      `;
-    }
-
-    // if current page is 6 or greater, and is less the total by a value more than 3, return the next 3 pages and the last page
-    if (current >= 6 && (total - current) > 3) {
-      let next = "";
-      for (let i = current + 1; i < current + 4; i++) {
-        next += /* html */`<button class="page next ${i > 99 ? "large" : ""}">${i}</button>`;
-      }
-
-      // add the last page
-      next += /* html */`<button class="page next end ${total > 99 ? "large" : ""}">${total}</button>`;
-
-      // return the next pages
-      return /* html */`
-        <div class="nexts">
-          ${next}
-        </div>
-      `;
-    }
   }
 
   getStyles() {
@@ -940,138 +785,33 @@ export default class ProductDetail extends HTMLElement {
         }
 
         .quick-info {
-          margin: 15px 0 0 0;
+          margin: 0;
+          padding: 20px 0;
           width: 100%;
           display: flex;
-          flex-flow: column;
-          gap: 0;
+          flex-flow: row nowrap;
+          gap: 30px;
           justify-content: center;
         }
 
-        .quick-info > .name-info {
-          width: 100%;
-          display: flex;
-          flex-flow: column;
-          align-items: start;
-          justify-content: start;
-          gap: 0;
-          padding: 0 0 0 12px;
-          margin: 0 0 20px 0;
-          position: relative;
-        }
-
-        .quick-info > .name-info::before {
-          content: '';
-          width: 2px;
-          height: 80%;
-          position: absolute;
-          background: var(--accent-linear);
-          left: 1px;
-          top: 50%;
-          transform: translateY(-50%);
-          border-radius: 10px;
-        }
-
-        .quick-info > .name-info > .title h2.name {
-          font-size: 1.5rem;
-          color: var(--text-color);
-          font-family: var(--font-main), sans-serif;
-          font-weight: 600;
-          margin: 0;
-          padding: 0;
-          line-height: 1.4;
-          font-weight: 570;
-        }
-
-        .quick-info > .name-info > span.country-info {
-          display: flex;
-          align-items: center;
-          justify-content: start;
-          gap: 3px;
-          margin: 0;
-          padding: 5px 0;
-          color: var(--gray-color);
-          width: 100%;
-        }
-
-        .quick-info > .name-info > span.country-info svg {
-          width: 17px;
-          height: 17px;
-          color: var(--accent-color);
-        }
-
-        .quick-info > .name-info > span.country-info .text {
-          color: var(--gray-color);
-          font-size: 0.97rem;
-          font-family: var(--font-read), sans-serif;
-          font-weight: 400;
-        }
-
-        .quick-info > .name-info > .review {
-          width: 100%;
-          padding: 0;
-          margin: 0;
-          color: var(--gray-color);
-          display: flex;
-          align-items: center;
-          justify-content: start;
-          gap: 5px;
-        }
-
-        .quick-info > .name-info > .review .sp {
-          color: var(--gray-color);
-          font-family: var(--font-mono), monospace;
-          font-size: 1.5rem;
-          font-weight: 500;
-          display: inline-block;
-          margin-top: 2px;
-        }
-
-        .quick-info > .name-info > .review .number {
-          color: var(--gray-color);
-          font-family: var(--font-main), sans-serif;
-          font-size: 1rem;
-          font-weight: 500;
-        }
-
-        .quick-info > .name-info > .review svg {
-          color: var(--rating-color);
-          margin: -2.2px 0 0 0;
-          width: 18px;
-          height: 18px;
-        }
-
-        .quick-info > .name-info > .review .people {
-          color: var(--gray-color);
-          font-family: var(--font-main), sans-serif;
-          font-size: 1rem;
-          font-weight: 500;
-        }
-
-        .quick-info > .name-info > .review .people > span.no {
-          color: var(--main-color);
-          font-weight: 600;
-        }
-
-        .quick-info > .name-info > .review .people > span.text {
-          color: var(--gray-color);
-          font-weight: 400;
-        }
-
+        /* Images */
         .quick-info > .images {
-          padding: 0 0 30px 0;
-          width: 100%;
-          max-width: 100%;
+          padding: 0;
+          width: calc(50% + 80px);
+          max-width: calc(50% + 80px);
+          min-width: calc(50% + 80px);
           height: auto;
           max-height: 700px;
           display: flex;
-          flex-flow: row-reverse;
+          flex-flow: column;
           gap: 20px;
-          border-bottom: var(--border);
         }
 
         .quick-info > .images > .current-image {
-          min-width: calc(100% - 100px);
+          min-width: 100%;
+          max-width: 100%;
+          min-height: 500px;
+          max-height: 500px;
           display: flex;
           align-items: center;
           justify-content: center;
@@ -1088,13 +828,14 @@ export default class ProductDetail extends HTMLElement {
           justify-content: center;
           object-fit: cover;
           border-radius: 10px;
+          filter: var(--image-dimming);
         }
 
         .quick-info > .images > .image-options {
           position: relative;
           padding: 0;
           max-width: 100%;
-          width: 100px;
+          width: 100%;
           display: flex;
           flex-flow: column;
           align-items: center;
@@ -1105,12 +846,12 @@ export default class ProductDetail extends HTMLElement {
           max-width: 100%;
           padding: 0;
           width: 100%;
+          min-width: 100%;
           height: 100%;
           display: flex;
-          flex-flow: column;
-          align-items: start;
+          flex-flow: row;
           gap: 10px;
-          overflow-x: scroll;
+          overflow-y: scroll;
           -ms-overflow-style: none;
           scrollbar-width: none;
         }
@@ -1147,11 +888,13 @@ export default class ProductDetail extends HTMLElement {
           justify-content: center;
           object-fit: cover;
           border-radius: 9px;
+          filter: var(--image-dimming);
         }
 
         .quick-info > .images > .image-options > .nav {
           position: absolute;
-          top: 10px;
+          top: calc(50% - 13px);
+          left: 10px;
           width: 26px;
           height: 26px;
           display: none;
@@ -1161,9 +904,9 @@ export default class ProductDetail extends HTMLElement {
           transform: translate(-50%);
           color: var(--white-color);
           cursor: pointer;
-          rotate: 90deg;
           border-radius: 50px;
           background: var(--button-linear);
+          filter: brightness(1);
         }
 
         .quick-info > .images > .image-options:hover > .nav {
@@ -1172,8 +915,8 @@ export default class ProductDetail extends HTMLElement {
 
         .quick-info > .images > .image-options > .nav#right-nav {
           position: absolute;
-          top: unset;
-          bottom: 10px;
+          left: unset;
+          right: 10px;
         }
 
         .quick-info > .images > .image-options > .nav > svg {
@@ -1185,30 +928,171 @@ export default class ProductDetail extends HTMLElement {
         /*Details*/
         .quick-info > .details {
           margin: 0;
-          display: flex;
-          flex-flow: column;
-          gap: 0;
-          justify-content: space-between;
-        }
-
-        .quick-info > .details > .top {
-          width: 100%;
+          padding: 0 5px;
           display: flex;
           flex-flow: column;
           gap: 0;
         }
 
-        .quick-info > .details > .top div.price {
+        .quick-info > .details > .name-info {
           width: 100%;
+          display: flex;
+          flex-flow: column;
+          align-items: start;
+          justify-content: start;
+          gap: 0;
+          padding: 0;
+          margin: 0;
+          position: relative;
+        }
+
+        .quick-info > .details > .name-info > .title h2.name {
+          font-size: 1.5rem;
+          color: var(--text-color);
+          font-family: var(--font-main), sans-serif;
+          font-weight: 600;
+          margin: 0;
+          padding: 0;
+          line-height: 1.4;
+          font-weight: 570;
+        }
+
+        .quick-info > .details > .name-info > span.country-info {
           display: flex;
           align-items: center;
-          justify-content: space-between;
-          gap: 20px;
+          justify-content: start;
+          gap: 3px;
           margin: 0;
-          padding: 20px 0;
+          padding: 5px 0;
+          color: var(--gray-color);
+          width: 100%;
         }
 
-        .details > .top div.price span.line {
+        .quick-info > .details > .name-info > span.country-info svg {
+          width: 17px;
+          height: 17px;
+          color: var(--accent-color);
+        }
+
+        .quick-info > .details > .name-info > span.country-info .text {
+          color: var(--gray-color);
+          font-size: 0.97rem;
+          font-family: var(--font-read), sans-serif;
+          font-weight: 400;
+        }
+
+        .quick-info > .details > .name-info > .review {
+          width: 100%;
+          padding: 0;
+          margin: 0;
+          color: var(--gray-color);
+          display: flex;
+          align-items: center;
+          justify-content: start;
+          gap: 5px;
+        }
+
+        .quick-info > .details > .name-info > .review .sp {
+          color: var(--gray-color);
+          font-family: var(--font-mono), monospace;
+          font-size: 1.5rem;
+          font-weight: 500;
+          display: inline-block;
+          margin-top: 2px;
+        }
+
+        .quick-info > .details > .name-info > .review .number {
+          color: var(--gray-color);
+          font-family: var(--font-main), sans-serif;
+          font-size: 1rem;
+          font-weight: 500;
+        }
+
+        .quick-info > .details > .name-info > .review svg {
+          color: var(--rating-color);
+          margin: -2.2px 0 0 0;
+          width: 18px;
+          height: 18px;
+        }
+
+        .quick-info > .details > .name-info > .review .people {
+          color: var(--gray-color);
+          font-family: var(--font-main), sans-serif;
+          font-size: 1rem;
+          font-weight: 500;
+        }
+
+        .quick-info > .details > .name-info > .review .people > span.no {
+          color: var(--main-color);
+          font-weight: 600;
+        }
+
+        .quick-info > .details > .name-info > .review .people > span.text {
+          color: var(--gray-color);
+          font-weight: 400;
+        }
+
+        .quick-info > .details > .name-info > p.description {
+          color: var(--text-color);
+          font-size: 0.97rem;
+          font-family: var(--font-read), sans-serif;
+          font-weight: 400;
+          margin: 5px 0;
+
+          /* add ellipsis for text overflow 4 lines */
+          overflow: hidden;
+          display: -webkit-box;
+          -webkit-box-orient: vertical;
+          -webkit-line-clamp: 4;
+        }
+
+        .quick-info > .details > .product-info {
+          width: 100%;
+          display: flex;
+          flex-flow: column;
+          gap: 0;
+        }
+
+        .quick-info > .details > .product-info h3.details-title {
+          color: var(--text-color);
+          font-size: 1.2rem;
+          font-family: var(--font-main), sans-serif;
+          font-weight: 600;
+          margin: 20px 0 10px;
+          padding: 0;
+        }
+
+        .quick-info > .details > .product-info > div.price {
+          width: 100%;
+          display: flex;
+          flex-flow: column;
+          align-items: flex-start;
+          gap: 5px;
+          margin: 0;
+          padding: 0;
+        }
+
+        .quick-info > .details > .product-info div.prices {
+          width: 100%;
+          display: flex;
+          flex-flow: row nowrap;
+          align-items: center;
+          gap: 30px;
+          margin: 0;
+          padding: 0;
+        }
+
+        .quick-info > .details > .product-info div.saves {
+          width: 100%;
+          display: flex;
+          flex-flow: row nowrap;
+          align-items: center;
+          gap: 20px;
+          margin: 0;
+          padding: 0;
+        }
+
+        .quick-info > .details > .product-info > div.price span.line {
           display: inline-block;
           width: 2px;
           height: 30px;
@@ -1216,50 +1100,78 @@ export default class ProductDetail extends HTMLElement {
           border-radius: 10px;
         }
 
-        .quick-info > .details > .top div.price span.value,
-        .quick-info > .details > .top div.price span.was,
-        .quick-info > .details > .top .price .save {
+        .quick-info > .details > .product-info > div.price span.value,
+        .quick-info > .details > .product-info > div.price span.was,
+        .quick-info > .details > .product-info > div.price .save,
+        .quick-info > .details > .product-info > div.price .amount {
           display: flex;
           flex-flow: column;
           align-items: start;
           gap: 10px;
         }
 
-        .details > .top div.price span.value > span.contain,
-        .details > .top div.price span.was > span.contain {
+        .quick-info > .details > .product-info > div.price > div.prices > span.value,
+        .quick-info > .details > .product-info > div.price > div.prices > span.was {
+          padding: 5px 20px;
+          display: flex;
+          position: relative;
+        }
+
+        .quick-info > .details > .product-info > div.price > div.prices > span.value::before,
+        .quick-info > .details > .product-info > div.price > div.prices > span.was::before {
+          content: '';
+          position: absolute;
+          left: 0px;
+          display: inline-block;
+          width: 1px;
+          height: 80%;
+          top: 50%;
+          transform: translateY(-50%);
+          background-color: var(--accent-color);
+          border-radius: 10px;
+        }
+
+        .quick-info > .details > .product-info > div.price span.value > span.contain,
+        .quick-info > .details > .product-info > div.price span.was > span.contain {
           display: flex;
           gap: 5px;
           align-items: center;
           justify-content: start;
         }
 
-        .details > .top div.price span.value > span.text,
-        .details > .top div.price span.was > span.text {
+        .quick-info > .details > .product-info > div.price span.value > span.text,
+        .quick-info > .details > .product-info > div.price span.was > span.text {
           color: var(--gray-color);
-          font-size: 1rem;
+          font-size: 1.2rem;
           font-family: var(--font-read), sans-serif;
           font-weight: 400;
         }
 
-        .quick-info > .details > .top div.price span.value span.currency {
-          color: var(--anchor-color);
+        .quick-info > .details > .product-info > div.price span.value span.currency {
+          color: transparent;
+          background: var(--rating-linear);
+          -webkit-background-clip: text;
+          background-clip: text;
           display: inline-block;
-          margin: -2px 0 0 -1px;
-          font-size: 1.12rem;
+          margin: 0;
+          font-size: 1.5rem;
           font-family: var(--font-text), sans-serif;
-          font-weight: 700;
+          font-weight: 600;
           letter-spacing: 0.2px;
         }
 
-        .quick-info > .details > .top div.price span.value span.price {
-          color: var(--anchor-color);
-          font-size: 1.32rem;
+        .quick-info > .details > .product-info > div.price span.value span.price {
+          color: transparent;
+          background: var(--rating-linear);
+          -webkit-background-clip: text;
+          background-clip: text;
+          font-size: 1.5rem;
           font-family: var(--font-main), sans-serif;
           font-weight: 600;
           letter-spacing: 0.2px;
         }
 
-        .quick-info > .details > .top .price > .was {
+        .quick-info > .details > .product-info > div.price > .was {
           display: flex;
           width: max-content;
           align-items: center;
@@ -1270,49 +1182,57 @@ export default class ProductDetail extends HTMLElement {
           position: relative;
         }
 
-        .quick-info > .details > .top .price .was span.currency {
+        .quick-info > .details > .product-info > div.price .was span.currency {
           color: var(--gray-color);
-          font-size: 1rem;
+          font-size: 1.35rem;
           font-family: var(--font-text), sans-serif;
           font-weight: 500;
           display: inline-block;
-          margin: -2px 0 0 -5px;
+          margin: 0;
         }
 
-        .quick-info > .details > .top .price .was span.price {
+        .quick-info > .details > .product-info > div.price .was span.price {
           color: var(--gray-color);
-          font-size: 1.1rem;
+          font-size: 1.35rem;
           font-family: var(--font-main), sans-serif;
           font-weight: 500;
           padding: 0;
           margin: 0;
         }
 
-        .quick-info > .details > .top .price .save {
-          padding: 10px 15px;
+        .quick-info > .details > .product-info > div.price .save,
+        .quick-info > .details > .product-info > div.price .amount {
+          padding: 10px;
           height: 100%;
+          min-width: 150px;
+          background: var(--gray-background);
+          border-radius: 10px;
           display: flex;
           flex-flow: column;
           color: var(--gray-color);
           font-weight: 500;
         }
 
-        .quick-info > .details > .top .price .save span.text {
-          color: var(--gray-color);
+        .quick-info > .details > .product-info > div.price .save {
+          background: var(--offer-background);
+          color: var(--text-color);
+        }
+
+        .quick-info > .details > .product-info > div.price .save span.text {
+          color: inherit;
           font-size: 1rem;
           font-family: var(--font-main), sans-serif;
           font-weight: 500;
         }
 
-        .quick-info > .details > .top .price .save span.percent {
-          color: var(--main-color);
-          font-size: 1.1rem;
+        .quick-info > .details > .product-info > div.price .amount > span.value,
+        .quick-info > .details > .product-info > div.price .save span.percent {
+          font-size: 1.35rem;
           font-family: var(--font-main), sans-serif;
           font-weight: 600;
         }
 
-        .quick-info > .details .colors,
-        .quick-info > .details .sizes {
+        .quick-info > .details > .product-info > div.dosages {
           padding: 0;
           margin: 0 0 20px 0;
           display: flex;
@@ -1322,10 +1242,9 @@ export default class ProductDetail extends HTMLElement {
           gap: 10px;
         }
 
-        .quick-info > .details .colors h3.title,
-        .quick-info > .details .sizes h3.title {
+        .quick-info > .details > .product-info > div.dosages h3.title {
           line-height: 1.3;
-          margin: 0;
+          margin: 20px 0 0 0;
           font-size: 1.2rem;
           color: var(--text-color);
           font-family: var(--font-main), sans-serif;
@@ -1333,8 +1252,8 @@ export default class ProductDetail extends HTMLElement {
           font-weight: 600;
         }
 
-        .quick-info > .details .colors > .color-options,
-        .quick-info > .details .sizes > .size-options {
+        .quick-info > .details > .product-info > div.colors > .color-options,
+        .quick-info > .details > .product-info > div.dosages > .dosage-options {
           display: flex;
           flex-flow: row;
           align-items: center;
@@ -1353,7 +1272,7 @@ export default class ProductDetail extends HTMLElement {
           gap: 10px;
         }
 
-        .size-options > .size {
+        .dosage-options > .dosage {
           display: flex;
           align-items: center;
           justify-content: center;
@@ -1370,7 +1289,7 @@ export default class ProductDetail extends HTMLElement {
           margin: -2px 0 0 0;
         }
 
-        .size-options > .size > input {
+        .dosage-options > .dosage > input {
           width: 17px;
           height: 17px;
           display: inline-block;
@@ -1388,8 +1307,8 @@ export default class ProductDetail extends HTMLElement {
           overflow: hidden;
           padding: 0 10px 0 0;
         }
-        
-        .size-options > .size > label {
+
+        .dosage-options > .dosage > label {
           display: flex;
           align-items: center;
           justify-content: center;
@@ -1409,7 +1328,7 @@ export default class ProductDetail extends HTMLElement {
         }
 
         .color-options > .color label span,
-        .size-options > .size label span {
+        .dosage-options > .dosage label span {
           display: text;
           font-size: 1rem;
           color: var(--text-color);
@@ -1446,33 +1365,25 @@ export default class ProductDetail extends HTMLElement {
           flex-flow: row;
           align-items: center;
           gap: 5px;
-          height: 35px;
+          height: 40px;
           text-transform: capitalize;
           justify-content: center;
-          padding: 5px 12px 6px;
+          padding: 8px 12px 9px;
           width: max-content;
           border-radius: 12px;
         }
 
         .buttons > .button.add {
           display: flex;
-          padding: 8px 20px;
-          width: cal(40% - 5px);
-          min-width: calc(40% - 5px);
+          padding: 10px 20px;
+          height: 42px;
+          width: calc(100% - 100px);
+          min-width: calc(100% - 100px);
           border-radius: 12px;
         }
 
-        .buttons > .button.buy {
-          padding: 7px 15px;
-          width: calc(33% - 5px);
-          min-width: calc(33% - 5px);
-          border: var(--action-border);
-          background: none;
-          color: var(--gray-color);
-        }
-
         .buttons > .button.wish {
-          border: var(--action-border);
+          border: var(--border);
           background: none;
           color: var(--gray-color);
           padding: 5px 15px 4px;
@@ -1631,7 +1542,7 @@ export default class ProductDetail extends HTMLElement {
         }
 
         .store > button {
-          border: var(--action-border);
+          border: var(--border);
           position: relative;
           background: var(--background);
           color: var(--text-color);
@@ -1874,7 +1785,7 @@ export default class ProductDetail extends HTMLElement {
           min-width: 23px;
           min-height: 23px;
           color: var(--rating-color);
-          fill: var(--rating-color);
+         /* fill: var(--rating-color); */
           display: flex;
           align-items: center;
           justify-content: center;
@@ -1962,96 +1873,6 @@ export default class ProductDetail extends HTMLElement {
           gap: 0;
         }
 
-        .pagination {
-          z-index: 0;
-          display: flex;
-          flex-flow: row;
-          gap: 10px;
-          justify-content: center;
-          padding: 15px 0 20px;
-          margin: 0;
-          width: 100%;
-        }
-
-        .pagination > .previous {
-          display: flex;
-          flex-flow: row;
-          gap: 5px;
-          align-items: center;
-        }
-
-        .pagination > .nexts {
-          display: flex;
-          flex-flow: row;
-          gap: 5px;
-          align-items: center;
-        }
-
-        .pagination button {
-          font-size: 0.9rem;
-          outline: none;
-          border: none;
-          background: none;
-          font-family: var(--font-text), sans-serif;
-        }
-
-        .pagination > button.current,
-        .pagination > .nexts > .page,
-        .pagination > .previous > .page {
-          padding: 0;
-          height: 30px;
-          width: 30px;
-          min-width: 30px;
-          min-height: 30px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          border-radius: 50px;
-          color: var(--text-color);
-          border: var(--action-border);
-          cursor: pointer;
-          transition: 0.3s;
-        }
-
-        .pagination > .nexts > button.large,
-        .pagination > .previous > button.large,
-        .pagination > button.large {
-          padding: 0;
-          height: 30px;
-          width: max-content;
-          padding: 0 10px;
-        }
-
-        .pagination > button.current {
-          color: var(--white-color);
-          background: var(--accent-linear);
-          cursor: default;
-        }
-
-        .pagination > .previous > .prev:hover,
-        .pagination > .nexts > .next:hover {
-          background: var(--tab-background);
-          border: none;
-        }
-
-        .pagination > .previous > .start {
-          margin-right: 10px;
-          border: none;
-          background: var(--tab-background);
-        }
-
-        .pagination > .nexts > .end {
-          margin-left: 10px;
-          border: none;
-          background: var(--tab-background);
-        }
-
-        .pagination > .previous > .page.current,
-        .pagination > .nexts > .page.current {
-          background: var(--accent-linear);
-          color: var(--white-color);
-        }
-
         @media screen and (max-width: 700px) {
           :host {
             padding: 65px 10px;
@@ -2078,14 +1899,7 @@ export default class ProductDetail extends HTMLElement {
           .quick-info > .images > .image-options > .nav > svg,
           .quick-info > .details > .buttons,
           .quick-info > .details > .buttons > .button,
-          .quick-info > .details > .buttons > .button > .icon,
-          .pagination > button,
-          .pagination > .previous > .prev,
-          .pagination > .nexts > .next,
-          .pagination > .previous > .start,
-          .pagination > .nexts > .end,
-          .pagination > .previous > .page,
-          .pagination > .nexts > .page {
+          .quick-info > .details > .buttons > .button > .icon {
             cursor: default !important;
           }
 
@@ -2290,19 +2104,6 @@ export default class ProductDetail extends HTMLElement {
             width: calc(100% - 170px);
             padding: 5px 0;
             justify-content: space-between;
-          }
-
-          .pagination {
-            padding: 5px 0 25px;
-            max-width: 100%;
-            overflow-x: scroll;
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-          }
-
-          .pagination::-webkit-scrollbar {
-            display: none !important;
-            visibility: hidden;
           }
         }
         

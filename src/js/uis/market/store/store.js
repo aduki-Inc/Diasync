@@ -65,6 +65,13 @@ export default class StoreContainer extends HTMLElement {
     // Initialize the sliding indicator position
     this.updateTabIndicator(tabs);
 
+    // Show content for the initially active tab
+    const activeTab = tabs.querySelector(".tab-item.active");
+    if (activeTab) {
+      this.activeSection = activeTab.dataset.section;
+      this.updateSectionContent();
+    }
+
     // add click event listener to the modern tabs
     tabs.querySelectorAll(".tab-item").forEach(tab => {
       tab.addEventListener("click", e => {
@@ -434,13 +441,13 @@ export default class StoreContainer extends HTMLElement {
     return /* html */`
       <div class="modern-tabs">
         <div class="tab-indicator"></div>
-        <div class="tab-item active" data-section="products">
+        <div class="tab-item" data-section="products">
           <span class="tab-label">Products</span>
-          <span class="tab-count">${this.number.withCommas(12450)}</span>
+          <span class="tab-count">${this.number.shorten(12450)}</span>
         </div>
-        <div class="tab-item" data-section="services">
+        <div class="tab-item active" data-section="services">
           <span class="tab-label">Services</span>
-          <span class="tab-count">${this.number.withCommas(13)}</span>
+          <span class="tab-count">${this.number.shorten(13)}</span>
         </div>
       </div>
     `;
@@ -455,92 +462,16 @@ export default class StoreContainer extends HTMLElement {
 
   getServices = () => {
     return /* html */`
-      <div class="services-grid">
-        <div class="service-card">
-          <div class="service-icon">
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 2L13.09 8.26L22 9L13.09 9.74L12 16L10.91 9.74L2 9L10.91 8.26L12 2Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
-            </svg>
-          </div>
-          <h4>Prescription Consultation</h4>
-          <p>Expert consultation with licensed pharmacists for medication guidance and drug interactions.</p>
-          <div class="service-price">Free</div>
-        </div>
-        <div class="service-card">
-          <div class="service-icon">
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M19.5 14.25V11.625C19.5 9.76104 17.989 8.25 16.125 8.25H15.75C14.5074 8.25 13.5 7.24264 13.5 6V5.625C13.5 3.76104 11.989 2.25 10.125 2.25H8.625C6.76104 2.25 5.25 3.76104 5.25 5.625V21L12 17.25L18.75 21V18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </div>
-          <h4>Health Screening</h4>
-          <p>Blood pressure monitoring, diabetes screening, and basic health assessments.</p>
-          <div class="service-price">$25</div>
-        </div>
-        <div class="service-card">
-          <div class="service-icon">
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="1.5"/>
-              <path d="M8 12H16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-              <path d="M12 16V8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-            </svg>
-          </div>
-          <h4>Vaccination Services</h4>
-          <p>Flu shots, COVID-19 vaccines, and other immunizations administered by certified professionals.</p>
-          <div class="service-price">$45</div>
-        </div>
-        <div class="service-card">
-          <div class="service-icon">
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 1V23M1 12H23" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-              <circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.5"/>
-            </svg>
-          </div>
-          <h4>Medication Synchronization</h4>
-          <p>Coordinate all your prescriptions to be ready on the same day for convenient pickup.</p>
-          <div class="service-price">Free</div>
-        </div>
-        <div class="service-card">
-          <div class="service-icon">
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M3 9L12 2L21 9V20C21 20.5523 20.5523 21 20 21H4C3.44772 21 3 20.5523 3 20V9Z" stroke="currentColor" stroke-width="1.5"/>
-              <path d="M9 21V12H15V21" stroke="currentColor" stroke-width="1.5"/>
-            </svg>
-          </div>
-          <h4>Home Delivery</h4>
-          <p>Free prescription delivery service within 5-mile radius, same-day delivery available.</p>
-          <div class="service-price">Free</div>
-        </div>
-        <div class="service-card">
-          <div class="service-icon">
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M15.5 14H14.71L14.43 13.73C15.41 12.59 16 11.11 16 9.5C16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16C11.11 16 12.59 15.41 13.73 14.43L14 14.71V15.5L19 20.49L20.49 19L15.5 14ZM9.5 14C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14Z" fill="currentColor"/>
-            </svg>
-          </div>
-          <h4>Drug Information</h4>
-          <p>Comprehensive medication information, side effects, and drug interaction database access.</p>
-          <div class="service-price">Free</div>
-        </div>
-        <div class="service-card">
-          <div class="service-icon">
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 6V12L16 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-              <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5"/>
-            </svg>
-          </div>
-          <h4>24/7 Emergency Support</h4>
-          <p>Round-the-clock emergency prescription services and urgent medication needs.</p>
-          <div class="service-price">Available</div>
-        </div>
-        <div class="service-card">
-          <div class="service-icon">
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M9 12L11 14L15 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </div>
-          <h4>Insurance Verification</h4>
-          <p>Quick insurance verification and prior authorization assistance for prescriptions.</p>
-          <div class="service-price">Free</div>
-        </div>
+      <div class="services">
+        <div is="service-wrapper" store-name="HealthCare Plus Pharmacy" kind="consultation" reviews="32894" average-review="4.7" name="Prescription Consultation" description="Expert consultation with licensed pharmacists for medication guidance and drug interactions." price="0" last="0"></div>
+        <div is="service-wrapper" store-name="HealthCare Plus Pharmacy" kind="screening" reviews="894" average-review="3.7" name="Health Screening" description="Blood pressure monitoring, diabetes screening, and basic health assessments." price="25" last="13"></div>
+        <div is="service-wrapper" store-name="HealthCare Plus Pharmacy" kind="vaccination" reviews="1200" average-review="4.8" name="Vaccination Services" description="Flu shots, COVID-19 vaccines, and other immunizations administered by certified professionals." price="45" last="70"></div>
+        <div is="service-wrapper" store-name="HealthCare Plus Pharmacy" kind="medication" reviews="0" average-review="0" name="Medication Synchronization" description="Coordinate all your prescriptions to be ready on the same day for convenient pickup." price="0" last="60"></div>
+        <div is="service-wrapper" store-name="HealthCare Plus Pharmacy" kind="delivery" reviews="79" average-review="3.5" name="Home Delivery" description="Free prescription delivery service within 5-mile radius, same-day delivery available." price="236" last="138"></div>
+        <div is="service-wrapper" store-name="HealthCare Plus Pharmacy" kind="information" reviews="432" average-review="4.0" name="Drug Information" description="Comprehensive medication information, side effects, and drug interaction database access." price="0" last="0"></div>
+        <div is="service-wrapper" store-name="HealthCare Plus Pharmacy" kind="emergency" reviews="100" average-review="4.5" name="24/7 Emergency Support" description="Round-the-clock emergency prescription services and urgent medication needs." price="40" last="32"></div>
+        <div is="service-wrapper" store-name="HealthCare Plus Pharmacy" kind="insurance" reviews="6" average-review="5.0" name="Insurance Verification" description="Quick insurance verification and prior authorization assistance for prescriptions." price="0" last="0"></div>
+        <div is="service-wrapper" store-name="HealthCare Plus Pharmacy" kind="telehealth" reviews="200" average-review="4.9" name="Telehealth Consultation" description="Virtual consultations with healthcare professionals from the comfort of your home." price="30" last="50"></div>
       </div>
     `;
   }
@@ -553,16 +484,16 @@ export default class StoreContainer extends HTMLElement {
       <div is="product-wrapper" product-image="/src/img/products/drug4.jpg" name="Dextromethorphan Cough Syrup - Respiratory Relief" last="215.80" store="HealthCare Plus Pharmacy" reviews="142" average-review="4.2" wished="false" in-cart="1" quantity="67" price="15.80" store-country="Kenya"></div>
       <div is="product-wrapper" product-image="/src/img/products/drug5.jpg" name="Multivitamin Complex Tablets - Daily Nutrition" last="8628.50" store="HealthCare Plus Pharmacy" reviews="489" average-review="4.6" wished="true" in-cart="0" quantity="200" price="28.50" store-country="Kenya"></div>
       <div is="product-wrapper" product-image="/src/img/products/drug6.jpg" name="Antiseptic Solution 100ml - Wound Care" last="995.90" store="HealthCare Plus Pharmacy" reviews="176" average-review="4.4" wished="false" in-cart="0" quantity="120" price="995.90" store-country="Kenya"></div>
-      <div is="product-wrapper" product-image="/src/img/products/drug4.jpg" name="Adhesive Bandages Pack - First Aid" last="8766.75" store="HealthCare Plus Pharmacy" reviews="234" average-review="4.8" wished="true" in-cart="0" quantity="85" price="6.75" store-country="Kenya"></div>
-      <div is="product-wrapper" product-image="/src/img/products/drug3.jpg" name="Cetirizine 10mg Tablets - Allergy Relief" last="418.40" store="HealthCare Plus Pharmacy" reviews="167" average-review="4.1" wished="false" in-cart="0" quantity="0" price="188.40" store-country="Kenya"></div>
-      <div is="product-wrapper" product-image="/src/img/products/drug2.jpg" name="Insulin Injection Pen - Diabetes Management" last="1825.00" store="HealthCare Plus Pharmacy" reviews="89" average-review="4.9" wished="true" in-cart="0" quantity="12" price="7125.00" store-country="Kenya"></div>
-      <div is="product-wrapper" product-image="/src/img/products/drug1.jpg" name="Aspirin 325mg Tablets - Cardiovascular Health" last="191.30" store="HealthCare Plus Pharmacy" reviews="29468" average-review="4.0" wished="false" in-cart="0" quantity="156" price="181.30" store-country="Kenya"></div>
-      <div is="product-wrapper" product-image="/src/img/products/drug2.jpg" name="Calcium Carbonate Antacid - Digestive Health" last="7814.60" store="HealthCare Plus Pharmacy" reviews="203" average-review="3.8" wished="true" in-cart="3" quantity="78" price="128974.60" store-country="Kenya"></div>
-      <div is="product-wrapper" product-image="/src/img/products/drug3.jpg" name="Lubricating Eye Drops - Vision Care" last="8722.90" store="HealthCare Plus Pharmacy" reviews="134" average-review="4.3" wished="false" in-cart="1" quantity="54" price="22.90" store-country="Kenya"></div>
-      <div is="product-wrapper" product-image="/src/img/products/drug6.jpg" name="Digital Thermometer - Health Monitoring" last="1435.75" store="HealthCare Plus Pharmacy" reviews="112" average-review="4.5" wished="true" in-cart="0" quantity="28" price="6435.75" store-country="Kenya"></div>
-      <div is="product-wrapper" product-image="/src/img/products/drug4.jpg" name="Probiotic Capsules 30ct - Gut Health" last="1742.20" store="HealthCare Plus Pharmacy" reviews="91" average-review="3.9" wished="false" in-cart="0" quantity="63" price="42.20" store-country="Kenya"></div>
-      <div is="product-wrapper" product-image="/src/img/products/drug5.jpg" name="Hand Sanitizer 250ml - Hygiene Protection" last="187.45" store="HealthCare Plus Pharmacy" reviews="456" average-review="4.2" wished="true" in-cart="0" quantity="0" price="7.45" store-country="Kenya"></div>
-      <div is="product-wrapper" product-image="/src/img/products/drug1.jpg" name="Omega-3 Fish Oil Capsules - Heart Health" last="3431.80" store="HealthCare Plus Pharmacy" reviews="178" average-review="4.4" wished="false" in-cart="0" quantity="94" price="31.80" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug7.jpg" name="Adhesive Bandages Pack - First Aid" last="8766.75" store="HealthCare Plus Pharmacy" reviews="234" average-review="4.8" wished="true" in-cart="0" quantity="85" price="6.75" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug8.jpg" name="Cetirizine 10mg Tablets - Allergy Relief" last="418.40" store="HealthCare Plus Pharmacy" reviews="167" average-review="4.1" wished="false" in-cart="0" quantity="0" price="188.40" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug9.jpg" name="Insulin Injection Pen - Diabetes Management" last="1825.00" store="HealthCare Plus Pharmacy" reviews="89" average-review="4.9" wished="true" in-cart="0" quantity="12" price="7125.00" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug10.jpg" name="Aspirin 325mg Tablets - Cardiovascular Health" last="191.30" store="HealthCare Plus Pharmacy" reviews="29468" average-review="4.0" wished="false" in-cart="0" quantity="156" price="181.30" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug12.jpg" name="Calcium Carbonate Antacid - Digestive Health" last="7814.60" store="HealthCare Plus Pharmacy" reviews="203" average-review="3.8" wished="true" in-cart="3" quantity="78" price="128974.60" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug13.jpg" name="Lubricating Eye Drops - Vision Care" last="8722.90" store="HealthCare Plus Pharmacy" reviews="134" average-review="4.3" wished="false" in-cart="1" quantity="54" price="22.90" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug16.jpg" name="Digital Thermometer - Health Monitoring" last="1435.75" store="HealthCare Plus Pharmacy" reviews="112" average-review="4.5" wished="true" in-cart="0" quantity="28" price="6435.75" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug14.jpg" name="Probiotic Capsules 30ct - Gut Health" last="1742.20" store="HealthCare Plus Pharmacy" reviews="91" average-review="3.9" wished="false" in-cart="0" quantity="63" price="42.20" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug15.jpg" name="Hand Sanitizer 250ml - Hygiene Protection" last="187.45" store="HealthCare Plus Pharmacy" reviews="456" average-review="4.2" wished="true" in-cart="0" quantity="0" price="7.45" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug11.jpg" name="Omega-3 Fish Oil Capsules - Heart Health" last="3431.80" store="HealthCare Plus Pharmacy" reviews="178" average-review="4.4" wished="false" in-cart="0" quantity="94" price="31.80" store-country="Kenya"></div>
     `;
   }
 
@@ -738,17 +669,17 @@ export default class StoreContainer extends HTMLElement {
         }
 
         .status-indicator.closed {
-          background: var(--downvote-background);
+          background: var(--warn-background);
           border: var(--error-border);
-          color: var(--error-color);
+          color: var(--text-color);
         }
 
         .status-icon {
           display: flex;
           align-items: center;
           justify-content: center;
-          width: 24px;
-          height: 24px;
+          width: 40px;
+          height: 40px;
           border-radius: 50%;
           flex-shrink: 0;
           transition: all 0.3s ease;
@@ -762,6 +693,11 @@ export default class StoreContainer extends HTMLElement {
         .status-indicator.closed .status-icon {
           background: var(--error-color);
           color: var(--white-color);
+        }
+
+        .status-indicator.open .status-icon svg {
+          width: 24px;
+          height: 24px;
         }
 
         .status-content {
@@ -808,7 +744,8 @@ export default class StoreContainer extends HTMLElement {
 
         .hours-table {
           width: 100%;
-          margin-top: 8px;
+          padding: 0 0 0 5px;
+          margin: 8px 0 15px;
         }
 
         .opening-schedule {
@@ -1065,70 +1002,23 @@ export default class StoreContainer extends HTMLElement {
           width: 100%;
         }
 
-        .services-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-          gap: 20px;
+        .services {
           padding: 0;
+          max-width: 100%;
+          display: block;
+          columns: 300px auto;
+          column-gap: 10px;
+          row-gap: 20px;
           margin: 0;
         }
 
-        .service-card {
-          background: var(--background);
-          border: var(--border);
-          border-radius: 12px;
-          padding: 20px;
-          display: flex;
-          flex-flow: column;
-          gap: 12px;
-          transition: all 0.3s ease;
-          box-shadow: var(--box-shadow);
+        .services > * {
+          break-inside: avoid;
+          margin-bottom: 10px;
+          display: block;
         }
 
-        .service-card:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 8px 25px -8px var(--accent-color);
-          border-color: var(--accent-color);
-        }
-
-        .service-card > .service-icon {
-          width: 50px;
-          height: 50px;
-          background: var(--accent-alt);
-          border-radius: 12px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          color: var(--accent-color);
-        }
-
-        .service-card > h4 {
-          font-size: 1.1rem;
-          font-weight: 600;
-          color: var(--title-color);
-          font-family: var(--font-main), sans-serif;
-          margin: 0;
-          line-height: 1.3;
-        }
-
-        .service-card > p {
-          font-size: 0.95rem;
-          font-weight: 400;
-          color: var(--text-color);
-          font-family: var(--font-main), sans-serif;
-          margin: 0;
-          line-height: 1.4;
-        }
-
-        .service-card > .service-price {
-          font-size: 1rem;
-          font-weight: 600;
-          color: var(--accent-color);
-          font-family: var(--font-main), sans-serif;
-          margin-top: auto;
-        }
-
-        /* Products Styles - Keeping Your Original Layout */
+        /* Products Styles */
         .products {
           padding: 20px 0;
           max-width: 100%;

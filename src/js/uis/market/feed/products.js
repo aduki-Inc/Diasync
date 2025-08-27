@@ -18,7 +18,7 @@ export default class ProductsFeed extends HTMLElement {
 
   connectedCallback() {
     const tabs = this.shadowObj.querySelector("ul.tabs");
-    
+
     if (tabs) {
       this.activateTabController(tabs);
     }
@@ -134,7 +134,7 @@ export default class ProductsFeed extends HTMLElement {
   }
 
   getSearch = () => {
-		return /* html */`
+    return /* html */`
       <form action="" method="get" class="search">
         <div class="contents">
           <input type="text" name="q" id="query" placeholder="Search for products..." />
@@ -146,26 +146,75 @@ export default class ProductsFeed extends HTMLElement {
         </div>
       </form>
     `;
-	}
+  }
 
   getProducts = () => {
     return /* html */`
-      <div is="product-wrapper" product-image="/images/product/product-8.webp" name="Fresh Tea and is a very long name" last="33.25" store="The Vines Inn" reviews="120" average-review="4.5" wished="true" in-cart="0" quantity="45" price="33.25" store-country="KE"></div>
-      <div is="product-wrapper" product-image="/images/product/product-1.webp" name="Apple Fresh" last="25.00" store="Wendy's" reviews="85" average-review="3.8" wished="false" in-cart="2" quantity="32" price="25.00" store-country="US"></div>
-      <div is="product-wrapper" product-image="/images/product/product-2.webp" name="Banana Fresh" last="15.50" store="Trader Joe's" reviews="200" average-review="4.8" wished="true" in-cart="0" quantity="50" price="10.25" store-country="KE"></div>
-      <div is="product-wrapper" product-image="/images/product/product-4.webp" name="Orange Fresh" last="20.75" store="Whole Foods" reviews="150" average-review="4.3" wished="false" in-cart="1" quantity="65" price="20.75" store-country="US"></div>
-      <div is="product-wrapper" product-image="/images/product/product-5.webp" name="Grapes Fresh" last="18.00" store="Safeway" reviews="6987" average-review="4.1" wished="true" in-cart="0" quantity="73" price="32.50" store-country="US"></div>
-      <div is="product-wrapper" product-image="/images/product/product-6.webp" name="Mango Fresh" last="22.50" store="Kroger" reviews="110" average-review="4.6" wished="false" in-cart="0" quantity="48" price="19.25" store-country="KE"></div>
-      <div is="product-wrapper" product-image="/images/product/fruits/10.jpg" name="Strawberry Fresh" last="30.00" store="Publix" reviews="130" average-review="4.7" wished="true" in-cart="0" quantity="32" price="55.40" store-country="US"></div>
-      <div is="product-wrapper" product-image="/images/product/fruits/11.jpg" name="Blueberry Fresh" last="28.00" store="Albertsons" reviews="95" average-review="4.2" wished="false" in-cart="0" quantity="0" price="13.80" store-country="KE"></div>
-      <div is="product-wrapper" product-image="/images/product/fruits/12.jpg" name="Watermelon Fresh" last="35.00" store="Sprouts" reviews="140" average-review="4.4" wished="true" in-cart="0" quantity="38" price="45.00" store-country="KE"></div>
-      <div is="product-wrapper" product-image="/images/product/product-7.webp" name="Peach Fresh" last="27.00" store="H-E-B" reviews="105" average-review="4.3" wished="false" in-cart="0" quantity="15" price="14.25" store-country="US"></div>
-      <div is="product-wrapper" product-image="/images/product/fruits/14.jpg" name="Cherry Fresh" last="32.00" store="Aldi" reviews="115" average-review="3.5" wished="true" in-cart="3" quantity="44" price="19.60" store-country="KE"></div>
-      <div is="product-wrapper" product-image="/images/product/fruits/15.jpg" name="Pomegranate Fresh" last="40.00" store="Costco" reviews="125" average-review="4.6" wished="false" in-cart="1" quantity="36" price="28.75" store-country="US"></div>
-      <div is="product-wrapper" product-image="/images/product/product-8.webp" name="Kiwi Fresh" last="24.00" store="Sam's Club" reviews="100" average-review="4.2" wished="true" in-cart="0" quantity="29" price="12.80" store-country="KE"></div>
-      <div is="product-wrapper" product-image="/images/product/fruits/17.jpg" name="Papaya Fresh" last="26.00" store="Meijer" reviews="80" average-review="2.0" wished="false" in-cart="0" quantity="41" price="9.20" store-country="US"></div>
-      <div is="product-wrapper" product-image="/images/product/fruits/22.jpg" name="Guava Fresh" last="19.00" store="Wegmans" reviews="70" average-review="3.9" wished="true" in-cart="0" quantity="0" price="7.90" store-country="KE"></div>
-      <div is="product-wrapper" product-image="/images/product/fruits/19.jpg" name="Lychee Fresh" last="29.00" store="Hy-Vee" reviews="60" average-review="3.1" wished="false" in-cart="0" quantity="13" price="17.30" store-country="KE"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug1.jpg" name="Paracetamol 500mg Tablets - Pain & Fever Relief" last="5048.50" store="HealthCare Plus Pharmacy" reviews="32894" average-review="4.7" wished="true" in-cart="0" quantity="150" price="4598.50" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug2.jpg" name="Ibuprofen 400mg Capsules - Anti-inflammatory" last="712.25" store="HealthCare Plus Pharmacy" reviews="185" average-review="4.3" wished="false" in-cart="2" quantity="89" price="152.25" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug3.jpg" name="Amoxicillin 250mg Syrup - Antibiotic" last="824.75" store="HealthCare Plus Pharmacy" reviews="9546" average-review="4.5" wished="true" in-cart="0" quantity="45" price="247.75" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug4.jpg" name="Dextromethorphan Cough Syrup - Respiratory Relief" last="215.80" store="HealthCare Plus Pharmacy" reviews="142" average-review="4.2" wished="false" in-cart="1" quantity="67" price="15.80" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug5.jpg" name="Multivitamin Complex Tablets - Daily Nutrition" last="8628.50" store="HealthCare Plus Pharmacy" reviews="489" average-review="4.6" wished="true" in-cart="0" quantity="200" price="28.50" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug6.jpg" name="Antiseptic Solution 100ml - Wound Care" last="995.90" store="HealthCare Plus Pharmacy" reviews="176" average-review="4.4" wished="false" in-cart="0" quantity="120" price="995.90" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug7.jpg" name="Adhesive Bandages Pack - First Aid" last="8766.75" store="HealthCare Plus Pharmacy" reviews="234" average-review="4.8" wished="true" in-cart="0" quantity="85" price="6.75" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug8.jpg" name="Cetirizine 10mg Tablets - Allergy Relief" last="418.40" store="HealthCare Plus Pharmacy" reviews="167" average-review="4.1" wished="false" in-cart="0" quantity="0" price="188.40" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug9.jpg" name="Insulin Injection Pen - Diabetes Management" last="1825.00" store="HealthCare Plus Pharmacy" reviews="89" average-review="4.9" wished="true" in-cart="0" quantity="12" price="7125.00" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug10.jpg" name="Aspirin 325mg Tablets - Cardiovascular Health" last="191.30" store="HealthCare Plus Pharmacy" reviews="29468" average-review="4.0" wished="false" in-cart="0" quantity="156" price="181.30" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug11.jpg" name="Calcium Carbonate Antacid - Digestive Health" last="7814.60" store="HealthCare Plus Pharmacy" reviews="203" average-review="3.8" wished="true" in-cart="3" quantity="78" price="128974.60" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug12.jpg" name="Lubricating Eye Drops - Vision Care" last="8722.90" store="HealthCare Plus Pharmacy" reviews="134" average-review="4.3" wished="false" in-cart="1" quantity="54" price="22.90" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug13.jpg" name="Digital Thermometer - Health Monitoring" last="1435.75" store="HealthCare Plus Pharmacy" reviews="112" average-review="4.5" wished="true" in-cart="0" quantity="28" price="6435.75" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug14.jpg" name="Probiotic Capsules 30ct - Gut Health" last="1742.20" store="HealthCare Plus Pharmacy" reviews="91" average-review="3.9" wished="false" in-cart="0" quantity="63" price="42.20" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug15.jpg" name="Hand Sanitizer 250ml - Hygiene Protection" last="187.45" store="HealthCare Plus Pharmacy" reviews="456" average-review="4.2" wished="true" in-cart="0" quantity="0" price="7.45" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug16.jpg" name="Omega-3 Fish Oil Capsules - Heart Health" last="3431.80" store="HealthCare Plus Pharmacy" reviews="178" average-review="4.4" wished="false" in-cart="0" quantity="94" price="31.80" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug17.jpg" name="Loratadine 10mg Tablets - Allergy Relief" last="120.50" store="Wellness Pharmacy" reviews="452" average-review="4.3" wished="false" in-cart="0" quantity="120" price="100.50" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug18.jpg" name="Metformin 500mg Tablets - Diabetes Control" last="850.00" store="CityCare Pharmacy" reviews="3120" average-review="4.5" wished="true" in-cart="0" quantity="76" price="820.00" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug19.jpg" name="Salbutamol 100mcg Inhaler - Asthma Relief" last="1750.00" store="GreenCross Pharmacy" reviews="890" average-review="4.6" wished="false" in-cart="1" quantity="34" price="1699.00" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug20.jpg" name="Hydrocortisone 1% Cream - Skin Relief" last="240.00" store="HealthMart Pharmacy" reviews="210" average-review="4.1" wished="false" in-cart="0" quantity="40" price="199.00" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug21.jpg" name="Nitrofurantoin 100mg Capsules - UTI Antibiotic" last="560.00" store="Community Pharmacy" reviews="134" average-review="4.2" wished="true" in-cart="0" quantity="22" price="540.00" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug22.jpg" name="ORS Sachets - Oral Rehydration" last="45.00" store="MedSupply Kenya" reviews="980" average-review="4.7" wished="false" in-cart="5" quantity="300" price="35.00" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug23.jpg" name="Clotrimazole 1% Cream - Antifungal" last="310.00" store="Wellness Pharmacy" reviews="67" average-review="4.0" wished="false" in-cart="0" quantity="56" price="289.00" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug24.jpg" name="Vitamin D3 1000 IU Softgels - Bone Health" last="950.00" store="Sunrise Pharmacy" reviews="412" average-review="4.5" wished="true" in-cart="0" quantity="140" price="899.00" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug25.jpg" name="Omeprazole 20mg Capsules - Acid Reducer" last="620.00" store="CityCare Pharmacy" reviews="254" average-review="4.2" wished="false" in-cart="0" quantity="88" price="599.00" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug26.jpg" name="Antiseptic Wipes Pack - Hygiene" last="120.00" store="GreenCross Pharmacy" reviews="143" average-review="4.4" wished="false" in-cart="2" quantity="240" price="99.00" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug27.jpg" name="Famotidine 20mg Tablets - Acid Reflux Relief" last="160.00" store="PharmaPlus Kenya" reviews="321" average-review="4.1" wished="false" in-cart="0" quantity="60" price="149.00" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug28.jpg" name="Blood Glucose Test Strips (50) - Diabetes Monitoring" last="1350.00" store="MediTrack Supplies" reviews="789" average-review="4.6" wished="true" in-cart="0" quantity="46" price="1299.00" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug29.jpg" name="Cefuroxime 250mg Tablets - Antibiotic" last="620.00" store="RiverSide Pharmacy" reviews="412" average-review="4.2" wished="false" in-cart="0" quantity="74" price="599.00" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug30.jpg" name="Prednisone 10mg Tablets - Anti-inflammatory" last="430.50" store="NorthGate Pharmacy" reviews="98" average-review="4.0" wished="true" in-cart="0" quantity="32" price="399.50" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug31.jpg" name="Loperamide 2mg Capsules - Anti-diarrheal" last="85.00" store="EastSide Pharmacy" reviews="256" average-review="4.3" wished="false" in-cart="1" quantity="180" price="79.00" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug32.jpg" name="Spironolactone 25mg Tablets - Diuretic" last="540.00" store="Central Pharmacy" reviews="64" average-review="3.9" wished="false" in-cart="0" quantity="48" price="519.00" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug33.jpg" name="Doxycycline 100mg Capsules - Antibiotic" last="720.00" store="UrbanMeds" reviews="512" average-review="4.4" wished="true" in-cart="0" quantity="90" price="699.00" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug34.jpg" name="Metronidazole 400mg Tablets - Antiprotozoal" last="310.00" store="Neighborhood Pharmacy" reviews="134" average-review="4.1" wished="false" in-cart="0" quantity="120" price="299.00" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug35.jpg" name="Saline Nasal Spray 30ml - Nasal Care" last="95.00" store="PrimeCare Pharmacy" reviews="76" average-review="4.0" wished="false" in-cart="0" quantity="210" price="89.00" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug36.jpg" name="Benzonatate 100mg Capsules - Cough Suppressant" last="420.00" store="Allied Pharmacy" reviews="48" average-review="3.8" wished="false" in-cart="0" quantity="28" price="399.00" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug37.jpg" name="Acyclovir 400mg Tablets - Antiviral" last="980.00" store="TrustMeds" reviews="214" average-review="4.5" wished="true" in-cart="0" quantity="66" price="949.00" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug38.jpg" name="Diclofenac 50mg Tablets - Pain & Inflammation" last="260.00" store="RapidMeds" reviews="612" average-review="4.2" wished="false" in-cart="1" quantity="132" price="239.00" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug39.jpg" name="Phenylephrine Nasal Drops - Decongestant" last="150.00" store="CarePoint Pharmacy" reviews="88" average-review="3.9" wished="false" in-cart="0" quantity="96" price="139.00" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug40.jpg" name="Ranitidine 150mg Tablets - Heartburn Relief" last="200.00" store="HealthCare Plus Pharmacy" reviews="178" average-review="4.0" wished="false" in-cart="0" quantity="84" price="189.00" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug41.jpg" name="Sodium Chloride IV Set - Medical Supply" last="1250.00" store="Wellness Pharmacy" reviews="34" average-review="4.3" wished="false" in-cart="0" quantity="18" price="1199.00" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug42.jpg" name="Calamine Lotion 100ml - Skin Soothe" last="110.00" store="CityCare Pharmacy" reviews="54" average-review="4.1" wished="false" in-cart="0" quantity="140" price="99.00" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug43.jpg" name="Erythromycin 250mg Tablets - Antibiotic" last="680.00" store="GreenCross Pharmacy" reviews="223" average-review="4.0" wished="true" in-cart="0" quantity="38" price="659.00" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug44.png" name="Saline Wound Wash 200ml - Wound Care" last="220.00" store="HealthMart Pharmacy" reviews="190" average-review="4.2" wished="false" in-cart="0" quantity="102" price="199.00" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug45.jpg" name="Mebendazole 100mg Tablets - Antiparasitic" last="75.00" store="Community Pharmacy" reviews="412" average-review="4.6" wished="false" in-cart="3" quantity="260" price="69.00" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug46.jpg" name="Lidocaine 5% Ointment - Local Anesthetic" last="520.00" store="MedSupply Kenya" reviews="58" average-review="4.1" wished="false" in-cart="0" quantity="44" price="499.00" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug47.jpg" name="Cetomacrogol Cream 500g - Moisturizer" last="330.00" store="Sunrise Pharmacy" reviews="76" average-review="4.0" wished="true" in-cart="0" quantity="72" price="299.00" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug48.jpg" name="Pramoxine Hydrocortisone Cream - Itch Relief" last="290.00" store="PharmaPlus Kenya" reviews="121" average-review="4.2" wished="false" in-cart="0" quantity="49" price="269.00" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug49.jpg" name="Dextrose 5% IV Fluid - Rehydration" last="980.00" store="MediTrack Supplies" reviews="22" average-review="4.1" wished="false" in-cart="0" quantity="30" price="949.00" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug50.jpg" name="Nitroglycerin 0.4mg Spray - Angina" last="2200.00" store="RiverSide Pharmacy" reviews="89" average-review="4.4" wished="true" in-cart="0" quantity="26" price="2149.00" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug51.jpg" name="Clarithromycin 250mg Tablets - Antibiotic" last="740.00" store="NorthGate Pharmacy" reviews="167" average-review="4.3" wished="false" in-cart="0" quantity="58" price="699.00" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug52.jpg" name="Azelastine Nasal Spray - Allergy Relief" last="1350.00" store="EastSide Pharmacy" reviews="44" average-review="3.9" wished="false" in-cart="0" quantity="40" price="1299.00" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug53.jpg" name="Glyceryl Trinitrate Patch - Cardiac Care" last="2890.00" store="Central Pharmacy" reviews="31" average-review="4.2" wished="false" in-cart="0" quantity="12" price="2799.00" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug54.jpg" name="Mupirocin Ointment 2% - Topical Antibiotic" last="420.00" store="UrbanMeds" reviews="98" average-review="4.5" wished="true" in-cart="0" quantity="36" price="399.00" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug55.jpg" name="Oxytocin Injection 10IU - Labor Aid" last="1600.00" store="Neighborhood Pharmacy" reviews="12" average-review="4.0" wished="false" in-cart="0" quantity="8" price="1499.00" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug56.jpg" name="Ferrous Sulfate 200mg Tablets - Iron Supplement" last="240.00" store="PrimeCare Pharmacy" reviews="302" average-review="4.3" wished="false" in-cart="2" quantity="184" price="229.00" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug57.jpg" name="Mometasone Nasal Spray - Rhinitis" last="1490.00" store="Allied Pharmacy" reviews="67" average-review="4.1" wished="false" in-cart="0" quantity="64" price="1399.00" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug58.jpg" name="Hydroxychloroquine 200mg Tablets - Antimalarial" last="820.00" store="TrustMeds" reviews="58" average-review="3.8" wished="false" in-cart="0" quantity="40" price="799.00" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug59.jpg" name="Brimonidine Eye Drops - Glaucoma Aid" last="1750.00" store="RapidMeds" reviews="43" average-review="4.0" wished="true" in-cart="0" quantity="22" price="1699.00" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug60.jpg" name="Polymyxin B Sulfate Ointment - Ophthalmic" last="940.00" store="CarePoint Pharmacy" reviews="27" average-review="4.2" wished="false" in-cart="0" quantity="18" price="899.00" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug61.jpg" name="Topiramate 25mg Tablets - Seizure Control" last="1320.00" store="HealthCare Plus Pharmacy" reviews="72" average-review="4.1" wished="false" in-cart="0" quantity="34" price="1299.00" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug62.jpg" name="Levofloxacin 500mg Tablets - Antibiotic" last="1120.00" store="Wellness Pharmacy" reviews="214" average-review="4.4" wished="true" in-cart="0" quantity="44" price="1099.00" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug63.jpg" name="Bromhexine 8mg Tablets - Mucolytic" last="98.00" store="CityCare Pharmacy" reviews="165" average-review="4.0" wished="false" in-cart="0" quantity="150" price="89.00" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug64.jpg" name="Guaifenesin 200mg Syrup - Expectorant" last="210.00" store="GreenCross Pharmacy" reviews="142" average-review="4.1" wished="false" in-cart="0" quantity="96" price="199.00" store-country="Kenya"></div>
+      <div is="product-wrapper" product-image="/src/img/products/drug65.jpg" name="Risperidone 2mg Tablets - Antipsychotic" last="1890.00" store="HealthMart Pharmacy" reviews="53" average-review="3.9" wished="false" in-cart="0" quantity="26" price="1799.00" store-country="Kenya"></div>
     `;
   }
 
@@ -209,7 +258,7 @@ export default class ProductsFeed extends HTMLElement {
     }
 
     // anything greater than 6, return the last 3 pages and start page: 1
-    if(current >= 6) {
+    if (current >= 6) {
       // loop to create the previous pages
       let prev = /* html */`<button class="page prev start">1</button>`;
       for (let i = current - 3; i < current; i++) {
@@ -377,7 +426,7 @@ export default class ProductsFeed extends HTMLElement {
           --c:var(--accent-color) 90%,#0000;
           --c1:var(--accent-alt)  90%,#0000;
           --c2:var(--alt-color)  90%,#0000;
-          background: 
+          background:
             radial-gradient(circle closest-side at left  10px top 50%,var(--c)),
             radial-gradient(circle closest-side                     ,var(--c1)),
             radial-gradient(circle closest-side at right 10px top 50%,var(--c2));
@@ -391,7 +440,7 @@ export default class ProductsFeed extends HTMLElement {
         }
 
         .content {
-          padding: 10px 0 0;
+          padding: 20px 0 0;
           display: flex;
           flex-flow: column;
           gap: 0;
@@ -450,7 +499,8 @@ export default class ProductsFeed extends HTMLElement {
           width: 100%;
           z-index: 2;
           position: sticky;
-          top: 55px;
+          top: 0px;
+          padding: 10px 0 0 0;
           background: var(--background);
         }
 
@@ -505,16 +555,16 @@ export default class ProductsFeed extends HTMLElement {
           width: 100%;
           border-radius: 12px;
         }
-        
+
         form.search > .contents > input:-webkit-autofill,
-        form.search > .contents > input:-webkit-autofill:hover, 
+        form.search > .contents > input:-webkit-autofill:hover,
         form.search > .contents > input:-webkit-autofill:focus {
           -webkit-box-shadow: 0 0 0 1000px var(--background) inset;
           -webkit-text-fill-color: var(--text-color) !important;
           transition: background-color 5000s ease-in-out 0s;
           color: var(--text-color) !important;
         }
-        
+
         form.search > .contents > input:-webkit-autofill {
           filter: none;
           color: var(--text-color) !important;
@@ -643,10 +693,17 @@ export default class ProductsFeed extends HTMLElement {
         .products {
           padding: 20px 0;
           max-width: 100%;
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          column-gap: 30px;
-          row-gap: 20px;
+          display: block;
+          columns: 230px auto;
+          column-gap: 10px;
+          margin: 0;
+        }
+
+        .products > * {
+          break-inside: avoid;
+          margin-bottom: 10px;
+          display: block;
+          width: 100%;
         }
 
         .pagination {
