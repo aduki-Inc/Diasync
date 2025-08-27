@@ -376,7 +376,7 @@ export default class AppMain extends HTMLElement {
         <section class="flow">
           <div id="content-container" class="content-container">
             <!-- ${this.getLoader()} -->
-            ${this.getCartContainer()}
+            ${this.getWalletAccount()}
           </div>
         </section>
         ${this.getSidebar()}
@@ -477,7 +477,12 @@ export default class AppMain extends HTMLElement {
               <a href="/bookings/in-person"><span class="text">Physical</span></a>
             </li>
             <li class="upcoming">
-              <a href="/bookings/upcoming"><span class="text">Upcoming</span></a>
+              <a href="/bookings/upcoming">
+                <span class="text number booking">
+                  <span class="number-text">Upcoming</span>
+                  <span class="number-items">17</span>
+                </span>
+              </a>
             </li>
           </ul>
         </li>
@@ -498,15 +503,24 @@ export default class AppMain extends HTMLElement {
               <span class="text">Meetings</span>
             </span>
           </div>
-          <ul class="dropdown">
+          <ul class="dropdown last">
             <li class="all">
-              <a href="/meetings/all"><span class="text">Meetings</span></a>
+              <a href="/meetings/all">
+                <span class="text">Meetings</span>
+              </a>
             </li>
             <li class="upcoming">
-              <a href="/meetings/upcoming"><span class="text">Upcoming</span></a>
+              <a href="/meetings/upcoming">
+                <span class="text number meeting">
+                  <span class="number-text">Upcoming</span>
+                  <span class="number-items">6</span>
+                </span>
+              </a>
             </li>
             <li class="recordings">
-              <a href="/meetings/recordings"><span class="text">Recordings</span></a>
+              <a href="/meetings/recordings">
+                <span class="text">Recordings</span>
+              </a>
             </li>
           </ul>
         </li>
@@ -532,14 +546,23 @@ export default class AppMain extends HTMLElement {
             </span>
           </div>
           <ul class="dropdown">
-            <li class="doctors">
-              <a href="/providers/doctors"><span class="text">Doctors</span></a>
+            <li class="manage">
+              <a href="/providers/manage"><span class="text">Manage</span></a>
+            </li>
+            <li class="services">
+              <a href="/providers/services"><span class="text">Services</span></a>
             </li>
             <li class="hospitals">
               <a href="/providers/hospitals"><span class="text">Hospitals</span></a>
             </li>
+            <li class="all">
+              <a href="/providers/all"><span class="text">Providers</span></a>
+            </li>
             <li class="specialists">
               <a href="/providers/specialists"><span class="text">Specialists</span></a>
+            </li>
+            <li class="ambulance">
+              <a href="/providers/ambulance"><span class="text">Ambulance</span></a>
             </li>
           </ul>
         </li>
@@ -562,13 +585,20 @@ export default class AppMain extends HTMLElement {
           </div>
           <ul class="dropdown">
             <li class="basket">
-              <a href="/orders/basket"><span class="text">Cart</span></a>
+              <a href="/orders/basket">
+                <span class="text number">
+                  <span class="number-text">Cart</span>
+                  <span class="number-items">6</span>
+                </span>
+              </a>
             </li>
             <li class="all">
-              <a href="/orders/all"><span class="text">Orders</span></a>
-            </li>
-            <li class="refunded">
-              <a href="/orders/refunded"><span class="text">Refunded</span></a>
+              <a href="/orders/all">
+                <span class="text number">
+                  <span class="number-text">Orders</span>
+                  <span class="number-items">36k</span>
+                </span>
+              </a>
             </li>
           </ul>
         </li>
@@ -628,19 +658,6 @@ export default class AppMain extends HTMLElement {
               <path d="M21 17C21 13.6863 18.3137 11 15 11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
             </svg>
             <span class="text">Dependents</span>
-          </a>
-        </li>
-        <li class="ambulance">
-          <a href="/ambulance">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="currentColor" fill="none">
-              <path d="M11 18H15M13.5 8H14.4429C15.7533 8 16.4086 8 16.9641 8.31452C17.5196 8.62904 17.89 9.20972 18.6308 10.3711C19.1502 11.1854 19.6955 11.7765 20.4622 12.3024C21.2341 12.8318 21.6012 13.0906 21.8049 13.506C22 13.9038 22 14.375 22 15.3173C22 16.5596 22 17.1808 21.651 17.5755C21.636 17.5925 21.6207 17.609 21.6049 17.625C21.2375 18 20.6594 18 19.503 18H19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
-              <path d="M5 18C3.58579 18 2.87868 18 2.43934 17.5607C2 17.1213 2 16.4142 2 15V8C2 6.58579 2 5.87868 2.43934 5.43934C2.87868 5 3.58579 5 5 5H10.5C11.9142 5 12.6213 5 13.0607 5.43934C13.5 5.87868 13.5 6.58579 13.5 8V18H9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
-              <path d="M22 15H21" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
-              <path d="M8 9V13M10 11L6 11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
-              <circle cx="17" cy="18" r="2" stroke="currentColor" stroke-width="1.8"></circle>
-              <circle cx="7" cy="18" r="2" stroke="currentColor" stroke-width="1.8"></circle>
-            </svg>
-            <span class="text">Ambulance</span>
           </a>
         </li>
         <li class="after-care">
@@ -754,6 +771,16 @@ export default class AppMain extends HTMLElement {
     return /* html */`
       <pickup-container name="Pickup Station" kind="all" desc="This section provides a detailed overview of all the pickup stations available.">
       </pickup-container>
+    `;
+  }
+
+  getWalletAccount = () => {
+    return /* html */`
+      <wallet-account
+        account="EAC65376462I" balance="94672.1" status="active" since="2021-09-12T12:00:00Z"
+        last-spent="47894.65" last-deposited="695212.5" current-spent="98854.5" current-deposited="737512.5"
+        last-earned="86687.54" current-earned="9357.43">
+      </wallet-account>
     `;
   }
 
@@ -1078,7 +1105,7 @@ export default class AppMain extends HTMLElement {
           font-size: 1.5rem;
           padding: 0 0 0 5px;
           color: transparent;
-          background: var(--second-linear);
+          background: var(--accent-linear);
           font-weight: 700;
           line-height: 1.5;
           background-clip: text;
@@ -1223,6 +1250,37 @@ export default class AppMain extends HTMLElement {
         section.nav > ul.nav.special > li > ul.dropdown > li:hover::before {
           background-color: var(--gray-color);
           transition: background-color 0.2s ease;
+        }
+
+        section.nav > ul.nav.special > li > ul.dropdown > li > a > span.number.text {
+          padding: 0;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          /* border: 1px solid red; */
+        }
+
+        section.nav > ul.nav.special > li > ul.dropdown > li > a > span.number.text > span.number-items {
+          padding: 1px 5px;
+          display: flex;
+          min-width: max-content;
+          align-items: center;
+          justify-content: center;
+          font-size: 0.8rem;
+          color: var(--rating-color);
+          border-radius: 8px;
+          border: var(--rating-border);
+          font-family: var(--font-read), sans-serif;
+        }
+
+        section.nav > ul.nav.special > li > ul.dropdown > li > a > span.number.text.meeting > span.number-items {
+          color: var(--accent-color);
+          border: var(--action-border);
+        }
+
+        section.nav > ul.nav.special > li > ul.dropdown > li > a > span.number.text.booking > span.number-items {
+          color: var(--anchor-color);
+          border: var(--anchor-border);
         }
 
         section.flow {

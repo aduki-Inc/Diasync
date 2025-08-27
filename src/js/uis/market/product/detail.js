@@ -329,6 +329,7 @@ export default class ProductDetail extends HTMLElement {
     return /* html */`
       <div class="buttons">
         <button class="button add ${className}">${html}</button>
+        <button class="button buy">Buy now</button>
         <button class="button wish ${wishClass}">${wishHtml}</button>
 			</div>
     `;
@@ -1373,12 +1374,13 @@ export default class ProductDetail extends HTMLElement {
           border-radius: 12px;
         }
 
+        .buttons > .button.buy,
         .buttons > .button.add {
           display: flex;
           padding: 10px 20px;
           height: 42px;
-          width: calc(100% - 100px);
-          min-width: calc(100% - 100px);
+          width: calc(50% - 50px);
+          min-width: calc(50% - 50px);
           border-radius: 12px;
         }
 
@@ -1406,7 +1408,7 @@ export default class ProductDetail extends HTMLElement {
           width: 22px;
           height: 22px;
         }
-      
+
         .buttons > .button.add.out {
           pointer-events: none;
           opacity: 0.5;
@@ -1448,6 +1450,11 @@ export default class ProductDetail extends HTMLElement {
           font-size: 1.15rem;
           font-weight: 500;
           font-family: var(--font-main), sans-serif;
+        }
+
+        .buttons > button.button.buy {
+          background: var(--gray-background);
+          color: var(--text-color);
         }
 
         /* Store */

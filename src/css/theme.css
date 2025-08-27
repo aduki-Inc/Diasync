@@ -73,6 +73,7 @@ Author URL(my site): https://github.com/fescii
   --upvote-background: #a1e3f95d;
   --downvote-background: #ffc8b75c;
   --warn-background: #c86e203a;
+  --stat-background: #f4f6ff;
 
   --investment-background: #f3f3f3;
   --holding-background: #f3f3f3;
@@ -320,6 +321,7 @@ Author URL(my site): https://github.com/fescii
   --upvote-background: #7fb9e82c;
   --downvote-background: #d74a4acc;
   --warn-background: #c86e203a;
+  --stat-background: #1d1f26;
 
   --investment-background: #2a2a2a;
   --holding-background: #2a2a2a;

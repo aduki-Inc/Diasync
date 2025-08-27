@@ -4,8 +4,10 @@ export default class ReviewWrapper extends HTMLDivElement {
     // We are not even going to touch this.
     super();
     this.shadowObj = this.attachShadow({ mode: 'open' });
-    this.utils = window.app.utils;
-    this.number = this.utils.number.parseInteger(this.getAttribute('number'));
+    this.app = window.app || {};
+    this.number = this.app?.utils?.number;
+    this.date = this.app?.utils?.date;
+    this.number = this.number.parseInteger(this.getAttribute('number'));
     this.render();
   }
 
@@ -82,7 +84,7 @@ export default class ReviewWrapper extends HTMLDivElement {
   getFooter = () => {
     return /* html */`
       <div class="footer">
-        <span class="date">${this.utils.date.formatDateTime(this.getAttribute('date'))}</span>
+        <span class="date">${this.date.formatDateTime(this.getAttribute('date'))}</span>
         <span class="sp">•</span>
         <span class="verified">${this.getAttribute('purpose')}</span>
       </div>
