@@ -5,6 +5,7 @@ import popups from "./popups/index.js";
 import chats from "./chats/index.js"
 import actions from "./actions/index.js";
 import sections from "./sections/index.js";
+import providers from "./providers/index.js";
 
 export default function uis(text) {
   home();
@@ -14,5 +15,6 @@ export default function uis(text) {
   chats();
   actions();
   sections();
+  providers();
   console.log(text);
 }

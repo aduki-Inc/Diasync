@@ -789,7 +789,7 @@ export default class Account extends HTMLElement {
           flex-flow: row;
           align-items: center;
           justify-content: center;
-          padding: 7px 15px;
+          padding: 9px 15px;
           gap: 8px;
           cursor: pointer;
           list-style: none;
@@ -817,7 +817,7 @@ export default class Account extends HTMLElement {
         }
 
         ul.quick-actions > li.action > span.text {
-          font-size: 1.15rem;
+          font-size: 1rem;
           font-family: var(--font-main), sans-serif;
           font-weight: 500;
         }
@@ -922,7 +922,7 @@ export default class Account extends HTMLElement {
         }
 
         div.section.stats > .overview > .stat > .details > .change.fall {
-          color: var(--warn-color);
+          color: var(--error-color);
         }
 
         div.section.stats > .overview > .stat > .details > .change > .icon > svg {

@@ -49,10 +49,14 @@ Author URL(my site): https://github.com/fescii
   --scroll-bar-linear: linear-gradient(#354649, #3674b5);
 
   /* Borders */
-  --input-border: 1px solid #3674b53f;
-  --input-border-focus: 1px solid #3674b59a;
-  --input-border-error: 1px solid #ec4a1965;
-  --anchor-border: 1px solid #578fcaaf;
+  --input-border: thin solid #3674b53f;
+  --input-border-focus: thin solid #3674b59a;
+  --input-border-error: thin solid #ec4a1965;
+  --anchor-border: thin solid #578fcaaf;
+  --selected-border: 2px solid #10b98140;
+  --active-border: 2px solid #3674b573;
+  --icon-border: thin solid #3a5a403f;
+  --icon-border-active: thin solid #3a5a409a;
   --border: thin solid #3546491a;
   --action-border: thin solid #3674b573;
   --error-border: thin solid #ec4b1965;
@@ -60,7 +64,8 @@ Author URL(my site): https://github.com/fescii
 
   /* Backgrounds */
   --background: #ffffff;
-  --action-background: #354649d2;
+  --action-background: #e8f3fad2;
+  --icon-background: #a3b18a70;
   --dot-background: #354649c9;
   --que-background: #a1e3f96c;
   --tab-background: #a1e3f95d;
@@ -68,14 +73,15 @@ Author URL(my site): https://github.com/fescii
   --button-background: #35464921;
   --nav-background: #578fca31;
   --gray-background: #e7e7e7d7;
-  --item-background: #cdd0d325;
+  --unselctable-background: #e7e7e7c5;
+  --item-background: #05050525;
   --selected-background: #2f657744;
   --upvote-background: #a1e3f95d;
   --downvote-background: #ffc8b75c;
   --warn-background: #c86e203a;
   --stat-background: #f4f6ff;
 
-  --investment-background: #f3f3f3;
+  --today-background: #edf8fc5d;
   --holding-background: #f3f3f3;
   --loan-background: #fdbeab70;
   --revenue-background: #a1e3f95d;
@@ -94,6 +100,7 @@ Author URL(my site): https://github.com/fescii
   --gray-color: #6b7280;
   --icon-color: #404040;
   --text-color: #494d52;
+  --unselctable-color: #494d52ce;
   --nav-color: #676c72;
   --label-color: #3f4246;
   --read-color: #333333;
@@ -301,6 +308,8 @@ Author URL(my site): https://github.com/fescii
   --input-border-focus: 1px solid #4788c79a;
   --input-border-error: 1px solid #d74a4a9a;
   --anchor-border: 1px solid #7fb8e8cf;
+  --selected-border: 2px solid #10b98140;
+  --active-border: 2px solid #3674b573;
   --border: thin solid #79818a56;
   --action-border: thin solid #6185aae0;
   --error-border: thin solid #d74a4a75;
@@ -316,6 +325,7 @@ Author URL(my site): https://github.com/fescii
   --button-background: #4788c745;
   --nav-background: #35464955;
   --gray-background: #8fa8c431;
+  --unselctable-background: #8c9eb325;
   --item-background: #6b7c8f25;
   --selected-background: #7fb9e833;
   --upvote-background: #7fb9e82c;
@@ -323,7 +333,7 @@ Author URL(my site): https://github.com/fescii
   --warn-background: #c86e203a;
   --stat-background: #1d1f26;
 
-  --investment-background: #2a2a2a;
+  --today-background: #2a2a2a;
   --holding-background: #2a2a2a;
   --loan-background: #d74a4a75;
   --revenue-background: #7fb8e86d;
@@ -342,6 +352,7 @@ Author URL(my site): https://github.com/fescii
   --gray-color: #9e9eac;
   --icon-color: #c6c8cc;
   --text-color: #bcc6ce;
+  --unselctable-color: #bcc6ce69;
   --nav-color: #dde2e5;
   --label-color: #e1e6ea;
   --read-color: #eef0f1;

@@ -376,7 +376,7 @@ export default class AppMain extends HTMLElement {
         <section class="flow">
           <div id="content-container" class="content-container">
             <!-- ${this.getLoader()} -->
-            ${this.getWalletAccount()}
+            ${this.getProviderContainer()}
           </div>
         </section>
         ${this.getSidebar()}
@@ -471,10 +471,15 @@ export default class AppMain extends HTMLElement {
           </div>
           <ul class="dropdown">
             <li class="no-show">
-              <a href="/bookings/online"><span class="text">Online</span></a>
+              <a href="/bookings/all"><span class="text">Bookings</span></a>
             </li>
             <li class="in-person">
-              <a href="/bookings/in-person"><span class="text">Physical</span></a>
+              <a href="/bookings/pending">
+                <span class="text number booking">
+                  <span class="number-text">Pending</span>
+                  <span class="number-items">63</span>
+                </span>
+              </a>
             </li>
             <li class="upcoming">
               <a href="/bookings/upcoming">
@@ -737,6 +742,14 @@ export default class AppMain extends HTMLElement {
       <div class="loader-container">
         <div id="loader" class="loader"></div>
       </div>
+    `;
+  }
+
+  // Provider
+  getProviderContainer = () => {
+    return /* html */`
+      <provider-page name="Marketplace" desc="This section provides a detailed overview of all the products available in the marketplace.">
+      </provider-page>
     `;
   }
 
