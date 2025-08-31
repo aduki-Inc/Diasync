@@ -318,15 +318,15 @@ Author URL(my site): https://github.com/fescii
   --scroll-bar-linear: linear-gradient(#4788c7, #7fb8e8);
 
   /* Borders */
-  --input-border: 1px solid #4e84b9d2;
+  --input-border: 1px solid #4e83b983;
   --input-border-focus: 1px solid #4788c79a;
   --input-border-error: 1px solid #d74a4a9a;
-  --anchor-border: 1px solid #7fb8e8cf;
+  --anchor-border: 1px solid #99cdf896;
   --selected-border: 2px solid #10b98140;
   --active-border: 2px solid #3674b573;
   --border: thin solid #979a9e41;
-  --action-border: thin solid #6185aae0;
-  --error-border: thin solid #d74a4a75;
+  --action-border: thin solid #6186aa86;
+  --error-border: thin solid #f880807c;
   --rating-border: thin solid #d38e3eb1;
 
   /* Bookings */

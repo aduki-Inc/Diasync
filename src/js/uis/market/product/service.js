@@ -7,6 +7,7 @@ export default class ServiceWrapper extends HTMLDivElement {
     this.date = this.app?.utils?.date;
     this.price = this.number.parse(this.getAttribute('price'));
     this.lastPrice = this.number.parse(this.getAttribute('last'));
+    this.owner = this.getAttribute('owner') === 'true';
     this.render();
   }
 
@@ -77,23 +78,13 @@ export default class ServiceWrapper extends HTMLDivElement {
     return discount.toFixed(2);
   }
 
-  getOffer = () => {
+  getWasPrice = () => {
     const discount = this.number.parse(this.calculateDiscount(this.price, this.lastPrice));
     if (discount === 0 || discount < 1) return '';
     return /* html */`
-      <div class="offer">
-        <span class="discount">${discount}% Off</span>
-      </div>
-    `;
-  }
-
-  getWasPrice = () => {
-    if (this.price === this.lastPrice || this.price > this.lastPrice) return '';
-    return /* html */`
+      <span class="sp">•</span>
       <span class="was">
-        <span class="strike"></span>
-        <span class="currency">Ksh</span>
-        <span class="price">${this.number.shorten(this.lastPrice)}</span>
+        <span class="price">${discount}% Off</span>
       </span>
     `;
   }
@@ -134,10 +125,16 @@ export default class ServiceWrapper extends HTMLDivElement {
   }
 
   getInfo() {
+    const image = this.getAttribute('image') || `https://ui-avatars.com/api/?background=578fcac7&name=${encodeURIComponent(this.getAttribute('name'))}&color=fff&size=128&font-size=0.5`;
     return /* html */`
-      <div class="name">
-        <span class="name">${this.getAttribute('name')}</span>
-        <span class="store">${this.getAttribute('store-name')}</span>
+      <div class="info">
+        <div class="image">
+          <img src="${image}" alt="${this.getAttribute('name')}" loading="lazy" />
+        </div>
+        <div class="name">
+          <span class="name">${this.getAttribute('name')}</span>
+          <span class="store">${this.getAttribute('store-name')}</span>
+        </div>
       </div>
     `;
   }
@@ -155,12 +152,23 @@ export default class ServiceWrapper extends HTMLDivElement {
   }
 
   getActions = () => {
-    return /* html */`
-      <div class="buttons">
-        <button class="button book">Book</button>
-        <button class="button inquire">Inquire</button>
-      </div>
-    `;
+    if (!this.owner) {
+      return /* html */`
+        <div class="buttons">
+          <button class="button view">View</button>
+          <button class="button book">Book</button>
+          <button class="button inquire">Inquire</button>
+        </div>
+      `;
+    } else {
+      return /* html */`
+        <div class="buttons">
+          <button class="button view">View</button>
+          <button class="button manage">Manage</button>
+          <button class="button remove">Remove</button>
+        </div>
+      `;
+    }
   }
 
   getStyles() {
@@ -181,12 +189,12 @@ export default class ServiceWrapper extends HTMLDivElement {
         :host {
           border: var(--border);
           break-inside: avoid;
-          margin-bottom: 10px;
+          margin-bottom: 15px;
           display: block;
           width: 100%;
           gap: 0;
-          padding: 5px;
-          border-radius: 8px;
+          padding: 0;
+          border-radius: 12px;
         }
 
         .details {
@@ -211,7 +219,7 @@ export default class ServiceWrapper extends HTMLDivElement {
         .details > .content .review {
           width: 100%;
           padding: 0;
-          margin: 0 0 0 1px;
+          margin: 5px 0 0 1px;
           color: var(--gray-color);
           display: flex;
           align-items: center;
@@ -254,12 +262,42 @@ export default class ServiceWrapper extends HTMLDivElement {
           text-overflow: ellipsis;
         }
 
-        .details div.name {
+        div.details > div.info {
           width: 100%;
+          display: flex;
+          align-items: center;
+          flex-flow: row nowrap;
+          gap: 10px;
+          margin: 0;
+          padding: 0;
+        }
+
+        div.details > div.info > div.image {
+          width: 45px;
+          height: 45px;
+          border-radius: 12px;
+          overflow: hidden;
+          flex-shrink: 0;
+          background: var(--light-background);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        div.details > div.info > div.image img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          object-position: center;
+          display: block;
+        }
+
+        .details div.name {
+          width: calc(100% - 55px);
           display: flex;
           align-items: start;
           flex-flow: column;
-          gap: 0;
+          gap: 1px;
           margin: 0;
           padding: 0;
         }
@@ -269,7 +307,7 @@ export default class ServiceWrapper extends HTMLDivElement {
           font-family: var(--font-main), sans-serif;
           width: 100%;
           font-weight: 500;
-          font-size: 1.2rem;
+          font-size: 1rem;
           line-height: 1;
           display: inline-block;
           padding: 0 0 2px 0;
@@ -317,7 +355,15 @@ export default class ServiceWrapper extends HTMLDivElement {
           font-size: 0.97rem;
           font-weight: 400;
           line-height: 1.4;
-          margin: 5px 0;
+          margin: 2px 0;
+
+          /* prevent overflow add ellipsis after 3 lines */
+          overflow: hidden;
+          text-overflow: ellipsis;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
+          display: -webkit-box;
+          -webkit-box-pack: start;
         }
 
         .details div.price {
@@ -337,7 +383,7 @@ export default class ServiceWrapper extends HTMLDivElement {
         }
 
         .details div.price span.free {
-          color: var(--anchor-color);
+          color: var(--text-color);
           font-size: 1.15rem;
           font-family: var(--font-text), sans-serif;
           font-weight: 600;
@@ -345,7 +391,7 @@ export default class ServiceWrapper extends HTMLDivElement {
         }
 
         .details div.price span.value span.currency {
-          color: var(--anchor-color);
+          color: var(--text-color);
           display: inline-block;
           /* margin: -2px 0 0 0; */
           font-size: 1.15rem;
@@ -355,32 +401,35 @@ export default class ServiceWrapper extends HTMLDivElement {
         }
 
         .details div.price span.value span.price {
-          color: var(--anchor-color);
+          color: var(--text-color);
           font-size: 1.15rem;
           font-family: var(--font-main), sans-serif;
           font-weight: 600;
           letter-spacing: 0.2px;
         }
 
+        .details div.price > span.sp {
+          font-size: 1.5rem;
+          font-weight: 400;
+          display: inline-block;
+          margin-top: 2px;
+          padding: 0;
+          color: var(--gray-color);
+          font-family: var(--font-read), sans-serif;
+        }
+
         .details div.price > .was {
           display: flex;
           align-items: center;
           justify-content: start;
-          gap: 2px;
+          gap: 5px;
           margin: 0;
           padding: 0;
           position: relative;
         }
 
-        .details div.price > .was > span.strike {
-          position: absolute;
-          top: 50%;
-          transform: translateY(-50%);
-          left: -5px;
-          right: -5px;
-          height: 1px;
-          border-radius: 2px;
-          background: var(--text-color);
+        .details div.price > .was > span.save {
+          color: var(--gray-color);
           margin: 0;
           padding: 0;
         }
@@ -395,7 +444,7 @@ export default class ServiceWrapper extends HTMLDivElement {
 
         .details div.price > .was span.price {
           color: var(--gray-color);
-          font-size: 0.9rem;
+          font-size: 1.15rem;
           font-family: var(--font-main), sans-serif;
           font-weight: 500;
         }
@@ -442,8 +491,8 @@ export default class ServiceWrapper extends HTMLDivElement {
         .buttons > .button {
           border: none;
           position: relative;
-          background: var(--accent-linear);
-          color: var(--white-color);
+          background: none;
+          color: var(--text-color);
           font-family: var(--font-main), sans-serif;
           text-decoration: none;
           font-size: 0.9rem;
@@ -455,32 +504,43 @@ export default class ServiceWrapper extends HTMLDivElement {
           gap: 5px;
           text-transform: capitalize;
           justify-content: center;
-          padding: 9px 12px 10px;
+          padding: 7px 12px 8px;
           width: max-content;
-          min-width: calc(50% - 5px);
+          min-width: calc(33% - 5px);
           border-radius: 12px;
         }
 
         .buttons > .button.inquire {
-          width: calc(50% - 5px);
-          min-width: calc(50% - 5px);
           padding: 8px 12px 9px;
           border: var(--action-border);
           background: none;
           color: var(--gray-color);
         }
 
+        .buttons > .button.view {
+          border: none;
+          padding: 8px 12px 9px;
+          background: var(--gray-background);
+          color: var(--gray-color);
+        }
+
+        .buttons > .button.manage,
+        .buttons > .button.book {
+          border: var(--action-border);
+          background: none;
+          color: var(--accent-color);
+        }
+
         .buttons > .button.wish {
           border: var(--action-border);
           background: none;
           color: var(--gray-color);
-          padding: 5px 12px 4px;
         }
 
-        .buttons > .button.wish.wished {
-          color: var(--rating-color);
-          border: var(--rating-border);
-          /* background: var(--rating-background); */
+        .buttons > .button.remove {
+          border: var(--error-border);
+          background: none;
+          color: var(--warn-color);
         }
 
         .buttons > .button > .icon {

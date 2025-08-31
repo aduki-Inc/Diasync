@@ -95,7 +95,7 @@ export default class Provider extends HTMLElement {
       <div class="details">
         ${this.getTabs(this.kind)}
         <div class="content-container">
-          ${this.getSchedule()}
+          ${this.getReviews()}
         </div>
       </div>
     `
@@ -296,6 +296,26 @@ export default class Provider extends HTMLElement {
     `
   }
 
+  getServices = () => {
+    return /* html */`
+      <services-feed url="/services/example" kind="${this.getAttribute('kind')}" owner="${this.getAttribute('owner')}" name="Jane Clinic & Dental Care"></services-feed>
+    `
+  }
+
+  getDoctors = () => {
+    return /* html */`
+      <doctors-feed url="/services/example" kind="${this.getAttribute('kind')}" owner="${this.getAttribute('owner')}" name="Jane Clinic & Dental Care"></doctors-feed>
+    `
+  }
+
+  getReviews = () => {
+    return /* html */`
+      <reviews-feed  url="/services/example" kind="${this.getAttribute('kind')}" owner="${this.getAttribute('owner')}" name="Jane Clinic & Dental Care"
+        reviews="1248" reviews-distribution='{ "one": 24, "two": 56, "three": 142, "four": 512, "five": 514 }' average-review="4.7">
+      </reviews-feed>
+    `;
+  }
+
   getStyles() {
     return /* css */`
       <style>
@@ -420,6 +440,7 @@ export default class Provider extends HTMLElement {
           font-size: 1.3rem;
           font-weight: 600;
           color: var(--white-color);
+          font-family: var(--font-read), sans-serif;
           margin: 0;
         }
 
