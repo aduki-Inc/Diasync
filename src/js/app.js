@@ -748,7 +748,7 @@ export default class AppMain extends HTMLElement {
   // Provider
   getProviderContainer = () => {
     return /* html */`
-      <provider-page name="Marketplace" desc="This section provides a detailed overview of all the products available in the marketplace.">
+      <provider-page kind="org" owner="true" verified="true" name="Marketplace" desc="This section provides a detailed overview of all the products available in the marketplace.">
       </provider-page>
     `;
   }

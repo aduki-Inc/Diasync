@@ -3,6 +3,14 @@ export default class DateManager {
 		this.date = stringDate ? new Date(stringDate) : new Date();
 	}
 
+	set = stringDate => {
+		this.date = new Date(stringDate);
+	}
+
+	parse = stringDate => {
+		return new Date(stringDate);
+	}
+
 	// set date
 	setDate = str => {
 		this.date = new Date(str);
@@ -11,6 +19,60 @@ export default class DateManager {
 	// get date
 	getDate = () => {
 		return this.date;
+	}
+
+	// Get day: Mon, Tue, Wed, Thu, Fri, Sat, Sun
+	// kind can be long or short
+	day = kind => {
+		if (kind === 'long') {
+			return this.date.toLocaleString('default', { weekday: 'long' });
+		} else {
+			return this.date.toLocaleString('default', { weekday: 'short' });
+		}
+	}
+
+	// Get month: January, February, March, April, May, June, July, August, September, October, November, December
+	// kind can be long or short
+	month = kind => {
+		if (kind === 'long') {
+			return this.date.toLocaleString('default', { month: 'long' });
+		} else {
+			return this.date.toLocaleString('default', { month: 'short' });
+		}
+	}
+
+	// Get year: 2021, 2022, 2023
+	year = () => {
+		return this.date.getFullYear();
+	}
+
+	// Get time: HH:MM AM/PM
+	// kind can 12 or 24
+	time = kind => {
+		if (kind === 24) {
+			return this.date.toLocaleString('default', { hour: '2-digit', minute: '2-digit', hour12: false });
+		} else {
+			return this.date.toLocaleString('default', { hour: '2-digit', minute: '2-digit', hour12: true });
+		}
+	}
+
+	// get time: 12:00 PM
+	// kind can 12 or 24
+	getTime = (date, kind = 12) => {
+		if (!(date instanceof Date)) {
+			date = new Date(date);
+		}
+
+		if (kind === 24) {
+			return date.toLocaleString('default', { hour: '2-digit', minute: '2-digit', hour12: false });
+		} else {
+			return date.toLocaleString('default', { hour: '2-digit', minute: '2-digit', hour12: true });
+		}
+	}
+
+	// get date: 24, 25, 26
+	getDate = () => {
+		return this.date.getDate();
 	}
 
 	// Lapse time from now to the date:

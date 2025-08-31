@@ -7,6 +7,7 @@ import getLogo from "./logo.js";
 export default function utils() {
 	return {
 		date: new DateManager(),
+		dateClass: DateManager,
 		number: new NumberManager(formatNumber),
 		string: new StringManager(),
 		logo: getLogo(),

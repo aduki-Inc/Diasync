@@ -40,6 +40,7 @@ Author URL(my site): https://github.com/fescii
 
   /* Shadows */
   --box-shadow: 0 0 0 1px #ffffff25, 0 2px 2px #0000000a, 0 8px 16px -4px #0000000a;
+  --modal-shadow: 0 12px 48px #6d758d1a;
   --text-shadow: 0 2px 4px #0000000a;
   --footer-shadow: 0 -2px 4px #0000000a;
   --header-shadow: 0 2px 4px #00000001;
@@ -54,13 +55,18 @@ Author URL(my site): https://github.com/fescii
   --input-border-error: thin solid #ec4a1965;
   --anchor-border: thin solid #578fcaaf;
   --selected-border: 2px solid #10b98140;
-  --active-border: 2px solid #3674b573;
+  --active-border: 2px solid #3673b5b7;
   --icon-border: thin solid #3a5a403f;
   --icon-border-active: thin solid #3a5a409a;
   --border: thin solid #3546491a;
   --action-border: thin solid #3674b573;
   --error-border: thin solid #ec4b1965;
   --rating-border: thin solid #df791aa1;
+
+  /* Bookings */
+  --cancelled-border: thin solid #ff886465;
+  --pending-border: thin solid #fadb53a1;
+  --approved-border: thin solid #34c75965;
 
   /* Backgrounds */
   --background: #ffffff;
@@ -73,6 +79,9 @@ Author URL(my site): https://github.com/fescii
   --button-background: #35464921;
   --nav-background: #578fca31;
   --gray-background: #e7e7e7d7;
+  --tabs-background: #e7e7e750;
+  --verified-background: #e7e7e7;
+  --morph-background: #0000002f;
   --unselctable-background: #e7e7e7c5;
   --item-background: #05050525;
   --selected-background: #2f657744;
@@ -89,6 +98,11 @@ Author URL(my site): https://github.com/fescii
   --rating-background: #ffab5da9;
   --offer-background: #ffab5d49;
   --review-background: #f5f7fa;
+
+  /* bookings */
+  --cancelled-background: #f8ad962a;
+  --pending-background: #fff1e92a;
+  --approved-background: #d1f5d12a;
 
   /* Colors */
   --accent-color: #3674b5;
@@ -293,8 +307,8 @@ Author URL(my site): https://github.com/fescii
 
 /* Manual Theme Override - Data Attribute Support */
 [data-theme="dark"] {
-  --box-shadow: 0 0 0 1px #ffffff15, 0 2px 2px #0000001a,
-    0 8px 16px -4px #0000002a;
+  --box-shadow: 0 0 0 1px #ffffff15, 0 2px 2px #0000001a, 0 8px 16px -4px #0000002a;
+  --modal-shadow: 0 12px 48px #6d758d1a;
   --text-shadow: 0 2px 4px #0000001a;
   --footer-shadow: 0 -2px 4px #0000001a;
   --header-shadow: 0 2px 4px #00000005;
@@ -310,21 +324,31 @@ Author URL(my site): https://github.com/fescii
   --anchor-border: 1px solid #7fb8e8cf;
   --selected-border: 2px solid #10b98140;
   --active-border: 2px solid #3674b573;
-  --border: thin solid #79818a56;
+  --border: thin solid #979a9e41;
   --action-border: thin solid #6185aae0;
   --error-border: thin solid #d74a4a75;
   --rating-border: thin solid #d38e3eb1;
 
+  /* Bookings */
+  --cancelled-border: thin solid #fd7f593a;
+  --pending-border: thin solid #fff0ab42;
+  --approved-border: thin solid #34c75965;
+
   /* Backgrounds */
   --background: #000000;
   --action-background: #578fcac7;
+  --icon-background: #3f658b75;
   --dot-background: #578fcae9;
   --que-background: #4788c775;
   --tab-background: #7fb9e833;
+  --morph-background: #0000003d;
   --attachement-background: var(--gray-background);
   --button-background: #4788c745;
   --nav-background: #35464955;
   --gray-background: #8fa8c431;
+  --tabs-background: #40414250;
+  --success-background: #10b98127;
+  --verified-background: #0f0f0f;
   --unselctable-background: #8c9eb325;
   --item-background: #6b7c8f25;
   --selected-background: #7fb9e833;
@@ -342,11 +366,17 @@ Author URL(my site): https://github.com/fescii
   --offer-background: #b6864f86;
   --review-background: #3a3a3a;
 
+  /* bookings */
+  --cancelled-background: #5a1e1e2a;
+  --pending-background: #4a2a1a2a;
+  --approved-background: #1e4a1e2a;
+
   /* Colors */
   --accent-color: #4788c7;
   --accent-alt: #5891d1;
   --alt-color: #7fb8e8;
   --action-color: #7fb8e8;
+  --success-color: #10b981;
   --white-color: #ffffff;
   --dark-white: #e5e5e5;
   --gray-color: #9e9eac;
