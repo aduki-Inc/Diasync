@@ -1274,8 +1274,10 @@ export default class Account extends HTMLElement {
             margin-left: -2px;
             background: #3a5a409a;
             border: thin solid #3a5a409a;
-            width: 40px;
-            height: 40px;
+            width: 42px;
+            height: 42px;
+            min-width: 42px;
+            min-height: 42px;
             border-radius: 50%;
           }
 
@@ -1370,6 +1372,44 @@ export default class Account extends HTMLElement {
             color: var(--gray-color);
             font-family: var(--font-read), sans-serif;
             line-height: 1.3;
+          }
+
+          div.all-stats > div.stats > div.stat > .change {
+            display: flex;
+            flex-flow: row;
+            gap: 5px;
+            padding: 0;
+            margin: 0;
+            align-items: center;
+            justify-content: start;
+          }
+
+          div.all-stats > div.stats > div.stat > .change > .icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: -2px;
+          }
+
+          div.all-stats > div.stats > div.stat > .change.rise {
+            color: var(--anchor-color);
+          }
+
+          div.all-stats > div.stats > div.stat > .change.fall {
+            color: var(--error-color);
+          }
+
+          div.all-stats > div.stats > div.stat > .change > .icon > svg {
+            width: 16px;
+            height: 16px;
+            display: inline-block;
+            color: inherit;
+          }
+
+          div.all-stats > div.stats > div.stat > .change > .text {
+            font-size: 0.9rem;
+            font-weight: 500;
+            font-family: var(--font-read), sans-serif;
           }
 
 
