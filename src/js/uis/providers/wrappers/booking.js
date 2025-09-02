@@ -2,6 +2,7 @@ export default class Booking extends HTMLDivElement {
   constructor() {
     super();
     this.shadowObj = this.attachShadow({ mode: 'open' });
+    this.mql = window.matchMedia("(max-width: 700px)");
     this.app = window.app || {};
     this.number = this.app?.utils?.number;
     this.date = this.app?.utils?.date;
@@ -13,6 +14,7 @@ export default class Booking extends HTMLDivElement {
 
   connectedCallback() {
     this.activateActions();
+    this.handleViewModal(this.mql);
   }
 
   disconnectedCallback() {
@@ -155,22 +157,36 @@ export default class Booking extends HTMLDivElement {
 
   getTemplate() {
     return `
-      ${this.getBody()}
+      ${this.getBody(this.mql)}
       ${this.getStyles()}
     `;
   }
 
-  getBody() {
-    return /* html */`
-      <div class="content ${this.getAttribute('status') || ''}">
-        <div class="left">
-          ${this.getDay()}
-          ${this.getInfo()}
+  getBody = mql => {
+    if(mql && mql.matches) {
+      return /* html */`
+        <div class="content ${this.getAttribute('status') || ''}" id="view-modal">
+          <div class="left">
+            ${this.getDay()}
+          </div>
+          <div class="right">
+            ${this.getInfo()}
+            ${this.getDetails()}
+          </div>
         </div>
-        ${this.getDetails()}
-        ${this.getActions()}
-      </div>
-    `;
+      `;
+    } else {
+      return /* html */`
+        <div class="content ${this.getAttribute('status') || ''}">
+          <div class="left">
+            ${this.getDay()}
+            ${this.getInfo()}
+          </div>
+          ${this.getDetails()}
+          ${this.getActions()}
+        </div>
+      `;
+    }
   }
 
   getDay = () => {
@@ -197,6 +213,7 @@ export default class Booking extends HTMLDivElement {
         <span class="from time-text">${this.date.getTime(this.from, 12)}</span>
         <span class="separator">-</span>
         <span class="to time-text">${this.date.getTime(this.to, 12)}</span>
+        ${this.getMoreAction(this.mql)}
       </div>
     `;
   }
@@ -287,6 +304,17 @@ export default class Booking extends HTMLDivElement {
     `;
   }
 
+  getMoreAction = mql => {
+    if(mql && mql.matches) {
+      return /* html */`
+        <span class="more-actions" id="view-modal">
+          <span class="dot"></span>
+          <span class="dot"></span>
+        </span>
+      `;
+    } else return '';
+  }
+
   getEditDropdown = status => {
     return /* html */`
       <div class="edit-dropdown">
@@ -342,6 +370,35 @@ export default class Booking extends HTMLDivElement {
     }
 
     return '';
+  }
+
+  handleViewModal = mql => {
+    if(!mql || !mql.matches) return;
+    const actions = this.shadowObj.querySelectorAll("#view-modal");
+    if (!actions) return;
+    const html = this.getModal();
+    actions.forEach(action => {
+      action.addEventListener("click", (event) => {
+        event.stopPropagation();
+        event.preventDefault();
+        document.body.insertAdjacentHTML("beforeend", html);
+      });
+    });
+  }
+
+  getModal = () => {
+    let images = this.getAttribute('images');
+    if(!images || images === 'null' || images === '') {
+      images = '';
+    } else {
+      images = /* html */`images="${images}"`;
+    }
+    return /* html */`
+      <booking-modal date="${this.getAttribute('date')}" from="${this.getAttribute('from')}" to="${this.getAttribute('to')}" location="${this.getAttribute('location')}" status="${this.getAttribute('status')}" 
+        specialist-name="${this.getAttribute('specialist-name')}" kind="${this.getAttribute('kind')}" reviews="${this.getAttribute('reviews')}" average-review="${this.getAttribute('average-review')}" 
+        name="${this.getAttribute('name')}" ${images} price="${this.getAttribute('price')}" last="${this.getAttribute('last')}">
+      </booking-modal>
+    `;
   }
 
   getStyles() {
@@ -779,6 +836,255 @@ export default class Booking extends HTMLDivElement {
 
         div.edit-dropdown > button.option > span.text {
           text-transform: none;
+        }
+
+        /* mobile */ 
+        @media screen and (max-width: 700px) {
+          div.content {
+            border: none;
+            display: flex;
+            flex-flow: row nowrap;
+            align-items: center;
+            justify-content: start;
+            border-bottom: var(--border);
+            width: 100%;
+            cursor: default !important;
+            gap: 10px;
+            padding: 10px 5px;
+            border-radius: 0;
+          }
+
+          /* approved hover effect: but not for cancelled or pending */
+          div.content:hover {
+            background: var(--background);
+            border: none;
+            border-bottom: var(--border);
+            /* border-bottom: var(--approved-border); */
+          }
+
+          div.content.cancelled {
+            background: var(--background);
+            border: none;
+            border-bottom: var(--border);
+            /* border-bottom: var(--cancelled-border); */
+          }
+
+          div.content.pending {
+            background: var(--background);
+            border: none;
+            border-bottom: var(--border);
+            /* border-bottom: var(--pending-border); */
+          }
+
+          div.left {
+            display: flex;
+            width: 50px;
+            max-width: 50px;
+            min-width: 50px;
+            height: 100%;
+            gap: 0;
+          }
+
+          div.day {
+            padding: 5px 5px;
+            height: 100%;
+            min-height: 100%;
+            width: 50px;
+            display: flex;
+            flex-flow: column;
+            align-items: flex-start;
+            justify-content: center;
+            border-right: var(--border);
+            border-right-style: dashed;
+            gap: 20px;
+          }
+
+          div.right {
+            display: flex;
+            flex-flow: column;
+            align-items: start;
+            gap: 5px;
+            width: calc(100% - 60px);
+            max-width: calc(100% - 60px);
+          }
+
+          div.info {
+            display: flex;
+            flex-flow: column;
+            align-items: start;
+            justify-content: center;
+            padding: 0;
+            gap: 2px;
+            width: 100%;
+          }
+
+          div.info > .time, div.info > .location {
+            display: flex;
+            flex-flow: row nowrap;
+            align-items: center;
+            justify-content: start;
+            gap: 2px;
+            font-family: var(--font-main), sans-serif;
+            color: var(--gray-color);
+            font-size: 0.9rem;
+            font-weight: 400;
+            line-height: 1;
+            width: 100%;
+            max-width: 100%;
+          }
+
+          div.info > div.location > svg {
+            width: 14px;
+            height: 14px;
+          }
+
+          div.info > div.location > span.address {
+            font-family: var(--font-read), sans-serif;
+            color: var(--gray-color);
+            display: inline-block;
+            font-size: 0.8rem;
+            font-weight: 400;
+            line-height: 1;
+            width: calc(100% - 20px);
+            max-width: calc(100% - 20px);
+
+            /* add ellipsis if too long */
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+          }
+
+          div.info > div.time {
+            width: 100%;
+            max-width: 100%;
+            display: flex;
+            align-items: center;
+            position: relative;
+            gap: 5px;
+          }
+
+          div.info > .time > .separator {
+            color: var(--gray-color);
+          }
+
+          div.info > div.time > .separator {
+            color: var(--gray-color);
+          }
+
+          div.info > div.time > .time-text {
+            font-family: var(--font-main), sans-serif;
+            color: var(--text-color);
+            font-size: 0.8rem;
+            font-weight: 500;
+            line-height: 1;
+            margin: 0;
+            padding: 0;
+          }
+
+          div.info > div.time > span.more-actions {
+            display: flex;
+            gap: 3px;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            right: 0;
+            top: 0;
+            padding: 4px;
+          }
+
+          div.info > div.time > span.more-actions > span.dot {
+            display: inline-block;
+            width: 5px;
+            height: 5px;
+            background: var(--text-color);
+            color: inherit;
+            border-radius: 50%;
+          }
+
+          div.details {
+            padding: 0;
+            display: flex;
+            flex-flow: column;
+            align-items: start;
+            gap: 5px;
+            width: 100%;
+          }
+
+          div.details > h4.name {
+            font-family: var(--font-main), sans-serif;
+            color: var(--text-color);
+            font-size: 0.8rem;
+            font-weight: 400;
+            line-height: 1;
+            margin: 0;
+            padding: 0;
+
+            /* add ellipsis if too long */
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            width: 100%;
+          }
+
+          div.details > p.description {
+            font-family: var(--font-read), sans-serif;
+            color: var(--gray-color);
+            font-size: 0.9rem;
+            font-weight: 400;
+            line-height: 1;
+            margin: 0;
+            padding: 0;
+
+            /* add ellipsis if too long */
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            width: 100%;
+          }
+
+          div.details > div.bottom {
+            display: flex;
+            flex-flow: row nowrap;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 10px;
+            width: 100%;
+          }
+
+          div.details > div.bottom > .users {
+            display: flex;
+            flex-flow: row nowrap;
+            align-items: center;
+            justify-content: start;
+            gap: -30px;
+          }
+
+          div.details > div.bottom > .users > .avatar {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border: 2px solid var(--background);
+            background-color: var(--gray-color);
+          }
+
+          div.details > div.bottom > .price {
+            border-left: var(--border);
+            font-family: var(--font-main), sans-serif;
+            color: var(--text-color);
+            font-size: 0.9rem;
+            font-weight: 500;
+            line-height: 1;
+            padding: 0 0 0 10px;
+            display: flex;
+            flex-flow: row nowrap;
+            align-items: center;
+            justify-content: start;
+            gap: 2px;
+          }
         }
       </style>
     `;

@@ -1,10 +1,8 @@
 export default class Account extends HTMLElement {
   constructor() {
-    // We are not even going to touch this.
     super();
-
-    // let's create our shadow root
     this.shadowObj = this.attachShadow({ mode: "open" });
+    this.mql = window.matchMedia("(max-width: 700px)");
     this.app = window.app || {};
     this.number = this.app?.utils?.number;
     this.date = this.app?.utils?.date;
@@ -130,10 +128,15 @@ export default class Account extends HTMLElement {
   }
 
   percentage = (total, current) => {
-    let percentage = ((current / total) * 100).toFixed(2);
+  const percent = (current / total) * 100;
 
-    return parseFloat(percentage);
-  }
+  // if % is NaN, return 0
+  if (isNaN(percent)) return 0;
+
+  // Format percentage based on value
+  const decimalPlaces = percent < 10 ? 2 : percent < 100 ? 1 : 0;
+  return parseFloat(percent.toFixed(decimalPlaces));
+}
 
   calculatePercentage = (current, last) => {
     const diff = current - last;
@@ -142,9 +145,13 @@ export default class Account extends HTMLElement {
     // if % is NaN, return 0
     if (isNaN(percentage)) percentage = 0;
 
+    // Format percentage based on value
+    const decimalPlaces = percentage < 10 ? 2 : percentage < 100 ? 1 : 0;
+    percentage = parseFloat(percentage.toFixed(decimalPlaces));
+
     // in one line: 
     return {
-      percentage: Math.abs(percentage).toFixed(2),
+      percentage: Math.abs(percentage),
       diff: Math.abs(diff).toFixed(2),
       rise: diff > 0
     }
@@ -153,6 +160,16 @@ export default class Account extends HTMLElement {
   connectedCallback() {
     const balance = this.shadowObj.querySelector("div.balance");
     this.activateHideShow(balance);
+    this.setHeader(this.mql);
+  }
+
+  setHeader = mql => {
+    if (mql.matches) {
+      this.app.setHeader({
+        sectionTitle: 'Wallet',
+        description: 'Your wallet account',
+      });
+    }
   }
 
   activateHideShow = balance => {
@@ -189,7 +206,6 @@ export default class Account extends HTMLElement {
     return /* html */`
       ${this.getAccount()}
       ${this.getActions(mql)}
-      <account-actions api="/quick/data"></account-actions>
       ${this.getStats(this.data)}
       ${this.getHistory()}
     `;
@@ -211,7 +227,7 @@ export default class Account extends HTMLElement {
     return /* html */`
       <div class="balance">
         <div class="left">
-          <span class="text">Your Balance</span>
+          <span class="text">You have</span>
           <div class="amount">
             <span class="currency">Ksh</span>
             <span class="number">${this.number.balanceWithCommas(this.getAttribute("balance"))}</span>
@@ -308,6 +324,16 @@ export default class Account extends HTMLElement {
             </span>
             <span class="text">Send</span>
           </li>
+          <li class="action manage" action="manage">
+            <span class="icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" currentcolor="" fill="none">
+                <path d="M3.3457 16.1976L16.1747 3.36866M18.6316 11.0556L16.4321 13.2551M14.5549 15.1099L13.5762 16.0886" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
+                <path d="M3.17467 16.1411C1.60844 14.5749 1.60844 12.0355 3.17467 10.4693L10.4693 3.17467C12.0355 1.60844 14.5749 1.60844 16.1411 3.17467L20.8253 7.85891C22.3916 9.42514 22.3916 11.9645 20.8253 13.5307L13.5307 20.8253C11.9645 22.3916 9.42514 22.3916 7.85891 20.8253L3.17467 16.1411Z" stroke="currentColor" stroke-width="1.8"></path>
+                <path d="M4 22H20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
+              </svg>
+            </span>
+            <span class="text">Manage</span>
+          </li>
         </ul>
       </div>
     `;
@@ -319,67 +345,56 @@ export default class Account extends HTMLElement {
     const deposited = data.deposited;
     const spent = data.spent;
     const earned = data.earned;
-    return /* html */`
-      <div class="section stats">
-        <h3 class="section-title">Your Stats</h3>
-        <div class="overview">
-          <div class="stat earn">
-            <h2 class="text">Earned</h2>
-            <div class="details">
-              <div class="amount">
-                <span class="currency">Ksh</span>
-                <span class="number">${this.number.balanceWithCommas(current.earned)}</span>
-              </div>
-              <div class="change ${earned.rise ? "rise" : "fall"}">
-                <span class="icon">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="currentColor" fill="none">
-                    ${earned.rise ? this.getUpIcon() : this.getDownIcon()}
-                  </svg>
-                </span>
-                <span class="text">${earned.percentage}%</span>
-              </div>
-              <div class="info">
-                <span class="text">*In the last 30 days</span>
-              </div>
+    return /* html */ `
+      <div class="all-stats">
+        <div class="head">
+          <h3 class="title">Your Stats</h3>
+        </div>
+        <div class="stats">
+          <div class="silk stat earned">
+            <span class="amount">
+              <span class="currency">Ksh</span>
+              <span class="number">${this.number.shorten(current.earned)}</span>
+            </span>
+            <div class="change ${earned.rise ? "rise" : "fall"}">
+              <span class="icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="currentColor" fill="none">
+                  ${earned.rise ? this.getUpIcon() : this.getDownIcon()}
+                </svg>
+              </span>
+              <span class="text">${earned.percentage}%</span>
             </div>
+            <span class="label">Earned</span>
           </div>
-          <div class="stat deposited">
-            <h2 class="text">Deposited</h2>
-            <div class="details">
-              <div class="amount">
-                <span class="currency">Ksh</span>
-                <span class="number">${this.number.balanceWithCommas(current.deposited)}</span>
-              </div>
-              <div class="change ${deposited.rise ? "rise" : "fall"}">
-                <span class="icon">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="currentColor" fill="none">
-                    ${deposited.rise ? this.getUpIcon() : this.getDownIcon()}
-                  </svg>
-                </span>
-                <span class="text">${deposited.percentage}%</span>
-              </div>
-              <div class="info">
-                <span class="text">*In the last 30 days</span>
-              </div>
+          <div class="silk stat deposited">
+            <span class="amount">
+              <span class="currency">Ksh</span>
+              <span class="number">${this.number.shorten(current.deposited)}</span>
+            </span>
+            <div class="change ${deposited.rise ? "rise" : "fall"}">
+              <span class="icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="currentColor" fill="none">
+                  ${deposited.rise ? this.getUpIcon() : this.getDownIcon()}
+                </svg>
+              </span>
+              <span class="text">${deposited.percentage}%</span>
             </div>
+            <span class="label">Deposited</span>
           </div>
-          <div class="stat spent">
-            <h2 class="text">Spent</h2>
-            <div class="details">
-              <div class="amount">
-                <span class="currency">Ksh</span>
-                <span class="number">${this.number.balanceWithCommas(current.spent)}</span>
-              </div>
-              <div class="change ${spent.rise ? "rise" : "fall"}">
-                <span class="icon">
+          <div class="silk stat spent">
+            <span class="amount">
+              <span class="currency">Ksh</span>
+              <span class="number">${this.number.shorten(current.spent)}</span>
+            </span>
+            <div class="change ${spent.rise ? "rise" : "fall"}">
+              <span class="icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="currentColor" fill="none">
                   ${spent.rise ? this.getUpIcon() : this.getDownIcon()}
-                </span>
-                <span class="text">${spent.percentage}%</span>
-              </div>
-              <div class="info">
-                <span class="text">*In the last 30 days</span>
-              </div>
+                </svg>
+              </span>
+              <span class="text">${spent.percentage}%</span>
             </div>
+            <span class="label">Spent</span>
           </div>
         </div>
       </div>
@@ -593,7 +608,7 @@ export default class Account extends HTMLElement {
           display: flex;
           flex-flow: row;
           justify-content: space-between;
-          align-items: end;
+          align-items: center;
           width: 100%;
         }
 
@@ -606,7 +621,7 @@ export default class Account extends HTMLElement {
 
         div.balance .left .text {
           font-size: 1rem;
-          font-family: var(--font-read), sans-serif;
+          font-family: var(--font-main), sans-serif;
           font-weight: 500;
           color: var(--gray-color);
         }
@@ -644,7 +659,8 @@ export default class Account extends HTMLElement {
           display: flex;
           flex-flow: row;
           gap: 10px;
-          align-items: center;
+          align-items: flex-end;
+          margin: 2px 0 0;
         }
 
         div.balance .right .view-hide {
@@ -654,20 +670,20 @@ export default class Account extends HTMLElement {
           gap: 5px;
           padding: 5px 10px;
           cursor: pointer;
-          border-radius: 12px;
+          border-radius: 10px;
           color: var(--gray-color);
           border: var(--border);
         }
 
         div.balance .right .view-hide > svg {
-          width: 18px;
-          height: 18px;
+          width: 16px;
+          height: 16px;
           display: inline-block;
           margin-left: -2px;
         }
 
         div.balance .right .view-hide > .text {
-          font-size: .9rem;
+          font-size: 0.8rem;
           font-family: var(--font-read), sans-serif;
           font-weight: 500;
           color: var(--gray-color);
@@ -762,7 +778,7 @@ export default class Account extends HTMLElement {
 
         div.section.actions {
           margin: 0;
-          padding: 22px 0 5px 0;
+          padding: 10px 0;
         }
 
         div.section.actions > ul.quick-actions {
@@ -771,36 +787,28 @@ export default class Account extends HTMLElement {
           display: flex;
           flex-flow: row;
           width: 100%;
-          gap: 20px;
+          gap: 25px;
           align-items: start;
           justify-content: start;
-          list-style: none;
-          overflow-x: auto;
-          scrollbar-width: none;
-        }
-
-        div.section.actions > ul.quick-actions::-webkit-scrollbar {
-          display: none;
-          visibility: hidden;
         }
 
         ul.quick-actions > li.action {
           display: flex;
-          flex-flow: row;
+          flex-flow: column;
           align-items: center;
           justify-content: center;
-          padding: 9px 15px;
+          padding: 9px 0;
           gap: 8px;
-          cursor: pointer;
           list-style: none;
           border-radius: 12px;
           color: var(--text-color);
-          background: var(--gray-background);
-        }
 
-        ul.quick-actions > li.action:hover {
-          background: var(--revenue-background);
-          color: var(--title-color);
+          /* prevent highlight on click */
+          -webkit-tap-highlight-color: transparent;
+          -webkit-user-select: none; /* Safari */
+          -moz-user-select: none; /* Firefox */
+          -ms-user-select: none; /* IE10+/Edge */
+          user-select: none;
         }
 
         ul.quick-actions > li.action > span.icon {
@@ -808,8 +816,38 @@ export default class Account extends HTMLElement {
           align-items: center;
           justify-content: center;
           margin-left: -2px;
+          background: #3a5a409a;
+          border: thin solid #3a5a409a;
+          width: 45px;
+          height: 45px;
+          border-radius: 50%;
         }
 
+        ul.quick-actions > li.action.deposit > span.icon {
+          border: thin solid #34c75965;
+          background: #1e4a1e2a;
+        }
+
+        ul.quick-actions > li.action.withdraw > span.icon {
+          border: thin solid #ff3b305e;
+          background: #5a1e1e2a;
+        }
+
+        ul.quick-actions > li.action.send > span.icon {
+          border: thin solid #ff950065;
+          background: #5a3a1e2a;
+        }
+
+        ul.quick-actions > li.action.txns > span.icon {
+          border: thin solid #5ac8fa65;
+          background: #1e3a5a2a;
+        }
+
+        ul.quick-actions > li.action.manage > span.icon {
+          border: thin solid #ffcc0094;
+          background: #ffcc0017;
+        }
+        
         ul.quick-actions > li.action > span.icon > svg {
           width: 18px;
           height: 18px;
@@ -817,90 +855,162 @@ export default class Account extends HTMLElement {
         }
 
         ul.quick-actions > li.action > span.text {
-          font-size: 1rem;
-          font-family: var(--font-main), sans-serif;
-          font-weight: 500;
+          font-size: 0.8rem;
+          font-family: var(--font-read), sans-serif;
+          font-weight: 400;
         }
 
-        div.section.stats {
+        div.actions.owner {
+          display: flex;
+          flex-flow: row nowrap;
+          gap: 20px;
+          padding: 10px 0;
+          border-top: var(--border);
+          overflow-x: scroll;
+          width: 100%;
+          scroll-behavior: smooth;
+          scrollbar-width: none; /* Firefox */
+          -ms-overflow-style: none;  /* IE and Edge */
+          &::-webkit-scrollbar { /* WebKit */
+            display: none;
+            visibility: hidden;
+            width: 0;
+          }
+        }
+
+        div.all-stats {
+          display: flex;
+          flex-flow: column;
+          gap: 4px;
+          margin: 0;
+          padding: 15px 0 0;
+          width: 100%;
+          border-top: var(--border);
+          border-top-style: dashed;
+        }
+
+        div.head {
+          display: flex;
+          flex-flow: row nowrap;
+          align-items: center;
+          justify-content: space-between;
+          gap: 0;
+          padding: 0;
+          width: 100%;
+        }
+
+        div.head > h3.title {
+          display: flex;
+          align-items: center;
+          font-family: var(--font-main), sans-serif;
+          color: var(--text-color);
+          font-size: 1.2rem;
+          font-weight: 600;
+          line-height: 1;
+          margin: 0;
+          padding: 0;
+        }
+
+        div.all-stats > .head > div.icons {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+        }
+
+        div.all-stats > .head > div.icons > span.icon {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border: var(--border);
+          background: var(--gray-background);
+          /* border-width: 2px; */
+          width: 22px;
+          height: 22px;
+          border-radius: 50%;
+          color: var(--gray-color);
+        }
+
+        div.all-stats > .head > div.icons > span.icon:hover {
+          background: var(--gray-background);
+        }
+
+        div.all-stats > .head > div.icons > span.icon.active {
+          background: #3f658b75;
+          color: var(--text-color);
+          border: thin solid #3a5a409a;
+          /* border-width: 2px; */
+        }
+
+        div.all-stats > .head > div.icons > span.icon.active:hover {
+          background: #3f658b75;
+          border: thin solid #3a5a409a;
+          color: var(--accent-color);
+          /* border-width: 2px; */
+        }
+
+        div.all-stats > .head > div.icons > span.icon > svg {
+          width: 20px;
+          height: 20px;
+          display: inline-block;
+          vertical-align: middle;
+        }
+
+        div.all-stats > .head > div.icons > span.icon.next > svg {
+          margin-left: 2px;
+        }
+
+        div.all-stats > div.stats {
+          display: flex;
+          flex-flow: row nowrap;
+          gap: 12px;
+          margin: 0;
+          padding: 10px 0 0;
+          overflow-x: auto;
+          scrollbar-width: 0;
+          -ms-overflow-style: none;  /* IE and Edge */
+          &::-webkit-scrollbar {
+            display: none;  /* Safari and Chrome */
+            width: 0;
+            visibility: hidden;
+          }
+        }
+
+        div.all-stats > div.stats > div.stat {
           display: flex;
           flex-flow: column;
           align-items: start;
-          justify-content: space-between;
-          gap: 10px;
-          padding: 14px 0 0 0;
-          margin: 0;
-          border-top: var(--border);
-        }
-
-        div.section.stats > .section-title {
-          font-size: 1.35rem;
-          font-family: var(--font-main), sans-serif;
-          font-weight: 600;
-          color: var(--text-color);
+          justify-content: center;
+          gap: 2px;
+          /* add glass morphism effect */
+          border: var(--account-stat-border);
+          background: var(--account-stat-background);
+          border-radius: 12px;
+          padding: 7px 9px;
+          min-width: 110px;
+          max-width: 110px;
           margin: 0;
           position: relative;
         }
 
-        div.section.stats > .overview {
-          display: flex;
-          flex-flow: row;
-          justify-content: space-between;
-          gap: 20px;
-          padding: 0;
-          margin: 0;
-          width: 100%;
-        }
-
-        div.section.stats > .overview > .stat {
-          display: flex;
-          flex-flow: column;
-          gap: 5px;
-          padding: 10px;
-          width: calc(50% - 10px);
-          border-radius: 12px;
-          margin: 0;
-          background: var(--gray-background);
-        }
-
-        div.section.stats > .overview > .stat > h2.text {
-          font-size: 1rem;
-          font-family: var(--font-text), sans-serif;
-          font-weight: 500;
-          color: var(--gray-color);
-          /*text-transform: uppercase;*/
-          padding: 0;
-          margin: 0;
-        }
-
-        div.section.stats > .overview > .stat > .details {
-          display: flex;
-          flex-flow: column;
-          gap: 5px;
-          padding: 0;
-          margin: 5px 0 0 0;
-        }
-
-        div.section.stats > .overview > .stat > .details > .amount {
-          display: flex;
-          flex-flow: row;
-          align-items: center;
-          font-family: var(--font-main), sans-serif;
-          font-size: 1.2rem;
+        div.all-stats > div.stats > div.stat > .amount > .number {
+          font-size: 1.1rem;
           font-weight: 600;
-          color: var(--text-color);
-          gap: 5px;
-          padding: 0;
           margin: 0;
-        }
-
-        div.section.stats > .overview > .stat > .details > .amount > .currency {
-          display: inline-block;
+          color: var(--title-color);
           font-family: var(--font-main), sans-serif;
-          color: var(--gray-color);
+          line-height: 1.3;
         }
 
-        div.section.stats > .overview > .stat > .details > .change {
+        div.all-stats > div.stats > div.stat > .amount > .currency {
+          font-size: 1rem;
+          font-weight: 500;
+          margin: 0;
+          color: var(--gray-color);
+          font-family: var(--font-read), sans-serif;
+          line-height: 1.3;
+        }
+
+        div.all-stats > div.stats > div.stat > .change {
           display: flex;
           flex-flow: row;
           gap: 5px;
@@ -910,47 +1020,42 @@ export default class Account extends HTMLElement {
           justify-content: start;
         }
 
-        div.section.stats > .overview > .stat > .details > .change > .icon {
+        div.all-stats > div.stats > div.stat > .change > .icon {
           display: flex;
           align-items: center;
           justify-content: center;
           margin-left: -2px;
         }
 
-        div.section.stats > .overview > .stat > .details > .change.rise {
+        div.all-stats > div.stats > div.stat > .change.rise {
           color: var(--anchor-color);
         }
 
-        div.section.stats > .overview > .stat > .details > .change.fall {
+        div.all-stats > div.stats > div.stat > .change.fall {
           color: var(--error-color);
         }
 
-        div.section.stats > .overview > .stat > .details > .change > .icon > svg {
-          width: 18px;
-          height: 18px;
+        div.all-stats > div.stats > div.stat > .change > .icon > svg {
+          width: 16px;
+          height: 16px;
           display: inline-block;
           color: inherit;
         }
 
-        div.section.stats > .overview > .stat > .details > .change > .text {
+        div.all-stats > div.stats > div.stat > .change > .text {
           font-size: 1rem;
           font-weight: 600;
           font-family: var(--font-read), sans-serif;
         }
 
-        div.section.stats > .overview > .stat > .details > .info {
-          display: flex;
-          flex-flow: column;
-          gap: 0;
-          padding: 5px 0 0 0;
+        div.all-stats > div.stats > div.stat > .label {
+          font-size: 0.9rem;
+          font-weight: 400;
+          text-transform: capitalize;
           margin: 0;
-        }
-
-        div.section.stats > .overview > .stat > .details > .info > .text {
-          font-size: .9rem;
-          font-family: var(--font-read), sans-serif;
-          font-weight: 500;
           color: var(--gray-color);
+          font-family: var(--font-read), sans-serif;
+          line-height: 1.3;
         }
 
         /* Activity Section */
@@ -958,14 +1063,14 @@ export default class Account extends HTMLElement {
           display: flex;
           flex-direction: column;
           gap: 0;
-          padding: 20px 0;
+          padding: 15px 0;
         }
 
         div.activity-section > .section-header {
           display: flex;
           justify-content: space-between;
           align-items: center;
-          padding: 5px 0;
+          padding: 10px 0;
           border-top: var(--border);
           border-bottom: var(--border);
         }
@@ -1074,14 +1179,14 @@ export default class Account extends HTMLElement {
           cursor: pointer;
         }
 
-				@media screen and (max-width:660px) {
+				@media screen and (max-width: 700px) {
 					::-webkit-scrollbar {
 						-webkit-appearance: none;
 					}
 
           :host {
             font-size: 16px;
-            padding: 70px 10px;
+            padding: 0 10px 65px;
             margin: 0;
           }
           
@@ -1101,6 +1206,22 @@ export default class Account extends HTMLElement {
             user-select: none; /* Non-prefixed version, currently supported by Chrome, Edge, Opera and Firefox */
           }
 
+          div.balance {
+            margin: 0;
+            display: flex;
+            flex-flow: row;
+            justify-content: space-between;
+            align-items: start;
+            width: 100%;
+            margin: 10px 0 0;
+            padding: 0;
+          }
+
+          div.section.actions {
+            margin: 0;
+            padding: 0;
+          }
+
           div.account {
             display: flex;
             flex-flow: row;
@@ -1112,12 +1233,12 @@ export default class Account extends HTMLElement {
           }
 
           div.section.actions > ul.quick-actions {
-            padding: 10px 0 0 0;
+            padding: 20px 0;
             display: flex;
             flex-wrap: no-wrap;
-            justify-content: space-between;
+            justify-content: start;
             overflow-x: auto;
-            gap: 10px;
+            gap: 20px;
             scrollbar-width: none;
             -ms-overflow-style: none;
           }
@@ -1128,10 +1249,22 @@ export default class Account extends HTMLElement {
           }
 
           ul.quick-actions > li.action {
-            padding: 7px 15px;
-            color: var(--anchor-color);
+            display: flex;
+            flex-flow: column;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
             gap: 5px;
-            background: var(--revenue-background);
+            list-style: none;
+            border-radius: 12px;
+            color: var(--text-color);
+
+            /* prevent highlight on click */
+            -webkit-tap-highlight-color: transparent;
+            -webkit-user-select: none; /* Safari */
+            -moz-user-select: none; /* Firefox */
+            -ms-user-select: none; /* IE10+/Edge */
+            user-select: none;
           }
 
           ul.quick-actions > li.action > span.icon {
@@ -1139,67 +1272,115 @@ export default class Account extends HTMLElement {
             align-items: center;
             justify-content: center;
             margin-left: -2px;
+            background: #3a5a409a;
+            border: thin solid #3a5a409a;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
           }
-  
+
+          ul.quick-actions > li.action.deposit > span.icon {
+            border: thin solid #34c75965;
+            background: #1e4a1e2a;
+          }
+
+          ul.quick-actions > li.action.withdraw > span.icon {
+            border: thin solid #ff3b305e;
+            background: #5a1e1e2a;
+          }
+
+          ul.quick-actions > li.action.send > span.icon {
+            border: thin solid #ff950065;
+            background: #5a3a1e2a;
+          }
+
+          ul.quick-actions > li.action.txns > span.icon {
+            border: thin solid #5ac8fa65;
+            background: #1e3a5a2a;
+          }
+
+          ul.quick-actions > li.action.manage > span.icon {
+            border: thin solid #ffcc0094;
+            background: #ffcc0017;
+          }
+          
           ul.quick-actions > li.action > span.icon > svg {
-            width: 15px;
-            height: 15px;
+            width: 18px;
+            height: 18px;
             display: inline-block;
           }
-  
+
           ul.quick-actions > li.action > span.text {
-            font-size: 1rem;
+            font-size: 0.75rem;
             font-family: var(--font-read), sans-serif;
-            font-weight: 500;
+            font-weight: 400;
           }
 
-          div.section.stats {
-            border-bottom: var(--border);
+          div.all-stats > div.stats {
             display: flex;
-            padding: 15px 0 25px 0;
-            flex-flow: column;
-            align-items: start;
-            justify-content: start;
-          }
-
-          div.section.stats > .overview {
-            display: flex;
-            flex-flow: row;
+            flex-flow: row nowrap;
             align-items: center;
             justify-content: space-between;
-            gap: 20px;
+            gap: 12px;
             margin: 0;
-            width: 100%;
-            height: max-content;
-          }
-  
-          div.section.stats > .overview > .stat {
-            display: flex;
-            flex-flow: column;
-            gap: 5px;
-            padding: 10px;
-            width: calc(50% - 10px);
-            border-radius: 12px;
-            margin: 0;
-            background: var(--holding-background);
-          }
-
-          div.section.stats > .overview > .stat > .details > .amount {
-            /* prevent overflow add scroll X */
-            display: flex;
-            flex-flow: row;
-            align-items: center;
-            gap: 5px;
+            padding: 10px 0 0;
             overflow-x: auto;
-            max-width: 100%;
-            width: 100%;
-            scrollbar-width: none;
+            scrollbar-width: 0;
             -ms-overflow-style: none;
           }
 
-          div.section.stats > .overview > .stat > .details > .amount::-webkit-scrollbar {
-            display: none;
-            visibility: hidden;
+          div.all-stats > div.stats > div.stat {
+            display: flex;
+            flex-flow: column;
+            align-items: start;
+            justify-content: center;
+            gap: 2px;
+            /* add glass morphism effect */
+            border: var(--account-stat-border);
+            background: var(--account-stat-background);
+            border-radius: 12px;
+            padding: 7px 9px;
+            min-width: 110px;
+            max-width: 110px;
+            margin: 0;
+            position: relative;
+          }
+
+          div.all-stats > div.stats > div.stat > .amount {
+            display: flex;
+            flex-flow: row nowrap;
+            align-items: center;
+            justify-content: start;
+            gap: 5px;
+          }
+
+          div.all-stats > div.stats > div.stat > .amount > .number {
+            font-size: 1rem;
+            font-weight: 500;
+            margin: 0;
+            color: var(--title-color);
+            font-family: var(--font-main), sans-serif;
+            line-height: 1.3;
+          }
+
+          div.all-stats > div.stats > div.stat > .amount > .currency {
+            font-size: 1rem;
+            font-weight: 500;
+            margin: 0;
+            color: var(--gray-color);
+            font-family: var(--font-read), sans-serif;
+            line-height: 1.3;
+          }
+
+
+          div.all-stats > div.stats > div.stat > .label {
+            font-size: 0.85rem;
+            font-weight: 400;
+            text-transform: capitalize;
+            margin: 0;
+            color: var(--gray-color);
+            font-family: var(--font-read), sans-serif;
+            line-height: 1.3;
           }
 				}
 	    </style>

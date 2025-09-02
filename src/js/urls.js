@@ -47,18 +47,26 @@ const urls = {
     </specialists-container>
   `,
 
-  "/providers/verification-status": /* HTML */`<provider-verification api="/providers/verification-status"></provider-verification>`,
-  "/providers/ratings": /* HTML */`<provider-ratings api="/providers/ratings"></provider-ratings>`,
-  "/providers/compliance": /* HTML */`<provider-compliance api="/providers/compliance"></provider-compliance>`,
-  "/pharmacy/prescriptions": /* HTML */`<prescription-management api="/pharmacy/prescriptions"></prescription-management>`,
-  "/pharmacy/otc-products": /* HTML */`<otc-products api="/pharmacy/otc-products"></otc-products>`,
-  "/dependents/health-records": /* HTML */`<health-records api="/dependents/health-records"></health-records>`,
-  "/dependents/medical-history": /* HTML */`<medical-history api="/dependents/medical-history"></medical-history>`,
-  "/dependents/emergency-contacts": /* HTML */`<emergency-contacts api="/dependents/emergency-contacts"></emergency-contacts>`,
-  "/dependents/elderly-care": /* HTML */`<elderly-care-management api="/dependents/elderly-care"></elderly-care-management>`,
-  "/dependents/chronic-conditions": /* HTML */`<chronic-conditions api="/dependents/chronic-conditions"></chronic-conditions>`,
-  "/settings/timezone": /* HTML */`<timezone-settings api="/settings/timezone"></timezone-settings>`,
-  "/settings/privacy": /* HTML */`<privacy-settings api="/settings/privacy"></privacy-settings>`,
+  "/providers/services": /* HTML */`
+    <services-container name="Services" kind="pharmacy" all="124">
+      <p>Browse medicines and over-the-counter (OTC) drugs available at partnered pharmacies. <br/> Search by brand, generic name, or active ingredient.</p>
+      <p>Check real-time stock and availability at nearby pharmacies, view dosing information and safety warnings, and choose pickup or delivery options.
+      <br/>Prescription-only medicines require a valid prescription. Request prescription verification and consult a pharmacist for interactions and guidance.</p>
+    </services-container>
+  `,
+
+  /* Pharmacy */
+  "/pharmacy/products": /* HTML */`
+    <products-feed name="Pharmacy Medicines" kind="pharmacy" all="124">
+      <p>Browse medicines and over-the-counter (OTC) drugs available at partnered pharmacies. <br/> Search by brand, generic name, or active ingredient.</p>
+      <p>Check real-time stock and availability at nearby pharmacies, view dosing information and safety warnings, and choose pickup or delivery options.
+      <br/>Prescription-only medicines require a valid prescription. Request prescription verification and consult a pharmacist for interactions and guidance.</p>
+    </products-feed>
+  `,
+
+  "/pharmacy/manage": /* HTML */`
+    <store-container name="Marketplace" desc="This section provides a detailed overview of all the products available in the marketplace."></store-container>
+  `,
 
   /* Orders Routes */
   "/orders/cart": /* HTML */`
@@ -68,31 +76,6 @@ const urls = {
     </cart-container>
   `,
   "/orders/all": /* HTML */`<family-health-report api="/reports/family-health"></family-health-report>`,
-
-  /* Provider Admin Routes */
-  "/provider/dashboard": /* HTML */`<provider-dashboard api="/provider/dashboard"></provider-dashboard>`,
-  "/provider/profile": /* HTML */`<provider-profile api="/provider/profile"></provider-profile>`,
-  "/provider/staff": /* HTML */`<staff-management api="/provider/staff"></staff-management>`,
-  "/provider/schedule": /* HTML */`<schedule-management api="/provider/schedule"></schedule-management>`,
-  "/provider/appointments": /* HTML */`<appointment-management api="/provider/appointments"></appointment-management>`,
-  "/provider/orders": /* HTML */`<provider-orders api="/provider/pharmacy/orders"></provider-orders>`,
-  "/provider/ambulance": /* HTML */`<ambulance-requests api="/provider/ambulance/requests"></ambulance-requests>`,
-  "/provider/financials": /* HTML */`<provider-financials api="/provider/financials"></provider-financials>`,
-  "/provider/compliance": /* HTML */`<compliance-documents api="/provider/compliance"></compliance-documents>`,
-
-  /* Provider Staff Routes */
-  "/staff/appointments": /* HTML */`<staff-appointments api="/staff/appointments"></staff-appointments>`,
-  "/staff/availability": /* HTML */`<staff-availability api="/staff/availability"></staff-availability>`,
-  "/staff/profile": /* HTML */`<staff-profile api="/staff/profile"></staff-profile>`,
-  "/staff/earnings": /* HTML */`<staff-earnings api="/staff/earnings"></staff-earnings>`,
-
-  /* Platform Admin Routes */
-  "/admin/dashboard": /* HTML */`<admin-dashboard api="/admin/dashboard"></admin-dashboard>`,
-  "/admin/users": /* HTML */`<admin-users api="/admin/users"></admin-users>`,
-  "/admin/verification": /* HTML */`<admin-verification api="/admin/verification"></admin-verification>`,
-  "/admin/complaints": /* HTML */`<admin-complaints api="/admin/complaints"></admin-complaints>`,
-  "/admin/audit": /* HTML */`<admin-audit api="/admin/audit"></admin-audit>`,
-  "/admin/content": /* HTML */`<admin-content api="/admin/content"></admin-content>`,
 
   /* Support & Help */
   "/support": /* HTML */`<support-center api="/support/center"></support-center>`,

@@ -3,7 +3,7 @@ export default class ChatApp extends HTMLElement {
     super();
     this.shadow = this.attachShadow({ mode: 'open' });
     this.active_tab = null;
-    this.mql = window.matchMedia("(max-width: 768px)");
+    this.mql = window.matchMedia("(max-width: 700px)");
     this.app = window.app || {};
     this.number = this.app?.utils?.number;
     this.render();
@@ -209,6 +209,7 @@ export default class ChatApp extends HTMLElement {
       </div>
       <div is="chat-item" user-picture="https://randomuser.me/api/portraits/women/38.jpg"
       user-name="Dr. Grace Wanjiku" unread="2" active="true" you="false"
+      images="https://i.pravatar.cc/200?img=12,https://i.pravatar.cc/200?img=2,https://i.pravatar.cc/200?img=40"
       message="Your dental cleaning is scheduled for next week. Any sensitivity issues?" is-even="false" datetime="2025-01-04T14:30:00Z"
       user-verified="true" user-profession="Dentist" user-location="Westlands Dental Clinic">
       </div>
@@ -617,7 +618,24 @@ export default class ChatApp extends HTMLElement {
           width: 100%;
         }
 
-        @media screen and (max-width: 768px) {
+        @media screen and (max-width: 700px) {
+          :host {
+            border: none;
+            width: 100%;
+            max-width: 100%;
+            min-width: 100%;
+            max-height: unset;
+            height: unset;
+            min-height: unset;
+            max-height: unset;
+            padding: 0 0 65px;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: start;
+            justify-content: start;
+          }
+
           div.main {
             width: 100%;
             min-width: 100%;
@@ -631,39 +649,16 @@ export default class ChatApp extends HTMLElement {
           div.chats {
             width: 100%;
             min-width: 100%;
-            height: 100dvh;
-            min-height: 100dvh;
-            max-height: 100dvh;
-            padding: 0 10px 10px;
+            height: max-content;
+            min-height: max-content;
+            max-height: max-content;
+            padding: 0 10px;
             margin: 0;
-            overflow-y: auto;
+            position: relative;
+            overflow-y: unset;
             scrollbar-width: none;
             -webkit-overflow-scrolling: touch;
             -ms-overflow-style: -ms-autohiding-scrollbar;
-          }
-
-          div.chats::-webkit-scrollbar {
-            display: none !important;
-            visibility: hidden !important;
-          }
-        }
-
-        @media screen and (max-width: 660px) {
-          :host {
-            border: none;
-            width: 100%;
-            max-width: 100%;
-            min-width: 100%;
-            max-height: unset;
-            height: unset;
-            min-height: unset;
-            max-height: unset;
-            padding: 0;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: start;
-            justify-content: start;
           }
 
           /* reset all cursor: pointer to cursor: default */
@@ -673,7 +668,19 @@ export default class ChatApp extends HTMLElement {
           }
 
           form.search {
-            margin: 0;
+            background: var(--background);
+            padding: 0;
+            margin: 5px 0;
+            padding: 7px 0 0;
+            display: flex;
+            flex-flow: column;
+            align-items: start;
+            flex-wrap: nowrap;
+            gap: 5px;
+            z-index: 6;
+            width: 100%;
+            position: relative;
+            top: unset;
           }
 
           form.search > .contents {
@@ -683,20 +690,54 @@ export default class ChatApp extends HTMLElement {
             align-items: center;
             flex-wrap: nowrap;
             gap: 0;
-            margin: 0 0 0 25px;
-            width: calc(100% - 25px);
+            margin: 0;
+            width: 100%;
             position: relative;
           }
 
           form.search > svg {
             position: absolute;
-            display: flex;
+            display: none;
             left: -12px;
             top: calc(50% - 20px);
             color: var(--text-color);
             cursor: pointer;
             width: 40px;
             height: 40px;
+          }
+
+          .chats > .container {
+            display: flex;
+            flex-flow: column;
+            align-items: start;
+            gap: 0;
+            width: 100%;
+            max-width: 100%;
+            padding: 0;
+          }
+
+          ul.tabs {
+            border-bottom: var(--border);
+            display: flex;
+            z-index: 1;
+            flex-flow: row nowrap;
+            gap: 15px;
+            padding: 12px 0 8px;
+            margin: 0;
+            width: 100%;
+            list-style: none;
+            overflow-x: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            z-index: 1;
+            position: relative;
+            top: unset;
+            background: var(--background);
+          }
+
+          ul.tabs::-webkit-scrollbar {
+            display: none;
+            visibility: hidden;
           }
 
           ul.tabs > li.tab > .count {
@@ -708,7 +749,7 @@ export default class ChatApp extends HTMLElement {
             flex-flow: column;
             align-items: start;
             gap: 0;
-            padding: 0 0 55px;
+            padding: 0;
             width: 100%;
           }
         }

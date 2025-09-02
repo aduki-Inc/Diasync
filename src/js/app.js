@@ -54,6 +54,21 @@ export default class AppMain extends HTMLElement {
     // this._loadInitialContent(); // Load content based on the current URL
   }
 
+    watchMql() {
+      this.mql.addEventListener('change', () => {
+        this.render();
+        this.setHeader(this.mql);
+      });
+    }
+
+    setHeader = data => {
+      const header = this.shadowObj.querySelector('header-section');
+      if (header) {
+        header.setAttribute('section-title', data.sectionTitle);
+        header.setAttribute('description', data.description);
+      }
+    }
+
   _loadInitialContent() {
     // Get the current path from the browser
     const currentPath = window.location.pathname;
@@ -361,11 +376,15 @@ export default class AppMain extends HTMLElement {
     const mql = window.matchMedia('(max-width: 660px)');
     if (mql.matches) {
       return /* html */`
-        <section class="mobile">
-          <h1 class="mobile-title">Diasync Health Platform</h1>
-          <p class="mobile-description">Diasync is a health services platform that connects diaspora communities with trusted healthcare providers in Kenya.</p>
-          <p class="mobile-warning">The mobile version is not available yet. Please use the desktop or tablet version for the best experience.</p>
-          ${this.getFooter()}
+        ${this.getMobileHeader()}
+        <section class="flow">
+          <div id="content-container" class="content-container">
+            <!--<chats-section all="628" unread="3" requests="2"></chats-section>-->
+            ${this.getBookingsFeed()}
+          </div>
+        </section>
+        <section class="nav">
+          ${this.getMobileNav()}
         </section>
       `;
     }
@@ -376,7 +395,7 @@ export default class AppMain extends HTMLElement {
         <section class="flow">
           <div id="content-container" class="content-container">
             <!-- ${this.getLoader()} -->
-            ${this.getProviderContainer()}
+            ${this.getWalletAccount()}
           </div>
         </section>
         ${this.getSidebar()}
@@ -389,10 +408,10 @@ export default class AppMain extends HTMLElement {
       <section class="nav">
         ${this.getLogoNav()}
         ${this.getMainLinksNav()}
-        ${this.getProvidersNav()}
-        ${this.getBookingsNav()}
         ${this.getOrdersNav()}
-        ${this.getMeetingsNav()}
+        ${this.getProvidersNav()}
+        ${this.getPharmacyNav()}
+        ${this.getBookingsNav()}
         ${this.getTweakNav()}
       </section>
     `;
@@ -411,6 +430,79 @@ export default class AppMain extends HTMLElement {
     `;
   }
 
+  getMobileHeader = () => {
+    return /* html */`
+      <header-section section-title="Chats" description="Your chats and updates."></header-section>
+    `;
+  }
+
+  getMobileNav = () => {
+    return /* html */`
+      <div class="mobile-nav">
+        <div class="icons">
+          <span class="icon home active">
+            <span class="bar"></span>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="currentColor" fill="none">
+              <path d="M12 17H12.009" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+              <path d="M20 8.5V13.5C20 17.2712 20 19.1569 18.8284 20.3284C17.6569 21.5 15.7712 21.5 12 21.5C8.22876 21.5 6.34315 21.5 5.17157 20.3284C4 19.1569 4 17.2712 4 13.5V8.5" stroke="currentColor" stroke-width="1.8" />
+              <path d="M22 10.5L17.6569 6.33548C14.9902 3.77849 13.6569 2.5 12 2.5C10.3431 2.5 9.00981 3.77849 6.34315 6.33548L2 10.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+            </svg>
+            <span class="text">Home</span>
+          </span>
+          <span class="icon book">
+            <span class="bar"></span>
+            <svg id="other" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M2.74976 12.7756C2.74976 5.81959 5.06876 3.50159 12.0238 3.50159C18.9798 3.50159 21.2988 5.81959 21.2988 12.7756C21.2988 19.7316 18.9798 22.0496 12.0238 22.0496C5.06876 22.0496 2.74976 19.7316 2.74976 12.7756Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+              <path d="M3.02515 9.32397H21.0331" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+              <path d="M16.4285 13.261H16.4375" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+              <path d="M12.0291 13.261H12.0381" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+              <path d="M7.62135 13.261H7.63035" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+              <path d="M16.4285 17.1129H16.4375" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+              <path d="M12.0291 17.1129H12.0381" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+              <path d="M7.62135 17.1129H7.63035" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+              <path d="M16.033 2.05005V5.31205" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+              <path d="M8.02466 2.05005V5.31205" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+           <span class="text">Book</span>
+          </span>
+          <span class="icon wallet">
+            <span class="bar"></span>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="currentColor" fill="none">
+              <path d="M3 8.5H15C17.8284 8.5 19.2426 8.5 20.1213 9.37868C21 10.2574 21 11.6716 21 14.5V15.5C21 18.3284 21 19.7426 20.1213 20.6213C19.2426 21.5 17.8284 21.5 15 21.5H9C6.17157 21.5 4.75736 21.5 3.87868 20.6213C3 19.7426 3 18.3284 3 15.5V8.5Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+              <path d="M15 8.49833V4.1103C15 3.22096 14.279 2.5 13.3897 2.5C13.1336 2.5 12.8812 2.56108 12.6534 2.67818L3.7623 7.24927C3.29424 7.48991 3 7.97203 3 8.49833" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+              <path d="M17.5 15.5C17.7761 15.5 18 15.2761 18 15C18 14.7239 17.7761 14.5 17.5 14.5M17.5 15.5C17.2239 15.5 17 15.2761 17 15C17 14.7239 17.2239 14.5 17.5 14.5M17.5 15.5V14.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+           <span class="text">Wallet</span>
+          </span>
+          <span class="icon search">
+            <span class="bar"></span>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="#000000" fill="none">
+              <path d="M17 17L21 21" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+              <path d="M19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11C3 15.4183 6.58172 19 11 19C15.4183 19 19 15.4183 19 11Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+            <span class="text">Search</span>
+          </span>
+          <span class="icon pharmacy">
+						<span class="bar"></span>
+						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="currentColor" fill="none">
+              <path d="M5.5 15.5C3.28795 14.6166 2 12.4328 2 10.1746C2 7.24571 4.31698 4.35135 5.94326 2.68056C6.82649 1.77315 8.17351 1.77315 9.05674 2.68056C9.54874 3.18602 9.96485 3.80348 10.5 4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
+              <path d="M8 14.9263C8 11.3698 10.9489 7.85521 13.0187 5.82639C14.1428 4.72454 15.8572 4.72454 16.9813 5.82639C19.0511 7.85521 22 11.3698 22 14.9263C22 18.4134 19.3492 22 15 22C10.6508 22 8 18.4134 8 14.9263Z" stroke="currentColor" stroke-width="1.8"></path>
+              <path d="M18.5 15.5C18.5 17.7091 17 18.5 15.5 18.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+						<span class="text">Meds</span>
+					</span>
+				  <span class="icon manage">
+				    <span class="bar"></span>
+				    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="currentColor" fill="none">
+              <path d="M16.3083 4.38394C15.7173 4.38394 15.4217 4.38394 15.1525 4.28405C15.1151 4.27017 15.0783 4.25491 15.042 4.23828C14.781 4.11855 14.5721 3.90959 14.1541 3.49167C13.1922 2.52977 12.7113 2.04882 12.1195 2.00447C12.04 1.99851 11.96 1.99851 11.8805 2.00447C11.2887 2.04882 10.8077 2.52977 9.84585 3.49166C9.42793 3.90959 9.21897 4.11855 8.95797 4.23828C8.92172 4.25491 8.88486 4.27017 8.84747 4.28405C8.57825 4.38394 8.28273 4.38394 7.69171 4.38394H7.58269C6.07478 4.38394 5.32083 4.38394 4.85239 4.85239C4.38394 5.32083 4.38394 6.07478 4.38394 7.58269V7.69171C4.38394 8.28273 4.38394 8.57825 4.28405 8.84747C4.27017 8.88486 4.25491 8.92172 4.23828 8.95797C4.11855 9.21897 3.90959 9.42793 3.49166 9.84585C2.52977 10.8077 2.04882 11.2887 2.00447 11.8805C1.99851 11.96 1.99851 12.04 2.00447 12.1195C2.04882 12.7113 2.52977 13.1922 3.49166 14.1541C3.90959 14.5721 4.11855 14.781 4.23828 15.042C4.25491 15.0783 4.27017 15.1151 4.28405 15.1525C4.38394 15.4217 4.38394 15.7173 4.38394 16.3083V16.4173C4.38394 17.9252 4.38394 18.6792 4.85239 19.1476C5.32083 19.6161 6.07478 19.6161 7.58269 19.6161H7.69171C8.28273 19.6161 8.57825 19.6161 8.84747 19.716C8.88486 19.7298 8.92172 19.7451 8.95797 19.7617C9.21897 19.8815 9.42793 20.0904 9.84585 20.5083C10.8077 21.4702 11.2887 21.9512 11.8805 21.9955C11.96 22.0015 12.0399 22.0015 12.1195 21.9955C12.7113 21.9512 13.1922 21.4702 14.1541 20.5083C14.5721 20.0904 14.781 19.8815 15.042 19.7617C15.0783 19.7451 15.1151 19.7298 15.1525 19.716C15.4217 19.6161 15.7173 19.6161 16.3083 19.6161H16.4173C17.9252 19.6161 18.6792 19.6161 19.1476 19.1476C19.6161 18.6792 19.6161 17.9252 19.6161 16.4173V16.3083C19.6161 15.7173 19.6161 15.4217 19.716 15.1525C19.7298 15.1151 19.7451 15.0783 19.7617 15.042C19.8815 14.781 20.0904 14.5721 20.5083 14.1541C21.4702 13.1922 21.9512 12.7113 21.9955 12.1195C22.0015 12.0399 22.0015 11.96 21.9955 11.8805C21.9512 11.2887 21.4702 10.8077 20.5083 9.84585C20.0904 9.42793 19.8815 9.21897 19.7617 8.95797C19.7451 8.92172 19.7298 8.88486 19.716 8.84747C19.6161 8.57825 19.6161 8.28273 19.6161 7.69171V7.58269C19.6161 6.07478 19.6161 5.32083 19.1476 4.85239C18.6792 4.38394 17.9252 4.38394 16.4173 4.38394H16.3083Z" stroke="currentColor" stroke-width="1.8"></path>
+              <path d="M15.5 12C15.5 13.933 13.933 15.5 12 15.5C10.067 15.5 8.5 13.933 8.5 12C8.5 10.067 10.067 8.5 12 8.5C13.933 8.5 15.5 10.067 15.5 12Z" stroke="currentColor" stroke-width="1.8"></path>
+            </svg>
+						<span class="text">Manage</span>
+					</span>
+      </div>
+    `;
+  }
+
   getMainLinksNav = () => {
     return /* html */`
       <ul class="main nav">
@@ -425,6 +517,16 @@ export default class AppMain extends HTMLElement {
             <span class="text">Home</span>
           </a>
         </li>
+        <li class="notes">
+          <a href="/notes">
+             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="currentColor" fill="none">
+                <path d="M11.5 5C14.3284 5 15.7426 5 16.6213 5.87868C17.5 6.75736 17.5 8.17157 17.5 11C17.5 19 21.5 19 21.5 19H7.23863C6.91067 19 6.74668 19 6.37485 18.9032C6.00302 18.8063 5.94387 18.7733 5.82558 18.7072C4.6855 18.0702 2.5 16.1742 2.5 11C2.5 8.17157 2.5 6.75736 3.37868 5.87868C4.25736 5 5.67157 5 8.5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+                <path d="M2.5 10V16C2.5 18.8284 2.5 20.2426 3.37868 21.1213C4.25736 22 5.67157 22 8.5 22H11.5761C14.4045 22 15.8188 22 16.6974 21.1213C17.1873 20.6314 17.4041 19.9751 17.5 19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+                <path d="M11.5 3.5V6.5C11.5 6.96594 11.5 7.19891 11.4239 7.38268C11.3224 7.62771 11.1277 7.82239 10.8827 7.92388C10.6989 8 10.4659 8 10 8C9.53406 8 9.30109 8 9.11732 7.92388C8.87229 7.82239 8.67761 7.62771 8.57612 7.38268C8.5 7.19891 8.5 6.96594 8.5 6.5V3.5C8.5 3.03406 8.5 2.80109 8.57612 2.61732C8.67761 2.37229 8.87229 2.17761 9.11732 2.07612C9.30109 2 9.53406 2 10 2C10.4659 2 10.6989 2 10.8827 2.07612C11.1277 2.17761 11.3224 2.37229 11.4239 2.61732C11.5 2.80109 11.5 3.03406 11.5 3.5Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+              </svg>
+            <span class="text">Notes</span>
+          </a>
+        </li>
         <li class="payments">
           <a href="/payments">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="currentColor" fill="none">
@@ -432,16 +534,7 @@ export default class AppMain extends HTMLElement {
               <path d="M15 8.49833V4.1103C15 3.22096 14.279 2.5 13.3897 2.5C13.1336 2.5 12.8812 2.56108 12.6534 2.67818L3.7623 7.24927C3.29424 7.48991 3 7.97203 3 8.49833" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
               <path d="M17.5 15.5C17.7761 15.5 18 15.2761 18 15C18 14.7239 17.7761 14.5 17.5 14.5M17.5 15.5C17.2239 15.5 17 15.2761 17 15C17 14.7239 17.2239 14.5 17.5 14.5M17.5 15.5V14.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
             </svg>
-            <span class="text">Payments</span>
-          </a>
-        </li>
-        <li class="pharmacy">
-          <a href="/pharmacy">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="currentColor" fill="none">
-              <path d="M2.35139 13.2135C1.99837 10.9162 1.82186 9.76763 2.25617 8.74938C2.69047 7.73112 3.65403 7.03443 5.58114 5.64106L7.02099 4.6C9.41829 2.86667 10.6169 2 12 2C13.3831 2 14.5817 2.86667 16.979 4.6L18.4189 5.64106C20.346 7.03443 21.3095 7.73112 21.7438 8.74938C22.1781 9.76763 22.0016 10.9162 21.6486 13.2135L21.3476 15.1724C20.8471 18.4289 20.5969 20.0572 19.429 21.0286C18.2611 22 16.5537 22 13.1388 22H10.8612C7.44633 22 5.73891 22 4.571 21.0286C3.40309 20.0572 3.15287 18.4289 2.65243 15.1724L2.35139 13.2135Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"></path>
-              <path d="M12 10V16M9 13L15 13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
-            </svg>
-            <span class="text">Pharmacy</span>
+            <span class="text">Wallet</span>
           </a>
         </li>
       </ul>
@@ -469,7 +562,7 @@ export default class AppMain extends HTMLElement {
               <span class="text">Bookings</span>
             </span>
           </div>
-          <ul class="dropdown">
+          <ul class="dropdown last">
             <li class="no-show">
               <a href="/bookings/all"><span class="text">Bookings</span></a>
             </li>
@@ -489,42 +582,44 @@ export default class AppMain extends HTMLElement {
                 </span>
               </a>
             </li>
+            <li class="recordings">
+              <a href="/meetings/recordings">
+                <span class="text">Recordings</span>
+              </a>
+            </li>
           </ul>
         </li>
       </ul>
     `;
   }
 
-  getMeetingsNav = () => {
+  getPharmacyNav = () => {
     return /* html */`
       <ul class="special nav">
-        <li class="meetings">
+        <li class="pharmacy">
           <div class="link-section">
             <span class="left">
-              <svg id="other" width="24" height="25" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path fill-rule="evenodd" clip-rule="evenodd" d="M19.398 9.42123C18.5435 9.86645 17.5071 10.5551 16.6173 11.2605C16.2927 11.5178 15.821 11.4633 15.5637 11.1387C15.3064 10.8141 15.3609 10.3424 15.6855 10.085C16.6338 9.33326 17.7498 8.58861 18.7048 8.09098C19.1775 7.84472 19.6454 7.64054 20.0517 7.53579C20.2531 7.48389 20.4795 7.44558 20.704 7.459C20.9262 7.47229 21.234 7.54337 21.4725 7.80062C21.611 7.94964 21.6971 8.12576 21.7533 8.26498C21.8136 8.41456 21.8623 8.58071 21.9028 8.75081C21.9839 9.09127 22.046 9.50567 22.0933 9.95535C22.1882 10.8582 22.2306 11.9738 22.2264 13.0756C22.2222 14.1778 22.1712 15.2873 22.0742 16.1785C22.026 16.6224 21.9646 17.0289 21.887 17.3598C21.8484 17.5249 21.8022 17.6862 21.7455 17.8306C21.694 17.9616 21.6111 18.1391 21.4718 18.2885C21.2241 18.5556 20.9016 18.6118 20.6929 18.6179C20.4747 18.6242 20.2539 18.5816 20.0577 18.5273C19.6604 18.4174 19.1971 18.2118 18.7249 17.9646C17.771 17.4651 16.6476 16.7248 15.6903 15.9786C15.3636 15.7239 15.3052 15.2527 15.5599 14.926C15.8145 14.5993 16.2858 14.5409 16.6125 14.7955C17.5123 15.4969 18.5603 16.1852 19.4207 16.6357C19.8308 16.8505 20.1695 16.9958 20.4141 17.0691C20.4182 17.0527 20.4224 17.0356 20.4266 17.0177C20.4846 16.7701 20.538 16.4306 20.583 16.0164C20.6727 15.1916 20.7223 14.1368 20.7264 13.0699C20.7305 12.0027 20.689 10.9445 20.6015 10.1122C20.5576 9.69433 20.5038 9.35084 20.4436 9.09852C20.4342 9.05907 20.425 9.02327 20.4161 8.99093C20.1717 9.05537 19.8242 9.19911 19.398 9.42123ZM20.3321 17.321C20.3321 17.321 20.3325 17.3203 20.3332 17.319C20.3325 17.3204 20.3322 17.321 20.3321 17.321Z" fill="currentColor"></path>
-                <path fill-rule="evenodd" clip-rule="evenodd" d="M4.55499 8.15787C3.69851 9.01709 3.2644 10.4818 3.2644 13.037C3.2644 15.5916 3.69849 17.0564 4.55502 17.9157C5.41083 18.7744 6.86928 19.2098 9.41536 19.2098C11.9609 19.2098 13.4191 18.7744 14.2748 17.9158C15.1313 17.0564 15.5654 15.5916 15.5654 13.037C15.5654 10.4818 15.1313 9.01707 14.2749 8.15784C13.4192 7.29934 11.961 6.86411 9.41536 6.86411C6.86919 6.86411 5.41077 7.29935 4.55499 8.15787ZM3.49263 7.09891C4.79328 5.7941 6.78533 5.36411 9.41536 5.36411C12.0449 5.36411 14.0368 5.79411 15.3373 7.09894C16.6371 8.40304 17.0654 10.3997 17.0654 13.037C17.0654 15.6738 16.6371 17.6704 15.3373 18.9746C14.0368 20.2795 12.045 20.7098 9.41536 20.7098C6.78524 20.7098 4.79322 20.2796 3.4926 18.9746C2.1927 17.6704 1.7644 15.6738 1.7644 13.037C1.7644 10.3997 2.19268 8.40302 3.49263 7.09891Z" fill="currentColor"></path>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="currentColor" fill="none">
+                <path d="M2.35139 13.2135C1.99837 10.9162 1.82186 9.76763 2.25617 8.74938C2.69047 7.73112 3.65403 7.03443 5.58114 5.64106L7.02099 4.6C9.41829 2.86667 10.6169 2 12 2C13.3831 2 14.5817 2.86667 16.979 4.6L18.4189 5.64106C20.346 7.03443 21.3095 7.73112 21.7438 8.74938C22.1781 9.76763 22.0016 10.9162 21.6486 13.2135L21.3476 15.1724C20.8471 18.4289 20.5969 20.0572 19.429 21.0286C18.2611 22 16.5537 22 13.1388 22H10.8612C7.44633 22 5.73891 22 4.571 21.0286C3.40309 20.0572 3.15287 18.4289 2.65243 15.1724L2.35139 13.2135Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"></path>
+                <path d="M12 10V16M9 13L15 13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
               </svg>
-              <span class="text">Meetings</span>
+              <span class="text">Pharmacy</span>
             </span>
           </div>
-          <ul class="dropdown last">
-            <li class="all">
-              <a href="/meetings/all">
-                <span class="text">Meetings</span>
+          <ul class="dropdown">
+            <li class="manage">
+              <a href="/pharmacy/manage">
+                <span class="text">Manage</span>
               </a>
             </li>
-            <li class="upcoming">
-              <a href="/meetings/upcoming">
-                <span class="text number meeting">
-                  <span class="number-text">Upcoming</span>
-                  <span class="number-items">6</span>
-                </span>
+            <li class="products">
+              <a href="/pharmacy/products">
+                <span class="text">Products</span>
               </a>
             </li>
-            <li class="recordings">
-              <a href="/meetings/recordings">
-                <span class="text">Recordings</span>
+            <li class="pharmacies">
+              <a href="/pharmacy/pharmacies">
+                <span class="text">Pharmacies</span>
               </a>
             </li>
           </ul>
@@ -608,18 +703,18 @@ export default class AppMain extends HTMLElement {
     `;
   }
 
-  getPaymentsNav = () => {
+  getNotesNav = () => {
     return /* html */`
       <ul class="special nav">
-        <li class="payments">
+        <li class="notes">
           <div class="link-section">
             <span class="left">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="currentColor" fill="none">
-                <path d="M3 8.5H15C17.8284 8.5 19.2426 8.5 20.1213 9.37868C21 10.2574 21 11.6716 21 14.5V15.5C21 18.3284 21 19.7426 20.1213 20.6213C19.2426 21.5 17.8284 21.5 15 21.5H9C6.17157 21.5 4.75736 21.5 3.87868 20.6213C3 19.7426 3 18.3284 3 15.5V8.5Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-                <path d="M15 8.49833V4.1103C15 3.22096 14.279 2.5 13.3897 2.5C13.1336 2.5 12.8812 2.56108 12.6534 2.67818L3.7623 7.24927C3.29424 7.48991 3 7.97203 3 8.49833" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-                <path d="M17.5 15.5C17.7761 15.5 18 15.2761 18 15C18 14.7239 17.7761 14.5 17.5 14.5M17.5 15.5C17.2239 15.5 17 15.2761 17 15C17 14.7239 17.2239 14.5 17.5 14.5M17.5 15.5V14.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="#000000" fill="none">
+                <path d="M11.5 5C14.3284 5 15.7426 5 16.6213 5.87868C17.5 6.75736 17.5 8.17157 17.5 11C17.5 19 21.5 19 21.5 19H7.23863C6.91067 19 6.74668 19 6.37485 18.9032C6.00302 18.8063 5.94387 18.7733 5.82558 18.7072C4.6855 18.0702 2.5 16.1742 2.5 11C2.5 8.17157 2.5 6.75736 3.37868 5.87868C4.25736 5 5.67157 5 8.5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                <path d="M2.5 10V16C2.5 18.8284 2.5 20.2426 3.37868 21.1213C4.25736 22 5.67157 22 8.5 22H11.5761C14.4045 22 15.8188 22 16.6974 21.1213C17.1873 20.6314 17.4041 19.9751 17.5 19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                <path d="M11.5 3.5V6.5C11.5 6.96594 11.5 7.19891 11.4239 7.38268C11.3224 7.62771 11.1277 7.82239 10.8827 7.92388C10.6989 8 10.4659 8 10 8C9.53406 8 9.30109 8 9.11732 7.92388C8.87229 7.82239 8.67761 7.62771 8.57612 7.38268C8.5 7.19891 8.5 6.96594 8.5 6.5V3.5C8.5 3.03406 8.5 2.80109 8.57612 2.61732C8.67761 2.37229 8.87229 2.17761 9.11732 2.07612C9.30109 2 9.53406 2 10 2C10.4659 2 10.6989 2 10.8827 2.07612C11.1277 2.17761 11.3224 2.37229 11.4239 2.61732C11.5 2.80109 11.5 3.03406 11.5 3.5Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
               </svg>
-              <span class="text">Payments</span>
+              <span class="text">Notes</span>
             </span>
           </div>
           <ul class="dropdown">
@@ -627,10 +722,10 @@ export default class AppMain extends HTMLElement {
               <a href="/payments/history"><span class="text">History</span></a>
             </li>
             <li class="account">
-              <a href="/payments/account"><span class="text">Account</span></a>
+              <a href="/payments/account"><span class="text">Illness</span></a>
             </li>
             <li class="methods">
-              <a href="/payments/methods"><span class="text">Methods</span></a>
+              <a href="/payments/methods"><span class="text">Progress</span></a>
             </li>
           </ul>
         </li>
@@ -812,7 +907,7 @@ export default class AppMain extends HTMLElement {
   getWalletAccount = () => {
     return /* html */`
       <wallet-account
-        account="EAC65376462I" balance="94672.1" status="active" since="2021-09-12T12:00:00Z"
+        account="EAC65376462I" balance="76672.1" status="active" since="2021-09-12T12:00:00Z"
         last-spent="47894.65" last-deposited="695212.5" current-spent="98854.5" current-deposited="737512.5"
         last-earned="86687.54" current-earned="9357.43">
       </wallet-account>
@@ -1364,7 +1459,7 @@ export default class AppMain extends HTMLElement {
 
         section.flow > div#content-container {
           width: 100%;
-          min-height: calc(100dvh - 140px);
+          min-height: calc(100dvh - 70px);
           max-height: max-content;
           display: flex;
           flex-flow: column;
@@ -1496,6 +1591,181 @@ export default class AppMain extends HTMLElement {
 
         footer.footer > ul.links > li > a:hover {
           color: var(--anchor-color);
+        }
+
+        /* Mobile Styles */
+        @media all and (max-width: 700px) {
+          section.flow {
+            width: 100%;
+            height: 100dvh;
+            max-height: 100dvh;
+            display: flex;
+            flex-flow: column;
+            max-height: max-content;
+            gap: 0;
+            padding: 0;
+            overflow-y: auto;
+            scrollbar-width: none;
+            position: sticky;
+            top: 0;
+          }
+
+          section.flow::-webkit-scrollbar {
+            visibility: hidden;
+            display: none;
+          }
+
+          /* Latency Panel Styles */
+          section.sidebar {
+            width: 100%;
+            height: 100dvh;
+            padding: 0;
+            background: var(--background);
+            /* border-left: var(--border); */
+            display: flex;
+            flex-flow: column;
+            max-height: 100dvh;
+            gap: 0;
+            overflow-y: auto;
+            scrollbar-width: none;
+            position: sticky;
+            top: 0;
+          }
+
+          section.sidebar::-webkit-scrollbar {
+            visibility: hidden;
+            display: none;
+          }
+
+          section.flow > div#content-container {
+            width: 100%;
+            min-height: calc(100dvh - 70px);
+            max-height: max-content;
+            display: flex;
+            flex-flow: column;
+            gap: 0;
+            padding: 60px 0 0;
+          }
+
+          section.nav {
+						/*border-top: var(--border);*/
+						box-shadow: var(--footer-shadow);
+						width: 100%;
+						display: flex;
+						padding: 0;
+						flex-flow: row;
+						gap: 0;
+						position: fixed;
+						bottom: 0;
+						top: unset;
+						height: 55px;
+						left: 0;
+						right: 0;
+						z-index: 10;
+						background: var(--background);
+					}
+
+					section.nav > div.mobile-nav {
+						width: 100%;
+						display: flex;
+						flex-flow: row;
+						justify-content: space-between;
+						align-items: center;
+						padding: 0 10px;
+						height: 100%;
+						gap: 0;
+            border-top: var(--border);
+						position: relative;
+					}
+
+					section.nav > div.mobile-nav > div.icons {
+						display: flex;
+						flex-flow: row;
+						justify-content: space-between;
+						align-items: center;
+						gap: 0;
+						width: 100%;
+						height: 100%;
+						position: relative;
+					}
+
+					section.nav > div.mobile-nav > div.icons > span.icon {
+						display: flex;
+						flex-flow: column;
+						justify-content: center;
+						align-items: center;
+						gap: 0;
+						width: max-content;
+						height: 100%;
+						color: var(--gray-color);
+						position: relative;
+					}
+
+					section.nav > div.mobile-nav > div.icons > span.icon > span.bar {
+						display: none;
+					}
+
+					section.nav > div.mobile-nav > div.icons > span.icon.active > span.bar {
+						display: inline-block;
+						width: 100%;
+						height: 4px;
+						border-radius: 5px;
+						position: absolute;
+						background: var(--accent-linear);
+						top: -2.5px;
+						left: 50%;
+						z-index: 11;
+						transform: translateX(-50%);
+					}
+
+					section.nav > div.mobile-nav > div.icons > span.icon.active {
+						color: var(--accent-color);
+					}
+
+					section.nav > div.mobile-nav > div.icons > span.icon > svg {
+						width: 26px;
+						height: 26px;
+						color: inherit;
+					}
+
+          section.nav > div.mobile-nav > div.icons > span.icon.more > svg {
+						width: 26px;
+						height: 26px;
+            margin-bottom: 5px;
+						color: inherit;
+					}
+
+					section.nav > div.mobile-nav > div.icons > span.icon > span.text {
+						font-size: 0.8rem;
+						font-family: var(--font-read), sans-serif;
+						color: inherit;
+						display: flex;
+					}
+
+					section.nav > div.mobile-nav > div.icons > span.icon.active > span.text {
+						font-family: var(--font-text), sans-serif;
+						font-weight: 500;
+					}
+
+					section.nav > div.mobile-nav > div.icons > span.icon.profile {
+						display: flex;
+						flex-flow: column;
+						justify-content: center;
+						align-items: center;
+					}
+
+					section.nav > div.mobile-nav > div.icons > span.icon.profile > div.avatar {
+						width: 30px;
+						height: 30px;
+						border-radius: 50%;
+						overflow: hidden;
+					}
+
+					section.nav > div.mobile-nav > div.icons > span.icon.profile > div.avatar > img {
+						width: 100%;
+						height: 100%;
+						object-fit: cover;
+					}
         }
 	    </style>
     `;

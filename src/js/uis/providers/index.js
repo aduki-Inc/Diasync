@@ -3,6 +3,7 @@ import wrappers from "./wrappers/index.js";
 import schedule from "./schedule/index.js";
 import provider from "./provider/index.js";
 import feed from "./feed/index.js";
+import modals from "./modals/index.js";
 
 export default function providers() {
   pages();
@@ -10,4 +11,5 @@ export default function providers() {
   schedule();
   provider();
   feed();
+  modals();
 }

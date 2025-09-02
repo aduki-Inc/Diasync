@@ -302,12 +302,6 @@ export default class ChatItem extends HTMLDivElement {
           transition: all 0.3s ease;
         }
 
-        .wrapper:hover {
-          background: var(--chat-background);
-          border-radius: 10px;
-          padding: 10px 5px;
-        }
-
         .wrapper > .image {
           border: var(--border);
           display: flex;
@@ -405,7 +399,7 @@ export default class ChatItem extends HTMLDivElement {
         .wrapper > .content > .head {
           display: flex;
           justify-content: space-between;
-          align-items: center;
+          align-items: start;
           width: 100%;
           max-width: 100%;
           gap: 5px;
@@ -512,10 +506,13 @@ export default class ChatItem extends HTMLDivElement {
 
         .wrapper > .content > .head > .time {
           min-width: 100px;
+          display: inline-block;
+          margin-top: 2px;
           text-align: end;
           max-width: 100px;
           font-family: var(--font-read), sans-serif;
           font-weight: 500;
+          line-height: 1.4;
           font-size: 0.85rem;
           text-transform: capitalize;
           color: var(--gray-color);
@@ -531,6 +528,7 @@ export default class ChatItem extends HTMLDivElement {
           justify-content: start;
           align-items: center;
           width: 100%;
+          padding: 2px 0;
           gap: 0;
         }
 
@@ -629,11 +627,11 @@ export default class ChatItem extends HTMLDivElement {
 
         .wrapper > .content > .images > .image {
           width: max-content;
-          height: 40px;
-          min-width: 40px;
-          max-width: 40px;
-          min-height: 40px;
-          max-height: 40px;
+          height: 50px;
+          min-width: 50px;
+          max-width: 50px;
+          min-height: 50px;
+          max-height: 50px;
           border-radius: 10px;
           overflow: hidden;
 
@@ -672,11 +670,12 @@ export default class ChatItem extends HTMLDivElement {
           gap: 5px;
           text-decoration: none;
           color: var(--gray-color);
-          font-family: var(--font-main), sans-serif;
+          font-family: var(--font-read), sans-serif;
           font-size: 0.8rem;
+          font-weight: 500;
           background: var(--gray-background);
           border-radius: 8px;
-          padding: 2px 10px;
+          padding: 3px 10px;
           border: 1px solid color-mix(in srgb, var(--alt-color) 30%, transparent);
 
           /** add ellipsis */
@@ -695,20 +694,53 @@ export default class ChatItem extends HTMLDivElement {
           display: inline-block;
         }
 
-        @media all and (max-width: 660px) {
-          :host {
+        @media all and (max-width: 700px) {
+          .wrapper > .image {
+            border: var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 45px;
+            height: 45px;
+            min-width: 45px;
+            min-height: 45px;
+            border-radius: 50px;
+            position: relative;
+          }
+
+          .wrapper > .image > .avatar {
+            width: 100%;
+            height: 100%;
+            min-width: 100%;
+            max-width: 100%;
+            min-height: 100%;
+            max-height: 100%;
+            border-radius: 50px;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+          }
+
+          .wrapper > .image > .avatar > img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+          }
+
+          .wrapper > .image > .avatar > svg {
+            width: 80%;
+            height: 80%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            fill: var(--gray-color);
           }
 
           .wrapper.opened {
             padding: 10px 0;
             border-radius: 0;
             position: relative;
-          }
-
-          .wrapper:hover {
-            background: unset;
-            border-radius: 0;
-            padding: 10px 0;
           }
   
           .wrapper.opened::before {
@@ -763,31 +795,117 @@ export default class ChatItem extends HTMLDivElement {
             border-radius: 50%;
             padding: 3px;
             position: absolute;
-            bottom: 0;
-            top: unset;
+            top: 0;
             right: -1px;
           }
   
           .wrapper > .image > .online-status > .active {
-            width: 6px;
-            height: 6px;
-            max-width: 6px;
-            max-height: 6px;
-            min-width: 6px;
-            min-height: 6px;
+            width: 7px;
+            height: 7px;
+            max-width: 7px;
+            max-height: 7px;
+            min-width: 7px;
+            min-height: 7px;
             border-radius: 50%;
             background: var(--accent-linear);
           }
   
           .wrapper > .image > .online-status > .inactive {
-            width: 6px;
-            height: 6px;
-            max-width: 6px;
-            max-height: 6px;
-            min-width: 6px;
-            min-height: 6px;
+            width: 7px;
+            height: 7px;
+            max-width: 7px;
+            max-height: 7px;
+            min-width: 7px;
+            min-height: 7px;
             border-radius: 50%;
             background: var(--gray-color);
+          }
+
+          .wrapper > .content > .text {
+            display: flex;
+            justify-content: start;
+            align-items: center;
+            width: 100%;
+            gap: 0;
+          }
+
+          .wrapper > .content > .text > .unread-no {
+            font-family: var(--font-read), sans-serif;
+            font-weight: 500;
+            font-size: 0.85rem;
+            color: var(--white-color);
+            background: var(--accent-linear);
+            border-radius: 20px;
+            padding: 2px 5px;
+            min-width: 20px;
+            width: max-content;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: absolute;
+            bottom: 0;
+            right: 0;
+          }
+
+          .wrapper > .content > .text > .tick {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: max-width;
+            max-width: max-width;
+            margin: 4px 0 0 0;
+          }
+
+          .wrapper > .content > .text > .tick > svg {
+            width: 100%;
+            height: 100%;
+            color: var(--accent-color);
+          }
+
+          .wrapper > .content > .text > .tick.unread > svg {
+            color: var(--text-color);
+          }
+
+          .wrapper > .content > .text > .tick.recieved > svg {
+            color: var(--text-color);
+            fill: none;
+            width: max-content;
+          }
+
+          .wrapper > .content > .text > .tick.unread > svg #outer {
+            stroke: var(--accent-color);
+          }
+
+          .wrapper > .content > .text > .you {
+            font-family: var(--font-main), sans-serif;
+            font-weight: 500;
+            font-size: 0.9rem;
+            display: inline-block;
+            padding: 0 5px 0 0;
+            color: var(--text-color);
+          }
+
+          .wrapper.unread > .content > .text > .you {
+            font-weight: 600;
+            color: var(--title-color);
+          }
+
+          .wrapper > .content > .text > .message {
+            font-family: var(--font-main), sans-serif;
+            font-weight: 400;
+            width: calc(100% - 30px);
+            font-size: 0.9rem;
+            padding: 0 25px 0 0;
+            color: var(--text-color);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
+
+          .wrapper.unread > .content > .text > .message {
+            font-weight: 500;
+            color: var(--text-color);
           }
         }
       </style>

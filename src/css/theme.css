@@ -68,6 +68,9 @@ Author URL(my site): https://github.com/fescii
   --pending-border: thin solid #fadb53a1;
   --approved-border: thin solid #34c75965;
 
+  /* account stat border */
+  --account-stat-border: thin solid #1a7dff65;
+
   /* Backgrounds */
   --background: #ffffff;
   --action-background: #e8f3fad2;
@@ -103,6 +106,9 @@ Author URL(my site): https://github.com/fescii
   --cancelled-background: #f8ad962a;
   --pending-background: #fff1e92a;
   --approved-background: #d1f5d12a;
+
+  /* account stats */
+  --account-stat-background: #f5fdff5d;
 
   /* Colors */
   --accent-color: #3674b5;
@@ -334,6 +340,9 @@ Author URL(my site): https://github.com/fescii
   --pending-border: thin solid #fff0ab42;
   --approved-border: thin solid #34c75965;
 
+  /* account stat border */
+  --account-stat-border: thin solid #1a7dff65;
+
   /* Backgrounds */
   --background: #000000;
   --action-background: #578fcac7;
@@ -370,6 +379,9 @@ Author URL(my site): https://github.com/fescii
   --cancelled-background: #5a1e1e2a;
   --pending-background: #4a2a1a2a;
   --approved-background: #1e4a1e2a;
+
+  /* account stats */
+  --account-stat-background: #3667a72a;
 
   /* Colors */
   --accent-color: #4788c7;
@@ -549,3 +561,29 @@ Author URL(my site): https://github.com/fescii
 }
 
 /* Light theme is default - no need for explicit data-theme="light" rules */
+
+*,
+*:after,
+*:before {
+  box-sizing: border-box;
+  font-family: inherit;
+  -webkit-box-sizing: border-box;
+}
+
+*:focus {
+  outline: inherit !important;
+}
+
+*::-webkit-scrollbar {
+  width: 3px;
+}
+
+*::-webkit-scrollbar-track {
+  background: var(--scroll-bar-background);
+}
+
+*::-webkit-scrollbar-thumb {
+  width: 3px;
+  background: var(--scroll-bar-linear);
+  border-radius: 50px;
+}
