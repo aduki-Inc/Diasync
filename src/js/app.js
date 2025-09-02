@@ -560,9 +560,6 @@ export default class AppMain extends HTMLElement {
             <li class="hospitals">
               <a href="/providers/hospitals"><span class="text">Hospitals</span></a>
             </li>
-            <li class="all">
-              <a href="/providers/all"><span class="text">Providers</span></a>
-            </li>
             <li class="specialists">
               <a href="/providers/specialists"><span class="text">Specialists</span></a>
             </li>
@@ -590,7 +587,7 @@ export default class AppMain extends HTMLElement {
           </div>
           <ul class="dropdown">
             <li class="basket">
-              <a href="/orders/basket">
+              <a href="/orders/cart">
                 <span class="text number">
                   <span class="number-text">Cart</span>
                   <span class="number-items">6</span>
@@ -748,7 +745,7 @@ export default class AppMain extends HTMLElement {
   // Provider
   getProviderContainer = () => {
     return /* html */`
-      <provider-page kind="org" owner="true" verified="true" name="Marketplace" desc="This section provides a detailed overview of all the products available in the marketplace.">
+      <provider-page kind="org" owner="false" verified="true" name="Marketplace" desc="This section provides a detailed overview of all the products available in the marketplace.">
       </provider-page>
     `;
   }
@@ -760,6 +757,32 @@ export default class AppMain extends HTMLElement {
         <p>Check real-time stock and availability at nearby pharmacies, view dosing information and safety warnings, and choose pickup or delivery options.
         <br/>Prescription-only medicines require a valid prescription. Request prescription verification and consult a pharmacist for interactions and guidance.</p>
       </products-feed>
+    `;
+  }
+
+  getBookingsFeed = () => {
+    return /* html */`
+      <bookings-container name="Boookings" active="all" all="124"></bookings-container>
+    `;
+  }
+
+  getServicesFeed = () => {
+    return /* html */`
+      <services-container name="Services" kind="pharmacy" all="124">
+        <p>Browse medicines and over-the-counter (OTC) drugs available at partnered pharmacies. <br/> Search by brand, generic name, or active ingredient.</p>
+        <p>Check real-time stock and availability at nearby pharmacies, view dosing information and safety warnings, and choose pickup or delivery options.
+        <br/>Prescription-only medicines require a valid prescription. Request prescription verification and consult a pharmacist for interactions and guidance.</p>
+      </services-container>
+    `;
+  }
+
+  getSpecialistsFeed = () => {
+    return /* html */`
+      <specialists-container name="Specialists" kind="pharmacy" all="124">
+        <p>Browse specialists available at partnered pharmacies. <br/> Search by name, specialty, or location.</p>
+        <p>Check real-time availability at nearby pharmacies, view profiles and qualifications, and choose in-person or telehealth options.
+        <br/>Prescription-only consultations require a valid prescription. Request prescription verification and consult a pharmacist for interactions and guidance.</p>
+      </specialists-container>
     `;
   }
 
@@ -782,8 +805,7 @@ export default class AppMain extends HTMLElement {
 
   getPickupContainer = () => {
     return /* html */`
-      <pickup-container name="Pickup Station" kind="all" desc="This section provides a detailed overview of all the pickup stations available.">
-      </pickup-container>
+      <pickup-container name="Pickup Station" kind="all" desc="This section provides a detailed overview of all the pickup stations available."></pickup-container>
     `;
   }
 

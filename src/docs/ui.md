@@ -171,7 +171,7 @@ This document outlines the structural and functional breakdown of the UI/UX comp
 - **Scheduled Meetings**: All planned video sessions
 - **Completed Meetings**: Finished consultation records
 - **Meeting Recordings**: Saved consultation videos
-- **Meeting Transcripts**: Text records of consultations
+- **Meeting Transcripts**: Message records of consultations
 
 ### 2.4 Provider Network
 

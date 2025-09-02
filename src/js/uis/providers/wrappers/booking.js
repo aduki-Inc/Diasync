@@ -288,7 +288,6 @@ export default class Booking extends HTMLDivElement {
   }
 
   getEditDropdown = status => {
-
     return /* html */`
       <div class="edit-dropdown">
         ${this.getApproveAction(status)}
@@ -403,7 +402,7 @@ export default class Booking extends HTMLDivElement {
 
         div.day {
           padding: 5px 10px;
-          width: 60px;
+          width: 70px;
           display: flex;
           flex-flow: column;
           align-items: center;
@@ -439,7 +438,7 @@ export default class Booking extends HTMLDivElement {
           justify-content: center;
           padding: 0;
           gap: 8px;
-          width: calc(100% - 60px);
+          width: calc(100% - 70px);
         }
 
         div.info > .time, div.info > .location {

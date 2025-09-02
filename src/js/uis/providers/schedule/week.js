@@ -488,7 +488,7 @@ export default class Week extends HTMLDivElement {
     return /* html */`
       <div class="actions">
         <button type="button" class="action cancel">Cancel</button>
-        <button type="button" class="action text">Text</button>
+        <button type="button" class="action text">Message</button>
         <button type="submit" class="action book disabled">Confirm</button>
       </div>
     `

@@ -50,20 +50,71 @@ export default class Provider extends HTMLElement {
   activateTabs = () => {
     const tabsContainer = this.shadowObj.querySelector('ul.tabs');
     if (!tabsContainer) return;
-    const tabs = tabsContainer.querySelectorAll('ul.tabs > li.tab');
+    const tabs = Array.from(tabsContainer.querySelectorAll('li.tab'));
     const indicator = tabsContainer.querySelector('ul.tabs > .tab-indicator');
-    if (!tabs || !indicator) return;
+    if (!tabs.length || !indicator) return;
+
+    // cache content container for switching without full re-render
+    this.contentEl = this.shadowObj.querySelector('.content-container');
+
+    // attach listeners
     tabs.forEach(tab => {
-      // check if the tab is active and update the indicator width and position
+      // set initial indicator if tab is active
       if (tab.classList.contains('active')) {
         this.adjustTabIndicatorWidth(tabsContainer, tab, indicator);
       }
 
-      tab.addEventListener('click', () => {
+      tab.addEventListener('click', (ev) => {
+        const section = tab.getAttribute('section') || tab.dataset.section;
         this.setActiveTab(tabs, tab);
         this.adjustTabIndicatorWidth(tabsContainer, tab, indicator);
+        this.setSection(section);
       });
     });
+
+    // initialize content based on the active tab (or first tab)
+    const initial = tabs.find(t => t.classList.contains('active')) || tabs[0];
+    if (initial) {
+      const initialSection = initial.getAttribute('section') || initial.dataset.section;
+      // ensure active class is present
+      this.setActiveTab(tabs, initial);
+      this.adjustTabIndicatorWidth(tabsContainer, initial, indicator);
+      this.setSection(initialSection);
+    }
+  }
+
+  // Set the current section and update the content container without re-rendering
+  setSection = (section) => {
+    if (!section) return;
+    this.activeSection = section;
+    if (!this.contentEl) this.contentEl = this.shadowObj.querySelector('.content-container');
+    if (!this.contentEl) return;
+    // Use existing getters to build the innerHTML for the section
+    try {
+      this.contentEl.innerHTML = this.getSectionContent(section);
+    } catch (e) {
+      // fallback to reviews if something fails
+      this.contentEl.innerHTML = this.getReviews();
+    }
+  }
+
+  getSectionContent = (section) => {
+    switch (section) {
+      case 'highlights':
+        return this.getHighlights();
+      case 'schedule':
+        return this.getSchedule();
+      case 'services':
+        return this.getServices();
+      case 'doctors':
+        return this.getDoctors();
+      case 'education':
+        // for specialist kind
+        return this.getHighlights();
+      case 'reviews':
+      default:
+        return this.getReviews();
+    }
   }
 
   adjustTabIndicatorWidth = (tabsContainer, activeTab, indicator) => {

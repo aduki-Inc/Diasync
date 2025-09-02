@@ -301,7 +301,7 @@ The ability to conduct high-quality, secure video consultations is a core featur
   Neither Jitsi nor BigBlueButton includes native AI transcription. This functionality will be built as a secondary, asynchronous workflow that integrates with third-party AI services. The process will be:  
   1. The platform uses the Jitsi API to programmatically start and stop the recording of a consultation. The resulting video/audio file is saved to a secure, private storage location on the server.  
   2. Upon completion of the recording, a background job is added to the Redis queue.  
-  3. A dedicated worker process picks up this job and sends the audio from the recording file to a Speech-to-Text (STT) API (e.g., Google Cloud Speech-to-Text, AssemblyAI, or other specialized services).  
+  3. A dedicated worker process picks up this job and sends the audio from the recording file to a Speech-to-Message (STT) API (e.g., Google Cloud Speech-to-Message, AssemblyAI, or other specialized services).  
   4. The STT service returns a full text transcript of the consultation.  
   5. The worker process then sends this transcript to a Large Language Model (LLM) API (e.g., OpenAI's GPT series, Anthropic's Claude) with a carefully crafted prompt, such as: "You are a medical assistant. Summarize the following medical consultation transcript into key sections: Patient's Reported Symptoms, Doctor's Diagnosis, and Recommended Treatment Plan."  
   6. The concise, structured summary returned by the LLM is then saved in the database and linked to the original appointment record, making it accessible to both the Booker and the provider.  

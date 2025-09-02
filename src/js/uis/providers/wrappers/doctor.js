@@ -108,7 +108,7 @@ export default class Doctor extends HTMLDivElement {
         <div class="buttons">
           <button class="button view">View</button>
           <button class="button book">Book</button>
-          <button class="button inquire">Text</button>
+          <button class="button inquire">Message</button>
         </div>
       `;
     } else {
@@ -428,10 +428,10 @@ export default class Doctor extends HTMLDivElement {
         }
 
         .buttons > .button {
-          border: none;
+          border: var(--border);
           position: relative;
           background: none;
-          color: var(--text-color);
+          color: var(--gray-color);
           font-family: var(--font-main), sans-serif;
           text-decoration: none;
           font-size: 0.9rem;
@@ -451,7 +451,6 @@ export default class Doctor extends HTMLDivElement {
 
         .buttons > .button.inquire {
           padding: 8px 12px 9px;
-          border: var(--action-border);
           background: none;
           color: var(--gray-color);
         }
@@ -463,15 +462,7 @@ export default class Doctor extends HTMLDivElement {
           color: var(--gray-color);
         }
 
-        .buttons > .button.manage,
-        .buttons > .button.book {
-          border: var(--action-border);
-          background: none;
-          color: var(--accent-color);
-        }
-
         .buttons > .button.wish {
-          border: var(--action-border);
           background: none;
           color: var(--gray-color);
         }

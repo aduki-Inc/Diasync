@@ -157,7 +157,7 @@ export default class ServiceWrapper extends HTMLDivElement {
         <div class="buttons">
           <button class="button view">View</button>
           <button class="button book">Book</button>
-          <button class="button inquire">Inquire</button>
+          <button class="button inquire">Message</button>
         </div>
       `;
     } else {
@@ -278,7 +278,8 @@ export default class ServiceWrapper extends HTMLDivElement {
           border-radius: 12px;
           overflow: hidden;
           flex-shrink: 0;
-          background: var(--light-background);
+          border: var(--border);
+          background: var(--gray-background);
           display: flex;
           align-items: center;
           justify-content: center;
