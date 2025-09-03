@@ -190,6 +190,37 @@ export default class Provider extends HTMLDivElement {
           font-family: var(--font-main), sans-serif;
           letter-spacing: -0.01em;
         }
+
+        @media screen and (max-width: 700px) {
+          .action {
+            background-color: var(--gray-background);
+            border-radius: 12px;
+            padding: 8px 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: default !important;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            color: var(--text-color);
+            width: max-content;
+            min-width: fit-content;
+            background-color: var(--hover-background);
+            box-shadow: unset;
+            border-color: unset;
+            border: var(--border);
+          }
+
+          .action > span.text {
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: inherit;
+            margin: 0;
+            line-height: 1;
+            font-family: var(--font-main), sans-serif;
+            letter-spacing: -0.01em;
+          }
+        }
       </style>
     `;
   };

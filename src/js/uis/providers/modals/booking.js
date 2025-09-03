@@ -425,7 +425,7 @@ export default class Booking extends HTMLElement {
         div.day > .day-text {
           font-family: var(--font-main), sans-serif;
           color: var(--gray-color);
-          font-size: 0.9rem;
+          font-size: 1rem;
           font-weight: 500;
           line-height: 1;
           margin: 0;
@@ -446,6 +446,7 @@ export default class Booking extends HTMLElement {
           padding: 5px 5px;
           min-width: 60px;
           border: var(--border);
+          border-width: 2px;
           background: var(--stat-background);
           display: flex;
           flex-flow: column;
@@ -716,7 +717,7 @@ export default class Booking extends HTMLElement {
         }
 
         div.actions > .action {
-          padding: 10px 30px;
+          padding: 12px 30px;
           background: none;
           font-family: var(--font-main), sans-serif;
           border: var(--border);
@@ -732,9 +733,9 @@ export default class Booking extends HTMLElement {
           align-items: center;
           text-align: center;
           justify-content: center;
-          border-radius: 12px;
-          -webkit-border-radius: 12px;
-          -moz-border-radius: 12px;
+          border-radius: 15px;
+          -webkit-border-radius: 15px;
+          -moz-border-radius: 15px;
         }
 
         div.actions > .action.cancel-btn {

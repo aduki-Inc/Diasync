@@ -986,8 +986,8 @@ export default class Account extends HTMLElement {
           background: var(--account-stat-background);
           border-radius: 12px;
           padding: 7px 9px;
-          min-width: 110px;
-          max-width: 110px;
+          min-width: 150px;
+          max-width: 150px;
           margin: 0;
           position: relative;
         }
@@ -1002,8 +1002,8 @@ export default class Account extends HTMLElement {
         }
 
         div.all-stats > div.stats > div.stat > .amount > .currency {
-          font-size: 1rem;
-          font-weight: 500;
+          font-size: 1.1rem;
+          font-weight: 600;
           margin: 0;
           color: var(--gray-color);
           font-family: var(--font-read), sans-serif;

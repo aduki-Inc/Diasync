@@ -48,16 +48,11 @@ export default class Highlights extends HTMLDivElement {
           <span class="address">1245 Kileleshwa Drive</span>
           <span class="city">Kileleshwa, Nairobi 00100</span>
         </div>
-        <p class="description">
-        <p class="description">
-          Your trusted neighborhood clinic and dental care center, staffed by experienced medical and dental professionals who provide a broad range of services from routine checkups and preventive dentistry to minor procedures and chronic condition management. We combine modern equipment with a gentle, patient-focused approach to make every visit comfortable and effective.
-        </p>
-        <p class="description">
-          We offer comprehensive health consultations, personalized care plans, and wellness support designed to help you maintain and improve your overall wellbeing. Our team provides preventive screenings, lifestyle counselling, vaccinations, and coordinated referrals when specialist care is needed, ensuring continuity and clarity across your care journey.
-        </p>
-        <!--<p class="description">
-          We're deeply committed to your health and safety, offering 24/7 emergency services alongside same-day appointments and telehealth options for urgent concerns. Aftercare and follow-up are integral parts of our service — we work with you to monitor recovery, adjust treatments, and connect you with community resources so you always feel supported.
-        </p>-->
+        <div class="description">
+          <p>Your trusted neighborhood clinic and dental care center, staffed by experienced medical and dental professionals who provide a broad range of services from routine checkups and preventive dentistry to minor procedures and chronic condition management. </p>
+          <p> We combine modern equipment with a gentle, patient-focused approach to make every visit comfortable and effective.</p>
+          <p>We offer comprehensive health consultations, personalized care plans, and wellness support designed to help you maintain and improve your overall wellbeing. </p>
+        </div>
       </div>
     `
   }
@@ -189,10 +184,17 @@ export default class Highlights extends HTMLDivElement {
           line-height: 1.3;
         }
 
-        div.header > p.description {
+        div.header > div.description {
+          display: block;
+          margin: 5px 0;
+          padding: 0;
+          color: var(--text-color);
+        }
+
+        div.header > div.description > p {
           font-size: 1rem;
           font-weight: 400;
-          margin: 5px 0;
+          margin: 7px 0;
           color: var(--text-color);
           font-family: var(--font-main), sans-serif;
           line-height: 1.4;
@@ -224,9 +226,10 @@ export default class Highlights extends HTMLDivElement {
           display: flex;
           flex-flow: column;
           gap: 0;
-          margin: 0;
+          margin: 0 0 8px;
           padding: 15px 0 0 0;
           border-top: var(--border);
+          border-bottom: var(--border);
         }
 
         div.stats {
@@ -234,7 +237,7 @@ export default class Highlights extends HTMLDivElement {
           flex-flow: row nowrap;
           gap: 15px;
           margin: 0;
-          padding: 20px 0;
+          padding: 15px 0;
           overflow-x: auto;
           scrollbar-width: 0;
           -ms-overflow-style: none;  /* IE and Edge */

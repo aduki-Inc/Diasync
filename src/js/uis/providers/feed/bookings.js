@@ -51,13 +51,10 @@ export default class Bookings extends HTMLElement {
   getTabs = () => {
     return /* html */`
       <ul class="tabs">
-        <li class="tab all">All</li>
         <li class="tab upcoming active">Upcoming</li>
         <li class="tab pending">Pending</li>
         <li class="tab cancelled">Cancelled</li>
         <li class="tab past">Past</li>
-        <li class="tab recurring">Recurring</li>
-        <li class="tab rescheduled">Rescheduled</li>
       </ul>
     `
   }
@@ -143,6 +140,8 @@ export default class Bookings extends HTMLElement {
           display: flex;
           flex-flow: row nowrap;
           gap: 8px;
+          width: 100%;
+          max-width: 100%;
           padding: 0;
           position: relative;
           overflow-x: scroll;
@@ -257,6 +256,161 @@ export default class Bookings extends HTMLElement {
           line-height: 1;
           margin: 0;
           padding: 0;
+        }
+        
+        @media screen and (max-width: 700px) {
+          :host {
+            border: none;
+            width: 100%;
+            max-width: 100%;
+            min-width: 100%;
+            max-height: unset;
+            height: unset;
+            min-height: unset;
+            max-height: unset;
+            padding: 5px 0 0 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: start;
+            justify-content: start;
+          }
+
+          .content {
+            padding: 0;
+            display: flex;
+            flex-flow: column;
+            gap: 0;
+            width: 100%;
+          }
+
+          .head {
+            display: flex;
+            flex-flow: column;
+            gap: 0;
+            padding: 0 10px;
+            width: 100%;
+          }
+
+          .head > h3.title {
+            display: flex;
+            align-items: center;
+            font-family: var(--font-text), sans-serif;
+            color: var(--title-color);
+            font-size: 1.2rem;
+            font-weight: 500;
+            line-height: 1.5;
+            margin: 0;
+            padding: 0 0;
+          }
+
+          .head > .desc {
+            margin: 0;
+            padding: 0;
+            line-height: 1.3;
+            color: var(--text-color);
+            font-size: 1rem;
+            font-family: var(--font-main), sans-serif;
+          }
+
+          div.sticky {
+            display: flex;
+            flex-flow: column;
+            gap: 8px;
+            margin: 0;
+            width: 100%;
+            z-index: 10;
+            position: relative;
+            top: unset;
+            padding: 10px 10px 0;
+            background: unset;
+          }
+
+          /* Tabs Styles */
+          ul.tabs {
+            list-style: none;
+            display: flex;
+            flex-flow: row nowrap;
+            gap: 8px;
+            padding: 0;
+            position: relative;
+            overflow-x: scroll;
+            scrollbar-width: none;
+            padding: 4px 0 8px;
+            margin: 12px 0 0 0;
+            border-radius: 0;
+            background: unset;
+            border-bottom: var(--border);
+          }
+
+          ul.tabs::-webkit-scrollbar {
+            visibility: hidden;
+            display: none;
+          }
+
+          ul.tabs > li.tab {
+            display: flex;
+            flex-flow: row nowrap;
+            align-items: center;
+            gap: 8px;
+            padding: 5px 10px;
+            cursor: default !important;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-color);
+            font-family: var(--font-read), sans-serif;
+            line-height: 1.3;
+            white-space: nowrap;
+            border-radius: 8px;
+            transition: color 0.3s ease-in-out;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            -moz-backface-visibility: hidden;
+            -ms-backface-visibility: hidden;
+            position: relative;
+          }
+
+          ul.tabs > li.tab:hover.active,
+          ul.tabs > li.tab.active {
+            color: var(--accent-color);
+            background: var(--gray-background);
+            font-weight: 600;
+          }
+
+          ul.tabs > li.tab:hover {
+            /* Undo all hover styles except for active */
+            background: unset;
+            color: var(--text-color);
+            font-weight: 500;
+            backdrop-filter: none;
+            -webkit-backdrop-filter: none;
+            transition: none;
+          }
+
+          div.bookings {
+            display: flex;
+            flex-flow: column;
+            gap: 0;
+            padding: 0 10px;
+            width: 100%;
+          }
+
+          div.month-separator {
+            display: flex;
+            align-items: center;
+            font-family: var(--font-main), sans-serif;
+            color: var(--text-color);
+            font-size: 1.2rem;
+            font-weight: 600;
+            line-height: 1;
+            margin: 0;
+            padding: 10px 0;
+            border-bottom: var(--border);
+          }
         }
       </style>
     `

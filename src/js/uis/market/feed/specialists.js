@@ -1,14 +1,11 @@
 export default class Specialists extends HTMLElement {
   constructor() {
-    // We are not even going to touch this.
     super();
-
-    // let's create our shadow root
     this.shadowObj = this.attachShadow({ mode: "open" });
-    this.utils = window.app.utils;
-
+    this.mql = window.matchMedia("(max-width: 700px)");
+    this.app = window.app || {};
+    this.utils = app?.utils;
     this.render();
-    // active tab
     this.active_tab = null;
   }
 
@@ -18,9 +15,17 @@ export default class Specialists extends HTMLElement {
 
   connectedCallback() {
     const tabs = this.shadowObj.querySelector("ul.tabs");
+    if (tabs) this.activateTabController(tabs);
 
-    if (tabs) {
-      this.activateTabController(tabs);
+    this.setHeader(this.mql);
+  }
+
+  setHeader = mql => {
+    if (mql.matches) {
+      this.app.setHeader({
+        sectionTitle: 'Specialists',
+        description: 'Explore our specialists and find the right one for your needs.',
+      });
     }
   }
 
@@ -77,18 +82,18 @@ export default class Specialists extends HTMLElement {
   getInfo = () => {
     return /* html */`
       <div class="content">
-        ${this.getHead()}
+        ${this.getHead(this.mql)}
         <div class="sticky">
           ${this.getSearch()}
           ${this.getTab()}
         </div>
         ${this.getDoctors()}
-        ${this.getPagination({ current: 13, total: 24 })}
       </div>
     `;
   }
 
-  getHead = () => {
+  getHead = mql => {
+    if(mql && mql.matches) return '';
     return /* html */`
       <div class="head">
         <h3 class="title">${this.getAttribute("name")}</h3>
@@ -149,167 +154,30 @@ export default class Specialists extends HTMLElement {
   getDoctors = () => {
     return /* html */`
       <div class="doctors">
-        <div is="doctor-wrapper" verified="true" image="https://randomuser.me/api/portraits/men/1.jpg" owner="${this.getAttribute('owner')}" kind="consultation" reviews="3289" average-review="4.7" name="John Kasima Okello" speciality="Pediatrician" rate="1800"></div>
-        <div is="doctor-wrapper" verified="true" image="https://randomuser.me/api/portraits/women/2.jpg" owner="${this.getAttribute('owner')}" kind="consultation" reviews="894" average-review="4.1" name="Wanjiru Mwangi" speciality="General Practitioner" rate="1200"></div>
-        <div is="doctor-wrapper" verified="false" image="https://randomuser.me/api/portraits/women/29.jpg" owner="${this.getAttribute('owner')}" kind="vaccination" reviews="1200" average-review="4.8" name="Amina Abdalla" speciality="Immunizations & Vaccination" rate="800"></div>
-        <div is="doctor-wrapper" verified="true" image="https://randomuser.me/api/portraits/men/30.jpg" owner="${this.getAttribute('owner')}" kind="medication" reviews="56" average-review="4.2" name="Josephat Otieno" speciality="Medication Review & Management" rate="1500"></div>
-        <div is="doctor-wrapper" verified="true" image="https://randomuser.me/api/portraits/women/31.jpg" owner="${this.getAttribute('owner')}" kind="delivery" reviews="79" average-review="3.9" name="Mercy Akinyi" speciality="Home Delivery Coordination" rate="700"></div>
-        <div is="doctor-wrapper" verified="false" image="https://randomuser.me/api/portraits/men/32.jpg" owner="${this.getAttribute('owner')}" kind="information" reviews="432" average-review="4.0" name="Peter Njoroge" speciality="Drug Information Specialist" rate="1400"></div>
-        <div is="doctor-wrapper" verified="true" image="https://randomuser.me/api/portraits/women/33.jpg" owner="${this.getAttribute('owner')}" kind="emergency" reviews="100" average-review="4.5" name="Grace Wanjiku" speciality="Emergency Medicine" rate="2500"></div>
-        <div is="doctor-wrapper" verified="true" image="https://randomuser.me/api/portraits/men/17.jpg" owner="${this.getAttribute('owner')}" kind="insurance" reviews="6" average-review="5.0" name="James Kamau" speciality="Insurance Verification" rate="900"></div>
-        <div is="doctor-wrapper" verified="true" image="https://randomuser.me/api/portraits/men/71.jpg" owner="${this.getAttribute('owner')}" kind="telehealth" reviews="200" average-review="4.9" name="Fatuma Hassan" speciality="Telehealth Consultation" rate="1600"></div>
-        <div is="doctor-wrapper" verified="true" image="https://randomuser.me/api/portraits/women/37.jpg" owner="${this.getAttribute('owner')}" kind="consultation" reviews="678" average-review="4.6" name="Samuel Ochieng" speciality="Prescription Consultation" rate="1300"></div>
-        <div is="doctor-wrapper" verified="true" image="https://randomuser.me/api/portraits/men/38.jpg" owner="${this.getAttribute('owner')}" kind="screening" reviews="894" average-review="3.7" name="Esther Nduta" speciality="Health Screening" rate="750"></div>
-        <div is="doctor-wrapper" verified="true" image="https://randomuser.me/api/portraits/men/9.jpg" owner="${this.getAttribute('owner')}" kind="vaccination" reviews="120" average-review="4.2" name="Daniel Mburu" speciality="Vaccination & Travel Health" rate="850"></div>
-        <div is="doctor-wrapper" verified="true" image="https://randomuser.me/api/portraits/men/50.jpg" owner="${this.getAttribute('owner')}" kind="medication" reviews="34" average-review="4.0" name="Esther Wamae" speciality="Chronic Care & Medication" rate="1700"></div>
-        <div is="doctor-wrapper" verified="true" image="https://randomuser.me/api/portraits/women/61.jpg" owner="${this.getAttribute('owner')}" kind="delivery" reviews="79" average-review="3.5" name="Peter Ouma" speciality="Logistics & Delivery" rate="650"></div>
-        <div is="doctor-wrapper" verified="true" image="https://randomuser.me/api/portraits/men/12.jpg" owner="${this.getAttribute('owner')}" kind="information" reviews="432" average-review="4.0" name="Esther Njeri" speciality="Pharmacology & Drug Info" rate="1500"></div>
-        <div is="doctor-wrapper" verified="false" image="https://randomuser.me/api/portraits/men/13.jpg" owner="${this.getAttribute('owner')}" kind="emergency" reviews="100" average-review="4.5" name="Paul Kimani" speciality="Urgent Care" rate="2400"></div>
-        <div is="doctor-wrapper" verified="true" image="https://randomuser.me/api/portraits/women/14.jpg" owner="${this.getAttribute('owner')}" kind="insurance" reviews="6" average-review="5.0" name="Susan Wairimu" speciality="Prior Authorization" rate="950"></div>
-        <div is="doctor-wrapper" verified="true" image="https://randomuser.me/api/portraits/men/15.jpg" owner="${this.getAttribute('owner')}" kind="telehealth" reviews="200" average-review="4.9" name="Kevin Mutiso" speciality="Virtual Consultations" rate="1100"></div>
-        <div is="doctor-wrapper" verified="true" image="https://randomuser.me/api/portraits/men/41.jpg" owner="${this.getAttribute('owner')}" kind="consultation" reviews="48" average-review="4.1" name="Moses Kilonzo" speciality="Orthopedics" rate="2000"></div>
-        <div is="doctor-wrapper" verified="true" image="https://randomuser.me/api/portraits/women/42.jpg" owner="${this.getAttribute('owner')}" kind="consultation" reviews="72" average-review="4.3" name="Lydia Mwende" speciality="Obstetrics & Gynecology" rate="2200"></div>
-        <div is="doctor-wrapper" verified="false" image="https://randomuser.me/api/portraits/men/43.jpg" owner="${this.getAttribute('owner')}" kind="screening" reviews="33" average-review="3.9" name="Nicholas Ouma" speciality="Cardiac Screening" rate="1400"></div>
-        <div is="doctor-wrapper" verified="true" image="https://randomuser.me/api/portraits/women/44.jpg" owner="${this.getAttribute('owner')}" kind="medication" reviews="56" average-review="4.0" name="Ruth Atieno" speciality="Chronic Disease Management" rate="1600"></div>
-        <div is="doctor-wrapper" verified="true" image="https://randomuser.me/api/portraits/men/45.jpg" owner="${this.getAttribute('owner')}" kind="information" reviews="12" average-review="4.5" name="Abdul Karim" speciality="Clinical Pharmacology" rate="1800"></div>
-        <div is="doctor-wrapper" verified="true" image="https://randomuser.me/api/portraits/women/46.jpg" owner="${this.getAttribute('owner')}" kind="emergency" reviews="90" average-review="4.6" name="Nduta Chepchumba" speciality="Trauma & Emergency Care" rate="2600"></div>
-      </div>
-    `;
-  }
-
-  getPagination = data => {
-    const { current, total } = data;
-
-    // if total is 1, return empty string
-    if (total < 2) return "";
-
-    const prev = this.createPrevNavigation(current);
-    const currentPage = /*html*/`<button class="page current ${current > 99 ? "large" : ""}">${current}</button>`;
-    const next = this.createNextNavigation(current, total);
-
-    return /* html */`
-      <div class="pagination">
-        ${prev}
-        ${currentPage}
-        ${next}
-      </div>
-    `;
-  }
-
-  createPrevNavigation = current => {
-    // if both current and total are not numbers, return empty string
-    if (isNaN(current)) return "";
-
-    /* if current page is 1, return empty string */
-    if (current === 1) return "";
-
-    /* if current page is less than 6, return 1 to 4 */
-    if (current < 6) {
-      let prev = "";
-      for (let i = 1; i < current; i++) {
-        prev += /* html */`<button class="page prev ${i > 99 ? "large" : ""}">${i}</button>`;
-      }
-      return /* html */`
-        <div class="previous">
-          ${prev}
-        </div>
-      `;
-    }
-
-    // anything greater than 6, return the last 3 pages and start page: 1
-    if (current >= 6) {
-      // loop to create the previous pages
-      let prev = /* html */`<button class="page prev start">1</button>`;
-      for (let i = current - 3; i < current; i++) {
-        prev += /* html */`<button class="page prev ${i > 99 ? "large" : ""}">${i}</button>`;
-      }
-
-      return /* html */`
-        <div class="previous">
-          ${prev}
-        </div>
-      `;
-    }
-  }
-
-  createNextNavigation = (current, total) => {
-    // if both current and total are not numbers, return empty string
-    if (isNaN(current) || isNaN(total)) return "";
-
-    /* if current page is the last page, return empty string */
-    if (current === total) return "";
-
-    /* if current page is less than 6, and total is less than 6, return all pages */
-    if (current < 6 && total < 6) {
-      let next = "";
-      for (let i = current + 1; i <= total; i++) {
-        next += /* html */`<button class="page next ${i > 99 ? "large" : ""}">${i}</button>`;
-      }
-
-      // return the next pages
-      return /* html */`
-        <div class="nexts">
-          ${next}
-        </div>
-      `;
-    }
-
-    /* if current page is less than 6, return after current: three after */
-    if (current < 6 && (total - current) > 3) {
-      let next = "";
-      for (let i = current + 1; i <= current + 3; i++) {
-        next += /* html */`<button class="page next ${i > 99 ? "large" : ""}">${i}</button>`;
-      }
-
-      // add last page
-      next += /* html */`<button class="page next end ${total > 99 ? "large" : ""}">${total}</button>`;
-
-      // return the next pages
-      return /* html */`
-        <div class="nexts">
-          ${next}
-        </div>
-      `;
-    }
-
-    // if page is 6 or greater, and is less than the total by 3,2,1: return the last 3 pages
-    if (current >= 6 && (total - current) <= 3) {
-      let next = "";
-      for (let i = current + 1; i <= total; i++) {
-        next += /* html */`<button class="page next">${i}</button>`;
-      }
-
-      // return the next pages
-      return /* html */`
-        <div class="nexts">
-          ${next}
-        </div>
-      `;
-    }
-
-    // if current page is 6 or greater, and is less the total by a value more than 3, return the next 3 pages and the last page
-    if (current >= 6 && (total - current) > 3) {
-      let next = "";
-      for (let i = current + 1; i < current + 4; i++) {
-        next += /* html */`<button class="page next ${i > 99 ? "large" : ""}">${i}</button>`;
-      }
-
-      // add the last page
-      next += /* html */`<button class="page next end ${total > 99 ? "large" : ""}">${total}</button>`;
-
-      // return the next pages
-      return /* html */`
-        <div class="nexts">
-          ${next}
-        </div>
-      `;
-    }
-  }
-
-  getLargeLoader = () => {
-    return /*html*/`
-      <div id="loader-wrapper" class="loader-wrapper">
-        <div id="large-loader" class="loader large"></div>
+        <div is="specialist-wrapper" verified="true" image="https://randomuser.me/api/portraits/men/1.jpg" owner="${this.getAttribute('owner')}" kind="consultation" reviews="3289" average-review="4.7" name="John Kasima Okello" speciality="Pediatrician" rate="1800"></div>
+        <div is="specialist-wrapper" verified="true" image="https://randomuser.me/api/portraits/women/2.jpg" owner="${this.getAttribute('owner')}" kind="consultation" reviews="894" average-review="4.1" name="Wanjiru Mwangi" speciality="General Practitioner" rate="1200"></div>
+        <div is="specialist-wrapper" verified="false" image="https://randomuser.me/api/portraits/women/29.jpg" owner="${this.getAttribute('owner')}" kind="vaccination" reviews="1200" average-review="4.8" name="Amina Abdalla" speciality="Immunizations & Vaccination" rate="800"></div>
+        <div is="specialist-wrapper" verified="true" image="https://randomuser.me/api/portraits/men/30.jpg" owner="${this.getAttribute('owner')}" kind="medication" reviews="56" average-review="4.2" name="Josephat Otieno" speciality="Medication Review & Management" rate="1500"></div>
+        <div is="specialist-wrapper" verified="true" image="https://randomuser.me/api/portraits/women/31.jpg" owner="${this.getAttribute('owner')}" kind="delivery" reviews="79" average-review="3.9" name="Mercy Akinyi" speciality="Home Delivery Coordination" rate="700"></div>
+        <div is="specialist-wrapper" verified="false" image="https://randomuser.me/api/portraits/men/32.jpg" owner="${this.getAttribute('owner')}" kind="information" reviews="432" average-review="4.0" name="Peter Njoroge" speciality="Drug Information Specialist" rate="1400"></div>
+        <div is="specialist-wrapper" verified="true" image="https://randomuser.me/api/portraits/women/33.jpg" owner="${this.getAttribute('owner')}" kind="emergency" reviews="100" average-review="4.5" name="Grace Wanjiku" speciality="Emergency Medicine" rate="2500"></div>
+        <div is="specialist-wrapper" verified="true" image="https://randomuser.me/api/portraits/men/17.jpg" owner="${this.getAttribute('owner')}" kind="insurance" reviews="6" average-review="5.0" name="James Kamau" speciality="Insurance Verification" rate="900"></div>
+        <div is="specialist-wrapper" verified="true" image="https://randomuser.me/api/portraits/men/71.jpg" owner="${this.getAttribute('owner')}" kind="telehealth" reviews="200" average-review="4.9" name="Fatuma Hassan" speciality="Telehealth Consultation" rate="1600"></div>
+        <div is="specialist-wrapper" verified="true" image="https://randomuser.me/api/portraits/women/37.jpg" owner="${this.getAttribute('owner')}" kind="consultation" reviews="678" average-review="4.6" name="Samuel Ochieng" speciality="Prescription Consultation" rate="1300"></div>
+        <div is="specialist-wrapper" verified="true" image="https://randomuser.me/api/portraits/men/38.jpg" owner="${this.getAttribute('owner')}" kind="screening" reviews="894" average-review="3.7" name="Esther Nduta" speciality="Health Screening" rate="750"></div>
+        <div is="specialist-wrapper" verified="true" image="https://randomuser.me/api/portraits/men/9.jpg" owner="${this.getAttribute('owner')}" kind="vaccination" reviews="120" average-review="4.2" name="Daniel Mburu" speciality="Vaccination & Travel Health" rate="850"></div>
+        <div is="specialist-wrapper" verified="true" image="https://randomuser.me/api/portraits/men/50.jpg" owner="${this.getAttribute('owner')}" kind="medication" reviews="34" average-review="4.0" name="Esther Wamae" speciality="Chronic Care & Medication" rate="1700"></div>
+        <div is="specialist-wrapper" verified="true" image="https://randomuser.me/api/portraits/women/61.jpg" owner="${this.getAttribute('owner')}" kind="delivery" reviews="79" average-review="3.5" name="Peter Ouma" speciality="Logistics & Delivery" rate="650"></div>
+        <div is="specialist-wrapper" verified="true" image="https://randomuser.me/api/portraits/men/12.jpg" owner="${this.getAttribute('owner')}" kind="information" reviews="432" average-review="4.0" name="Esther Njeri" speciality="Pharmacology & Drug Info" rate="1500"></div>
+        <div is="specialist-wrapper" verified="false" image="https://randomuser.me/api/portraits/men/13.jpg" owner="${this.getAttribute('owner')}" kind="emergency" reviews="100" average-review="4.5" name="Paul Kimani" speciality="Urgent Care" rate="2400"></div>
+        <div is="specialist-wrapper" verified="true" image="https://randomuser.me/api/portraits/women/14.jpg" owner="${this.getAttribute('owner')}" kind="insurance" reviews="6" average-review="5.0" name="Susan Wairimu" speciality="Prior Authorization" rate="950"></div>
+        <div is="specialist-wrapper" verified="true" image="https://randomuser.me/api/portraits/men/15.jpg" owner="${this.getAttribute('owner')}" kind="telehealth" reviews="200" average-review="4.9" name="Kevin Mutiso" speciality="Virtual Consultations" rate="1100"></div>
+        <div is="specialist-wrapper" verified="true" image="https://randomuser.me/api/portraits/men/41.jpg" owner="${this.getAttribute('owner')}" kind="consultation" reviews="48" average-review="4.1" name="Moses Kilonzo" speciality="Orthopedics" rate="2000"></div>
+        <div is="specialist-wrapper" verified="true" image="https://randomuser.me/api/portraits/women/42.jpg" owner="${this.getAttribute('owner')}" kind="consultation" reviews="72" average-review="4.3" name="Lydia Mwende" speciality="Obstetrics & Gynecology" rate="2200"></div>
+        <div is="specialist-wrapper" verified="false" image="https://randomuser.me/api/portraits/men/43.jpg" owner="${this.getAttribute('owner')}" kind="screening" reviews="33" average-review="3.9" name="Nicholas Ouma" speciality="Cardiac Screening" rate="1400"></div>
+        <div is="specialist-wrapper" verified="true" image="https://randomuser.me/api/portraits/women/44.jpg" owner="${this.getAttribute('owner')}" kind="medication" reviews="56" average-review="4.0" name="Ruth Atieno" speciality="Chronic Disease Management" rate="1600"></div>
+        <div is="specialist-wrapper" verified="true" image="https://randomuser.me/api/portraits/men/45.jpg" owner="${this.getAttribute('owner')}" kind="information" reviews="12" average-review="4.5" name="Abdul Karim" speciality="Clinical Pharmacology" rate="1800"></div>
+        <div is="specialist-wrapper" verified="true" image="https://randomuser.me/api/portraits/women/46.jpg" owner="${this.getAttribute('owner')}" kind="emergency" reviews="90" average-review="4.6" name="Nduta Chepchumba" speciality="Trauma & Emergency Care" rate="2600"></div>
       </div>
     `;
   }
@@ -665,124 +533,38 @@ export default class Specialists extends HTMLElement {
           display: block;
         }
 
-        .pagination {
-          z-index: 0;
-          display: flex;
-          flex-flow: row;
-          gap: 10px;
-          justify-content: center;
-          padding: 15px 0 20px;
-          margin: 0;
-          width: 100%;
-        }
-
-        .pagination > .previous {
-          display: flex;
-          flex-flow: row;
-          gap: 5px;
-          align-items: center;
-        }
-
-        .pagination > .nexts {
-          display: flex;
-          flex-flow: row;
-          gap: 5px;
-          align-items: center;
-        }
-
-        .pagination button {
-          font-size: 0.9rem;
-          outline: none;
-          border: none;
-          background: none;
-          font-family: var(--font-text), sans-serif;
-        }
-
-        .pagination > button.current,
-        .pagination > .nexts > .page,
-        .pagination > .previous > .page {
-          padding: 0;
-          height: 30px;
-          width: 30px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          border-radius: 50px;
-          color: var(--text-color);
-          border: var(--action-border);
-          cursor: pointer;
-          transition: 0.3s;
-        }
-
-        .pagination > .nexts > button.large,
-        .pagination > .previous > button.large,
-        .pagination > button.large {
-          padding: 0;
-          height: 30px;
-          width: max-content;
-          padding: 0 10px;
-        }
-
-        .pagination > button.current {
-          color: var(--white-color);
-          background: var(--accent-linear);
-          cursor: default;
-        }
-
-        .pagination > .previous > .prev:hover,
-        .pagination > .nexts > .next:hover {
-          background: var(--tab-background);
-          border: none;
-        }
-
-        .pagination > .previous > .start {
-          margin-right: 10px;
-          border: none;
-          background: var(--tab-background);
-        }
-
-        .pagination > .nexts > .end {
-          margin-left: 10px;
-          border: none;
-          background: var(--tab-background);
-        }
-
-        .pagination > .previous > .page.current,
-        .pagination > .nexts > .page.current {
-          background: var(--accent-linear);
-          color: var(--white-color);
-        }
-
-				@media screen and (max-width:660px) {
-					::-webkit-scrollbar {
-						-webkit-appearance: none;
-					}
-
-					a ,
-          button,
-          ul.tabs > li.tab {
-						cursor: default !important;
+        @media screen and (max-width: 700px) {
+          :host {
+            border: none;
+            padding: 0 0 65px;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
           }
 
-          div.sticky {
-            position: sticky;
-            top: 0;
+          .content {
+            padding: 0 10px;
+            display: flex;
+            flex-flow: column;
+            gap: 0;
+            width: 100%;
           }
 
-          ul.tabs {
-            padding: 10px 0;
+          div.doctors {
+            padding: 0;
+            max-width: 100%;
+            display: flex;
+            flex-flow: column;
+            gap: 0;
+            margin: 0;
           }
 
-          .products {
-            padding: 20px 0;
-            column-gap: 10px;
-            row-gap: 10px;
+          div.doctors > * {
+            break-inside: avoid;
+            margin-bottom: unset;
+            display: flex;
           }
-
-          .pagination {
-            padding: 5px 0 25px;
-          }
-				}
+        }
 	    </style>
     `;
   }

@@ -41,7 +41,7 @@ export default class Provider extends HTMLElement {
   setHeader = mql => {
     if (mql.matches) {
       this.app.setHeader({
-        sectionTitle: 'Pharmacy',
+        sectionTitle: 'Provider',
         description: 'Jane Clinic & Dental Care',
       });
     }
@@ -142,44 +142,67 @@ export default class Provider extends HTMLElement {
 
   getBody = () => {
     return /* html */`
-      ${this.getBanner(this.owner)}
-      <div class="details">
-        ${this.getTabs(this.kind)}
-        <div class="content-container">
-          ${this.getReviews()}
-        </div>
+      ${this.getBanner(this.owner, this.mql)}
+      ${this.getTabs(this.kind)}
+      <div class="content-container">
+        ${this.getReviews()}
       </div>
     `
   }
 
-  getBanner = owner => {
-    return /* html */`
-      <div class="banner">
-        ${this.getBannerEdit(owner)}
-        <img src="https://images.unsplash.com/photo-1579684453423-f84349ef60b0?q=80&w=1491&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="pharmacy interior">
-        <div class="logo">
-          <div class="image">
-            ${this.checkVerified(this.getAttribute('verified'))}
-            <img src="https://plus.unsplash.com/premium_photo-1664304327468-82cfd5886b55?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8ZG9jdG9yJTIwc3F1YXJlJTIwaW1hZ2V8ZW58MHx8MHx8fDA%3D" alt="pharmacy logo">
-          </div>
-          <div class="rating">
-            <span class="number">4.7</span>
-            <span class="out-of">/</span>
-            <span class="total">5.0</span>
-          </div>
-        </div>
-        <div class="banner-info">
-          <div class="provider-info">
-            <h2 class="name">Jane Clinic & Dental</h2>
-            <div class="location">
-              <span class="address">1245 Kileleshwa Drive</span>
-              <span class="since">Operating since 2011</span>
+  getBanner = (owner, mql) => {
+    if(mql && mql.matches) {
+      return /* html */`
+        <div class="banner">
+          ${this.getBannerEdit(owner)}
+          <img src="https://images.unsplash.com/photo-1579684453423-f84349ef60b0?q=80&w=1491&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="pharmacy interior">
+          <div class="banner-info">
+            <div class="logo">
+              <div class="image">
+                ${this.checkVerified(this.getAttribute('verified'))}
+                <img src="https://plus.unsplash.com/premium_photo-1664304327468-82cfd5886b55?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8ZG9jdG9yJTIwc3F1YXJlJTIwaW1hZ2V8ZW58MHx8MHx8fDA%3D" alt="pharmacy logo">
+              </div>
+            </div>
+            <div class="provider-info">
+              <h2 class="name">Jane Clinic & Dental</h2>
+              <div class="location">
+                <span class="address">1245 Kileleshwa Drive</span>
+                <span class="since">Operating since 2011</span>
+              </div>
             </div>
           </div>
-          ${this.getTopStats()}
         </div>
-      </div>
-    `
+      `
+    }
+    else {
+      return /* html */`
+        <div class="banner">
+          ${this.getBannerEdit(owner)}
+          <img src="https://images.unsplash.com/photo-1579684453423-f84349ef60b0?q=80&w=1491&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="pharmacy interior">
+          <div class="logo">
+            <div class="image">
+              ${this.checkVerified(this.getAttribute('verified'))}
+              <img src="https://plus.unsplash.com/premium_photo-1664304327468-82cfd5886b55?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8ZG9jdG9yJTIwc3F1YXJlJTIwaW1hZ2V8ZW58MHx8MHx8fDA%3D" alt="pharmacy logo">
+            </div>
+            <div class="rating">
+              <span class="number">4.7</span>
+              <span class="out-of">/</span>
+              <span class="total">5.0</span>
+            </div>
+          </div>
+          <div class="banner-info">
+            <div class="provider-info">
+              <h2 class="name">Jane Clinic & Dental</h2>
+              <div class="location">
+                <span class="address">1245 Kileleshwa Drive</span>
+                <span class="since">Operating since 2011</span>
+              </div>
+            </div>
+            ${this.getTopStats()}
+          </div>
+        </div>
+      `
+    }
   }
 
   getBannerEdit = owner => {
@@ -226,18 +249,7 @@ export default class Provider extends HTMLElement {
               <path d="M11.9955 3H12.0045M11.9961 21H12.0051M18.3588 5.63599H18.3678M5.63409 18.364H5.64307M5.63409 5.63647H5.64307M18.3582 18.3645H18.3672M20.991 12.0006H21M3 12.0006H3.00898" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
             </svg>
           </span>
-          <span class="text">Highlights</span>
-        </li>
-        <li class="tab schedule" section="schedule">
-          <span class="icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="currentColor" fill="none">
-              <path d="M16 2V6M8 2V6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
-              <path d="M13 4H11C7.22876 4 5.34315 4 4.17157 5.17157C3 6.34315 3 8.22876 3 12V14C3 17.7712 3 19.6569 4.17157 20.8284C5.34315 22 7.22876 22 11 22H13C16.7712 22 18.6569 22 19.8284 20.8284C21 19.6569 21 17.7712 21 14V12C21 8.22876 21 6.34315 19.8284 5.17157C18.6569 4 16.7712 4 13 4Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
-              <path d="M3 10H21" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
-              <path d="M9 16.5C9 16.5 10.5 17 11 18.5C11 18.5 13.1765 14.5 16 13.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
-            </svg>
-          </span>
-          <span class="text">Schedule</span>
+          <span class="text">About</span>
         </li>
         <li class="tab services" section="services">
           <span class="icon">
@@ -722,6 +734,8 @@ export default class Provider extends HTMLElement {
           flex-flow: row nowrap;
           gap: 8px;
           padding: 0;
+          width: 100%;
+          max-width: 100%;
           border-bottom: var(--border);
           position: relative;
           overflow-x: scroll;
@@ -810,9 +824,271 @@ export default class Provider extends HTMLElement {
         }
 
         /* Mobile Styles */
-        @media all and (max-width: 700px) {
+        @media screen and (max-width: 700px) {
           :host {
-            padding: 70px 10px;
+            border: none;
+            width: 100%;
+            max-width: 100%;
+            min-width: 100%;
+            max-height: unset;
+            height: unset;
+            min-height: unset;
+            max-height: unset;
+            padding: 10px 10px 65px;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: start;
+            justify-content: start;
+          }
+
+          div.banner {
+            width: 100%;
+            height: 180px;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+          }
+
+          div.banner > img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+          }
+
+          /* banner info */
+          div.banner > div.banner-info {
+            position: absolute;
+            bottom: 5px;
+            left: 5px;
+            width: calc(100% - 10px);
+            padding: 5px 10px;
+            display: flex;
+            flex-flow: row nowrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 5px;
+            background: var(--morph-background);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 12px;
+          }
+
+          div.banner > div.banner-info > div.logo {
+            display: flex;
+            flex-flow: column;
+            gap: 20px;
+            padding: 0;
+            box-sizing: border-box;
+            justify-content: center;
+            align-items: center;
+          }
+
+          div.banner > div.banner-info > div.logo > div.image {
+            width: 68px;
+            height: 68px;
+            object-fit: cover;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            background: var(--verified-background);
+          }
+
+          div.banner > div.banner-info > div.logo > div.image > img {
+            width: 64px;
+            height: 64px;
+            padding: 2px;
+            object-fit: cover;
+            border-radius: 50%;
+            overflow: hidden;
+            border: var(--action-border);
+            border-color: var(--accent-color);
+            border-width: 3px;
+          }
+
+          div.banner > div.banner-info > div.logo > div.image > span.verified {
+            pointer-events: none;
+            position: absolute;
+            bottom: 5px;
+            right: 0;
+            width: 22px;
+            height: 22px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%;
+          }
+
+          div.banner > div.banner-info> div.logo > div.image > span.verified > svg {
+            width: 38px;
+            height: 38px;
+            margin-bottom: -1px;
+            display: flex;
+            justify-content: center;
+            color: var(--verified-background);
+            align-items: center;
+          }
+
+          div.banner > div.banner-info > div.logo > div.image > span.verified > svg > path#top {
+            color: var(--verified-background);
+            fill: var(--verified-background);
+          }
+          
+          div.banner > div.banner-info > div.provider-info {
+            display: flex;
+            flex-flow: column;
+            align-items: start;
+            justify-content: center;
+            width: calc(100% - 60px);
+            height: fit-content;
+            gap: 5px;
+            margin: 0;
+            padding: 0 0 0 8px;
+            background: transparent;
+            backdrop-filter: unset;
+            -webkit-backdrop-filter: unset;
+            border-radius: unset;
+            border-left: var(--action-border);
+            border-left-style: solid;
+            border-color: var(--white-color);
+          }
+
+          div.banner > div.banner-info > div.provider-info > .name {
+            font-size: 1.2rem;
+            width: 100%;
+            font-weight: 500;
+            line-height: 1;
+            font-family: var(--font-main), sans-serif;
+            color: var(--white-color);
+            margin: 0;
+
+            /* add ellipsis */
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
+
+          div.banner > div.banner-info > div.provider-info > .location {
+            display: flex;
+            flex-flow: column;
+            gap: 2px;
+            margin: 0;
+            width: 100%;
+          }
+
+          div.banner > div.banner-info > div.provider-info > .location > .address {
+            font-size: 0.8rem;
+            font-weight: 400;
+            color: var(--white-color);
+            opacity: 0.8;
+            font-family: var(--font-main), sans-serif;
+            line-height: 1;
+
+            /* add ellipsis */
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
+
+          div.banner > div.banner-info > div.provider-info > .location > .since {
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--white-color);
+            opacity: 0.6;
+            font-family: var(--font-read), sans-serif;
+            line-height: 1.3;
+          }
+
+          /* Tabs Styles */
+          ul.tabs {
+            list-style: none;
+            display: flex;
+            flex-flow: row nowrap;
+            gap: 8px;
+            width: 100%;
+            max-width: 100%;
+            padding: 0;
+            border-bottom: var(--border);
+            position: relative;
+            overflow-x: scroll;
+            overflow-y: visible;
+            scrollbar-width: none;
+            padding: 10px 0 0;
+            margin: 0;
+            position: sticky;
+            top: 48px;
+            background: var(--background);
+            z-index: 10;
+          }
+
+          ul.tabs::-webkit-scrollbar {
+            visibility: hidden;
+            display: none;
+          }
+
+          ul.tabs > li.tab {
+            display: flex;
+            flex-flow: row nowrap;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 10px 12px 2px;
+            cursor: default !important;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-color);
+            font-family: var(--font-main), sans-serif;
+            line-height: 1.3;
+            white-space: nowrap;
+            position: relative;
+          }
+
+          ul.tabs > li.tab > span.icon {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: inherit;
+          }
+
+          ul.tabs > li.tab > span.icon > svg {
+            width: 17px;
+            height: 17px;
+            color: inherit;
+            transition: color 0.3s ease-in-out;
+          }
+
+          ul.tabs > li.tab.reviews > span.icon > svg {
+            width: 16px;
+            height: 16px;
+          }
+
+          ul.tabs > li.tab.services > span.icon > svg {
+            width: 16px;
+            height: 16px;
+          }
+
+          ul.tabs > li.tab.active,
+          ul.tabs > li.tab:hover {
+            color: var(--accent-color);
+            font-weight: 600;
+          }
+
+          ul.tabs > li.tab:hover {
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            transition: background 0.3s ease-in-out;
+          }
+
+          ul.tabs > span.tab-indicator {
+            position: absolute;
+            bottom: 0; /* adjust this */
+            left: 0;
+            width: 100px;
+            height: 4px;
+            background: var(--accent-color);
+            border-radius: 3px 3px 0 0;
+            transition: all 0.3s ease-in-out;
           }
         }
       </style>
