@@ -799,8 +799,8 @@ export default class Provider extends HTMLElement {
         }
 
         ul.tabs > li.tab:hover {
-          backdrop-filter: blur(10px);
-          -webkit-backdrop-filter: blur(10px);
+          backdrop-filter: unset;
+          -webkit-backdrop-filter: unset;
           transition: background 0.3s ease-in-out;
         }
 
@@ -1071,12 +1071,6 @@ export default class Provider extends HTMLElement {
           ul.tabs > li.tab:hover {
             color: var(--accent-color);
             font-weight: 600;
-          }
-
-          ul.tabs > li.tab:hover {
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            transition: background 0.3s ease-in-out;
           }
 
           ul.tabs > span.tab-indicator {

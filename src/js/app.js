@@ -379,8 +379,8 @@ export default class AppMain extends HTMLElement {
         ${this.getMobileHeader()}
         <section class="flow">
           <div id="content-container" class="content-container">
-            ${this.getProviderContainer()}
-            <!--${this.getSpecialistsFeed()}-->
+            <!--<chats-section all="628" unread="3" requests="2"></chats-section>-->
+            ${this.getProductFeed()}
           </div>
         </section>
         <section class="nav">

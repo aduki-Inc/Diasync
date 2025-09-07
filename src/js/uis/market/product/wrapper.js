@@ -3,6 +3,7 @@ export default class ProductWrapper extends HTMLElement {
     super();
     this.app = window.app;
     this.shadowObj = this.attachShadow({ mode: 'open' });
+    this.mql = window.matchMedia("(max-width: 700px)");
     this.app = window.app || {};
     this.number = this.app?.utils?.number;
     this.date = this.app?.utils?.date;
@@ -56,7 +57,8 @@ export default class ProductWrapper extends HTMLElement {
     `;
   }
 
-  getWasPrice = () => {
+  getWasPrice = mql => {
+    if (mql.matches) return '';
     if (this.price === this.lastPrice || this.price > this.lastPrice) return '';
     return /* html */`
       <span class="was">
@@ -95,15 +97,22 @@ export default class ProductWrapper extends HTMLElement {
             <span class="currency">Ksh</span>
             <span class="price">${this.number.balanceWithCommas(this.getAttribute("price"))}</span>
           </span>
-          ${this.getWasPrice()}
+          ${this.getWasPrice(this.mql)}
         </div>
-        <span class="country-info">
-          <span class="text">Local dispatch from ${this.getAttribute('store-country')}</span>
-        </span>
+        ${this.getDispatch(this.mql)}
 				<!-- Button Box -->
         ${this.getButtons()}
 			</div>
     `
+  }
+
+  getDispatch = mql => {
+    if (mql.matches) return '';
+    return /* html */`
+        <span class="country-info">
+          <span class="text">Local dispatch</span>
+        </span>
+    `;
   }
 
   getButtons = () => {
@@ -705,6 +714,17 @@ export default class ProductWrapper extends HTMLElement {
             border-radius: 8px;
           }
 
+          :host {
+            border: var(--border);
+            display: flex;
+            flex-flow: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0;
+            padding: 0;
+            border-radius: 8px;
+          }
+
           /* reset all cursor: pointer to default */
           a,
           .details div.name span.name,
@@ -775,6 +795,43 @@ export default class ProductWrapper extends HTMLElement {
             gap: 10px;
           }
 
+          .details div.name span.name {
+            color: var(--text-color);
+            font-family: var(--font-main), sans-serif;
+            width: 100%;
+            font-weight: 500;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            display: inline-block;
+            padding: 0 0 2px 0;
+            cursor: pointer;
+
+            /* prevent overflow add ellipsis after 2 lines */
+            overflow: hidden;
+            text-overflow: ellipsis;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            display: -webkit-box;
+            -webkit-box-pack: start;
+          }
+
+          .details div.name span.store {
+            width: 100%;
+            display: inline-flex;
+            padding: 2px 0;
+            color: var(--gray-color);
+            font-family: var(--font-read), sans-serif;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            display: -webkit-box;
+            -webkit-box-pack: start;
+          }
+
           .buttons > .button {
             font-size: 0.85rem;
             padding: 5px 10px;
@@ -834,22 +891,6 @@ export default class ProductWrapper extends HTMLElement {
           .buttons > .button.added > .icon svg {
             width: 20px;
             height: 20px;
-          }
-        }
-        /* Todo: This one changed */
-        @media (max-width: 450px) {
-          :host {
-            border: var(--border);
-            display: flex;
-            flex-flow: column;
-            align-items: center;
-            justify-content: center;
-            gap: 0;
-            padding: 0;
-            width: 175px;
-            max-width: 175px;
-            min-width: 175px;
-            border-radius: 8px;
           }
         }
       </style>

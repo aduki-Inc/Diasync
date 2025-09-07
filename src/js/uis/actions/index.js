@@ -6,5 +6,5 @@ import Provider from "./provider.js";
 export default function actions() {
   customElements.define("account-actions", Account);
   customElements.define("home-actions", Home);
-  customElements.define("provider-actions", Provider, { extends: "div" });
+  customElements.define("provider-actions", Provider);
 }

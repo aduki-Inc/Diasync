@@ -5,10 +5,10 @@ export default class ProductsFeed extends HTMLElement {
 
     // let's create our shadow root
     this.shadowObj = this.attachShadow({ mode: "open" });
-    this.utils = window.app.utils;
-
+    this.mql = window.matchMedia("(max-width: 700px)");
+    this.app = window.app || {};
+    this.utils = app?.utils;
     this.render();
-    // active tab
     this.active_tab = null;
   }
 
@@ -18,9 +18,17 @@ export default class ProductsFeed extends HTMLElement {
 
   connectedCallback() {
     const tabs = this.shadowObj.querySelector("ul.tabs");
+    if (tabs) this.activateTabController(tabs);
 
-    if (tabs) {
-      this.activateTabController(tabs);
+    this.setHeader(this.mql);
+  }
+
+  setHeader = mql => {
+    if (mql.matches) {
+      this.app.setHeader({
+        sectionTitle: 'Medicines',
+        description: 'Explore our medicines and find the right one for your needs.',
+      });
     }
   }
 
@@ -77,7 +85,7 @@ export default class ProductsFeed extends HTMLElement {
   getInfo = () => {
     return /* html */`
       <div class="content">
-        ${this.getHead()}
+        ${this.getHead(this.mql)}
         <div class="sticky">
           ${this.getSearch()}
           ${this.getTab()}
@@ -85,12 +93,12 @@ export default class ProductsFeed extends HTMLElement {
         <div class="products">
           ${this.getProducts()}
         </div>
-        ${this.getPagination({ current: 13, total: 24 })}
       </div>
     `;
   }
 
-  getHead = () => {
+  getHead = mql => {
+    if (mql && mql.matches) return '';
     return /* html */`
       <div class="head">
         <h3 class="title">${this.getAttribute("name")}</h3>
@@ -216,135 +224,6 @@ export default class ProductsFeed extends HTMLElement {
       <product-wrapper product-image="/src/img/products/drug64.jpg" name="Guaifenesin 200mg Syrup - Expectorant" last="210.00" store="GreenCross Pharmacy" reviews="142" average-review="4.1" wished="false" in-cart="0" quantity="96" price="199.00" store-country="Kenya"></product-wrapper>
       <product-wrapper product-image="/src/img/products/drug65.jpg" name="Risperidone 2mg Tablets - Antipsychotic" last="1890.00" store="HealthMart Pharmacy" reviews="53" average-review="3.9" wished="false" in-cart="0" quantity="26" price="1799.00" store-country="Kenya"></product-wrapper>
     `;
-  }
-
-  getPagination = data => {
-    const { current, total } = data;
-
-    // if total is 1, return empty string
-    if (total < 2) return "";
-
-    const prev = this.createPrevNavigation(current);
-    const currentPage = /*html*/`<button class="page current ${current > 99 ? "large" : ""}">${current}</button>`;
-    const next = this.createNextNavigation(current, total);
-
-    return /* html */`
-      <div class="pagination">
-        ${prev}
-        ${currentPage}
-        ${next}
-      </div>
-    `;
-  }
-
-  createPrevNavigation = current => {
-    // if both current and total are not numbers, return empty string
-    if (isNaN(current)) return "";
-
-    /* if current page is 1, return empty string */
-    if (current === 1) return "";
-
-    /* if current page is less than 6, return 1 to 4 */
-    if (current < 6) {
-      let prev = "";
-      for (let i = 1; i < current; i++) {
-        prev += /* html */`<button class="page prev ${i > 99 ? "large" : ""}">${i}</button>`;
-      }
-      return /* html */`
-        <div class="previous">
-          ${prev}
-        </div>
-      `;
-    }
-
-    // anything greater than 6, return the last 3 pages and start page: 1
-    if (current >= 6) {
-      // loop to create the previous pages
-      let prev = /* html */`<button class="page prev start">1</button>`;
-      for (let i = current - 3; i < current; i++) {
-        prev += /* html */`<button class="page prev ${i > 99 ? "large" : ""}">${i}</button>`;
-      }
-
-      return /* html */`
-        <div class="previous">
-          ${prev}
-        </div>
-      `;
-    }
-  }
-
-  createNextNavigation = (current, total) => {
-    // if both current and total are not numbers, return empty string
-    if (isNaN(current) || isNaN(total)) return "";
-
-    /* if current page is the last page, return empty string */
-    if (current === total) return "";
-
-    /* if current page is less than 6, and total is less than 6, return all pages */
-    if (current < 6 && total < 6) {
-      let next = "";
-      for (let i = current + 1; i <= total; i++) {
-        next += /* html */`<button class="page next ${i > 99 ? "large" : ""}">${i}</button>`;
-      }
-
-      // return the next pages
-      return /* html */`
-        <div class="nexts">
-          ${next}
-        </div>
-      `;
-    }
-
-    /* if current page is less than 6, return after current: three after */
-    if (current < 6 && (total - current) > 3) {
-      let next = "";
-      for (let i = current + 1; i <= current + 3; i++) {
-        next += /* html */`<button class="page next ${i > 99 ? "large" : ""}">${i}</button>`;
-      }
-
-      // add last page
-      next += /* html */`<button class="page next end ${total > 99 ? "large" : ""}">${total}</button>`;
-
-      // return the next pages
-      return /* html */`
-        <div class="nexts">
-          ${next}
-        </div>
-      `;
-    }
-
-    // if page is 6 or greater, and is less than the total by 3,2,1: return the last 3 pages
-    if (current >= 6 && (total - current) <= 3) {
-      let next = "";
-      for (let i = current + 1; i <= total; i++) {
-        next += /* html */`<button class="page next">${i}</button>`;
-      }
-
-      // return the next pages
-      return /* html */`
-        <div class="nexts">
-          ${next}
-        </div>
-      `;
-    }
-
-    // if current page is 6 or greater, and is less the total by a value more than 3, return the next 3 pages and the last page
-    if (current >= 6 && (total - current) > 3) {
-      let next = "";
-      for (let i = current + 1; i < current + 4; i++) {
-        next += /* html */`<button class="page next ${i > 99 ? "large" : ""}">${i}</button>`;
-      }
-
-      // add the last page
-      next += /* html */`<button class="page next end ${total > 99 ? "large" : ""}">${total}</button>`;
-
-      // return the next pages
-      return /* html */`
-        <div class="nexts">
-          ${next}
-        </div>
-      `;
-    }
   }
 
   getLargeLoader = () => {
@@ -794,36 +673,40 @@ export default class ProductsFeed extends HTMLElement {
           color: var(--white-color);
         }
 
-				@media screen and (max-width:660px) {
-					::-webkit-scrollbar {
-						-webkit-appearance: none;
-					}
-
-					a ,
-          button,
-          ul.tabs > li.tab {
-						cursor: default !important;
+				@media screen and (max-width: 700px) {
+          :host {
+            border: none;
+            padding: 0 0 65px;
+            margin: 0;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
           }
 
-          div.sticky {
-            position: sticky;
-            top: 0;
+          .content {
+            padding: 0 10px;
+            display: flex;
+            flex-flow: column;
+            gap: 0;
+            width: 100%;
           }
 
-          ul.tabs {
-            padding: 10px 0;
+          div.products {
+            padding: 0;
+            max-width: 100%;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            row-gap: 20px;
+            margin: 0;
           }
 
-          .products {
-            padding: 20px 0;
-            column-gap: 10px;
-            row-gap: 10px;
+          div.products > * {
+            break-inside: avoid;
+            margin-bottom: unset;
+            display: flex;
           }
-
-          .pagination {
-            padding: 5px 0 25px;
-          }
-				}
+        }
 	    </style>
     `;
   }
