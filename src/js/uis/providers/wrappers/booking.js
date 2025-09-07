@@ -1,4 +1,4 @@
-export default class Booking extends HTMLDivElement {
+export default class Booking extends HTMLElement {
   constructor() {
     super();
     this.shadowObj = this.attachShadow({ mode: 'open' });
@@ -163,7 +163,7 @@ export default class Booking extends HTMLDivElement {
   }
 
   getBody = mql => {
-    if(mql && mql.matches) {
+    if (mql && mql.matches) {
       return /* html */`
         <div class="content ${this.getAttribute('status') || ''}" id="view-modal">
           <div class="left">
@@ -305,7 +305,7 @@ export default class Booking extends HTMLDivElement {
   }
 
   getMoreAction = mql => {
-    if(mql && mql.matches) {
+    if (mql && mql.matches) {
       return /* html */`
         <span class="more-actions" id="view-modal">
           <span class="dot"></span>
@@ -373,7 +373,7 @@ export default class Booking extends HTMLDivElement {
   }
 
   handleViewModal = mql => {
-    if(!mql || !mql.matches) return;
+    if (!mql || !mql.matches) return;
     const actions = this.shadowObj.querySelectorAll("#view-modal");
     if (!actions) return;
     const html = this.getModal();
@@ -388,7 +388,7 @@ export default class Booking extends HTMLDivElement {
 
   getModal = () => {
     let images = this.getAttribute('images');
-    if(!images || images === 'null' || images === '') {
+    if (!images || images === 'null' || images === '') {
       images = '';
     } else {
       images = /* html */`images="${images}"`;

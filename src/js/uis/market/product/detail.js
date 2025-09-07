@@ -567,22 +567,22 @@ export default class ProductDetail extends HTMLElement {
 
   getProducts = () => {
     return /* html */`
-      <div is="product-wrapper" product-image="/src/img/products/drug1.jpg" name="Paracetamol 500mg Tablets - Pain & Fever Relief" last="5048.50" store="HealthCare Plus Pharmacy" reviews="32894" average-review="4.7" wished="true" in-cart="0" quantity="150" price="4598.50" store-country="Kenya"></div>
-      <div is="product-wrapper" product-image="/src/img/products/drug2.jpg" name="Ibuprofen 400mg Capsules - Anti-inflammatory" last="712.25" store="HealthCare Plus Pharmacy" reviews="185" average-review="4.3" wished="false" in-cart="2" quantity="89" price="152.25" store-country="Kenya"></div>
-      <div is="product-wrapper" product-image="/src/img/products/drug3.jpg" name="Amoxicillin 250mg Syrup - Antibiotic" last="824.75" store="HealthCare Plus Pharmacy" reviews="9546" average-review="4.5" wished="true" in-cart="0" quantity="45" price="247.75" store-country="Kenya"></div>
-      <div is="product-wrapper" product-image="/src/img/products/drug4.jpg" name="Dextromethorphan Cough Syrup - Respiratory Relief" last="215.80" store="HealthCare Plus Pharmacy" reviews="142" average-review="4.2" wished="false" in-cart="1" quantity="67" price="15.80" store-country="Kenya"></div>
-      <div is="product-wrapper" product-image="/src/img/products/drug5.jpg" name="Multivitamin Complex Tablets - Daily Nutrition" last="8628.50" store="HealthCare Plus Pharmacy" reviews="489" average-review="4.6" wished="true" in-cart="0" quantity="200" price="28.50" store-country="Kenya"></div>
-      <div is="product-wrapper" product-image="/src/img/products/drug6.jpg" name="Antiseptic Solution 100ml - Wound Care" last="995.90" store="HealthCare Plus Pharmacy" reviews="176" average-review="4.4" wished="false" in-cart="0" quantity="120" price="995.90" store-country="Kenya"></div>
-      <div is="product-wrapper" product-image="/src/img/products/drug7.jpg" name="Adhesive Bandages Pack - First Aid" last="8766.75" store="HealthCare Plus Pharmacy" reviews="234" average-review="4.8" wished="true" in-cart="0" quantity="85" price="6.75" store-country="Kenya"></div>
-      <div is="product-wrapper" product-image="/src/img/products/drug8.jpg" name="Cetirizine 10mg Tablets - Allergy Relief" last="418.40" store="HealthCare Plus Pharmacy" reviews="167" average-review="4.1" wished="false" in-cart="0" quantity="0" price="188.40" store-country="Kenya"></div>
-      <div is="product-wrapper" product-image="/src/img/products/drug9.jpg" name="Insulin Injection Pen - Diabetes Management" last="1825.00" store="HealthCare Plus Pharmacy" reviews="89" average-review="4.9" wished="true" in-cart="0" quantity="12" price="7125.00" store-country="Kenya"></div>
-      <div is="product-wrapper" product-image="/src/img/products/drug10.jpg" name="Aspirin 325mg Tablets - Cardiovascular Health" last="191.30" store="HealthCare Plus Pharmacy" reviews="29468" average-review="4.0" wished="false" in-cart="0" quantity="156" price="181.30" store-country="Kenya"></div>
-      <div is="product-wrapper" product-image="/src/img/products/drug12.jpg" name="Calcium Carbonate Antacid - Digestive Health" last="7814.60" store="HealthCare Plus Pharmacy" reviews="203" average-review="3.8" wished="true" in-cart="3" quantity="78" price="128974.60" store-country="Kenya"></div>
-      <div is="product-wrapper" product-image="/src/img/products/drug13.jpg" name="Lubricating Eye Drops - Vision Care" last="8722.90" store="HealthCare Plus Pharmacy" reviews="134" average-review="4.3" wished="false" in-cart="1" quantity="54" price="22.90" store-country="Kenya"></div>
-      <div is="product-wrapper" product-image="/src/img/products/drug16.jpg" name="Digital Thermometer - Health Monitoring" last="1435.75" store="HealthCare Plus Pharmacy" reviews="112" average-review="4.5" wished="true" in-cart="0" quantity="28" price="6435.75" store-country="Kenya"></div>
-      <div is="product-wrapper" product-image="/src/img/products/drug14.jpg" name="Probiotic Capsules 30ct - Gut Health" last="1742.20" store="HealthCare Plus Pharmacy" reviews="91" average-review="3.9" wished="false" in-cart="0" quantity="63" price="42.20" store-country="Kenya"></div>
-      <div is="product-wrapper" product-image="/src/img/products/drug15.jpg" name="Hand Sanitizer 250ml - Hygiene Protection" last="187.45" store="HealthCare Plus Pharmacy" reviews="456" average-review="4.2" wished="true" in-cart="0" quantity="0" price="7.45" store-country="Kenya"></div>
-      <div is="product-wrapper" product-image="/src/img/products/drug11.jpg" name="Omega-3 Fish Oil Capsules - Heart Health" last="3431.80" store="HealthCare Plus Pharmacy" reviews="178" average-review="4.4" wished="false" in-cart="0" quantity="94" price="31.80" store-country="Kenya"></div>
+     <product-wrapper product-image="/src/img/products/drug1.jpg" name="Paracetamol 500mg Tablets - Pain & Fever Relief" last="5048.50" store="HealthCare Plus Pharmacy" reviews="32894" average-review="4.7" wished="true" in-cart="0" quantity="150" price="4598.50" store-country="Kenya"></product-wrapper>
+     <product-wrapper product-image="/src/img/products/drug2.jpg" name="Ibuprofen 400mg Capsules - Anti-inflammatory" last="712.25" store="HealthCare Plus Pharmacy" reviews="185" average-review="4.3" wished="false" in-cart="2" quantity="89" price="152.25" store-country="Kenya"></product-wrapper>
+     <product-wrapper product-image="/src/img/products/drug3.jpg" name="Amoxicillin 250mg Syrup - Antibiotic" last="824.75" store="HealthCare Plus Pharmacy" reviews="9546" average-review="4.5" wished="true" in-cart="0" quantity="45" price="247.75" store-country="Kenya"></product-wrapper>
+     <product-wrapper product-image="/src/img/products/drug4.jpg" name="Dextromethorphan Cough Syrup - Respiratory Relief" last="215.80" store="HealthCare Plus Pharmacy" reviews="142" average-review="4.2" wished="false" in-cart="1" quantity="67" price="15.80" store-country="Kenya"></product-wrapper>
+     <product-wrapper product-image="/src/img/products/drug5.jpg" name="Multivitamin Complex Tablets - Daily Nutrition" last="8628.50" store="HealthCare Plus Pharmacy" reviews="489" average-review="4.6" wished="true" in-cart="0" quantity="200" price="28.50" store-country="Kenya"></product-wrapper>
+     <product-wrapper product-image="/src/img/products/drug6.jpg" name="Antiseptic Solution 100ml - Wound Care" last="995.90" store="HealthCare Plus Pharmacy" reviews="176" average-review="4.4" wished="false" in-cart="0" quantity="120" price="995.90" store-country="Kenya"></product-wrapper>
+     <product-wrapper product-image="/src/img/products/drug7.jpg" name="Adhesive Bandages Pack - First Aid" last="8766.75" store="HealthCare Plus Pharmacy" reviews="234" average-review="4.8" wished="true" in-cart="0" quantity="85" price="6.75" store-country="Kenya"></product-wrapper>
+     <product-wrapper product-image="/src/img/products/drug8.jpg" name="Cetirizine 10mg Tablets - Allergy Relief" last="418.40" store="HealthCare Plus Pharmacy" reviews="167" average-review="4.1" wished="false" in-cart="0" quantity="0" price="188.40" store-country="Kenya"></product-wrapper>
+     <product-wrapper product-image="/src/img/products/drug9.jpg" name="Insulin Injection Pen - Diabetes Management" last="1825.00" store="HealthCare Plus Pharmacy" reviews="89" average-review="4.9" wished="true" in-cart="0" quantity="12" price="7125.00" store-country="Kenya"></product-wrapper>
+     <product-wrapper product-image="/src/img/products/drug10.jpg" name="Aspirin 325mg Tablets - Cardiovascular Health" last="191.30" store="HealthCare Plus Pharmacy" reviews="29468" average-review="4.0" wished="false" in-cart="0" quantity="156" price="181.30" store-country="Kenya"></product-wrapper>
+     <product-wrapper product-image="/src/img/products/drug12.jpg" name="Calcium Carbonate Antacid - Digestive Health" last="7814.60" store="HealthCare Plus Pharmacy" reviews="203" average-review="3.8" wished="true" in-cart="3" quantity="78" price="128974.60" store-country="Kenya"></product-wrapper>
+     <product-wrapper product-image="/src/img/products/drug13.jpg" name="Lubricating Eye Drops - Vision Care" last="8722.90" store="HealthCare Plus Pharmacy" reviews="134" average-review="4.3" wished="false" in-cart="1" quantity="54" price="22.90" store-country="Kenya"></product-wrapper>
+     <product-wrapper product-image="/src/img/products/drug16.jpg" name="Digital Thermometer - Health Monitoring" last="1435.75" store="HealthCare Plus Pharmacy" reviews="112" average-review="4.5" wished="true" in-cart="0" quantity="28" price="6435.75" store-country="Kenya"></product-wrapper>
+     <product-wrapper product-image="/src/img/products/drug14.jpg" name="Probiotic Capsules 30ct - Gut Health" last="1742.20" store="HealthCare Plus Pharmacy" reviews="91" average-review="3.9" wished="false" in-cart="0" quantity="63" price="42.20" store-country="Kenya"></product-wrapper>
+     <product-wrapper product-image="/src/img/products/drug15.jpg" name="Hand Sanitizer 250ml - Hygiene Protection" last="187.45" store="HealthCare Plus Pharmacy" reviews="456" average-review="4.2" wished="true" in-cart="0" quantity="0" price="7.45" store-country="Kenya"></product-wrapper>
+     <product-wrapper product-image="/src/img/products/drug11.jpg" name="Omega-3 Fish Oil Capsules - Heart Health" last="3431.80" store="HealthCare Plus Pharmacy" reviews="178" average-review="4.4" wished="false" in-cart="0" quantity="94" price="31.80" store-country="Kenya"></product-wrapper>
     `;
   }
 
@@ -728,46 +728,46 @@ export default class ProductDetail extends HTMLElement {
 
   getReviewsItems = () => {
     return /* html */`
-    <div is="product-review" user-name="John Smith" user-picture="https://randomuser.me/api/portraits/men/11.jpg" number="5" date="2024-11-15T00:00:00Z" purpose="Diagnosed">
+    <product-review user-name="John Smith" user-picture="https://randomuser.me/api/portraits/men/11.jpg" number="5" date="2024-11-15T00:00:00Z" purpose="Diagnosed">
       <p>Excellent product! Exceeded my expectations. Highly recommended.</p>
       <p>Will definitely purchase again.</p>
-    </div>
-    <div is="product-review" user-name="Emily Johnson" user-picture="https://randomuser.me/api/portraits/women/12.jpg" number="4" date="2024-10-20T00:00:00Z" purpose="Diagnosed">
+    </product-review>
+    <product-review user-name="Emily Johnson" user-picture="https://randomuser.me/api/portraits/women/12.jpg" number="4" date="2024-10-20T00:00:00Z" purpose="Diagnosed">
       <p>Very satisfied with this product. Great quality and value for money.</p>
       <p>Would recommend to others.</p>
-    </div>
-    <div is="product-review" user-name="Michael Brown" user-picture="https://randomuser.me/api/portraits/men/13.jpg" number="3" date="2024-09-25T00:00:00Z" purpose="Purchase">
+    </product-review>
+    <product-review user-name="Michael Brown" user-picture="https://randomuser.me/api/portraits/men/13.jpg" number="3" date="2024-09-25T00:00:00Z" purpose="Purchase">
       <p>Good product but had some issues with delivery. Overall, happy with the purchase.</p>
       <p>May consider buying again.</p>
-    </div>
-    <div is="product-review" user-name="Jessica Davis" user-picture="https://randomuser.me/api/portraits/women/14.jpg" number="5" date="2024-08-30T00:00:00Z" purpose="Prescription">
+    </product-review>
+    <product-review user-name="Jessica Davis" user-picture="https://randomuser.me/api/portraits/women/14.jpg" number="5" date="2024-08-30T00:00:00Z" purpose="Prescription">
       <p>Amazing product! Works perfectly and as described. Highly recommend.</p>
       <p>Will definitely buy again.</p>
-    </div>
-    <div is="product-review" user-name="David Wilson" user-picture="https://randomuser.me/api/portraits/men/15.jpg" number="4" date="2024-07-05T00:00:00Z" purpose="Prescription">
+    </product-review>
+    <product-review user-name="David Wilson" user-picture="https://randomuser.me/api/portraits/men/15.jpg" number="4" date="2024-07-05T00:00:00Z" purpose="Prescription">
       <p>Very good product. Met all my expectations. Would recommend.</p>
       <p>Happy with the purchase.</p>
-    </div>
-    <div is="product-review" user-name="Sarah Miller" user-picture="https://randomuser.me/api/portraits/women/16.jpg" number="5" date="2024-06-10T00:00:00Z" purpose="Prescription">
+    </product-review>
+    <product-review user-name="Sarah Miller" user-picture="https://randomuser.me/api/portraits/women/16.jpg" number="5" date="2024-06-10T00:00:00Z" purpose="Prescription">
       <p>Outstanding product! Great quality and performance. Highly recommend.</p>
       <p>Will buy again for sure.</p>
-    </div>
-    <div is="product-review" user-name="James Martinez" user-picture="https://randomuser.me/api/portraits/men/17.jpg" number="4" date="2024-05-15T00:00:00Z" purpose="Prescription">
+    </product-review>
+    <product-review user-name="James Martinez" user-picture="https://randomuser.me/api/portraits/men/17.jpg" number="4" date="2024-05-15T00:00:00Z" purpose="Prescription">
       <p>Good product overall. Had a minor issue but customer service resolved it quickly.</p>
       <p>Would consider buying again.</p>
-    </div>
-    <div is="product-review" user-name="Linda Anderson" user-picture="https://randomuser.me/api/portraits/women/18.jpg" number="5" date="2024-04-20T00:00:00Z" purpose="Prescription">
+    </product-review>
+    <product-review user-name="Linda Anderson" user-picture="https://randomuser.me/api/portraits/women/18.jpg" number="5" date="2024-04-20T00:00:00Z" purpose="Prescription">
       <p>Excellent quality product. Very happy with the purchase. Highly recommend.</p>
       <p>Will definitely buy again.</p>
-    </div>
-    <div is="product-review" user-name="Robert Thomas" user-picture="https://randomuser.me/api/portraits/men/19.jpg" number="4" date="2024-03-25T00:00:00Z" purpose="Prescription">
+    </product-review>
+    <product-review user-name="Robert Thomas" user-picture="https://randomuser.me/api/portraits/men/19.jpg" number="4" date="2024-03-25T00:00:00Z" purpose="Prescription">
       <p>Very good product. Met my expectations. Would recommend to others.</p>
       <p>Happy with the purchase.</p>
-    </div>
-    <div is="product-review" user-name="Patricia Jackson" user-picture="https://randomuser.me/api/portraits/women/20.jpg" number="5" date="2024-02-28T00:00:00Z" purpose="Prescription">
+    </product-review>
+    <product-review user-name="Patricia Jackson" user-picture="https://randomuser.me/api/portraits/women/20.jpg" number="5" date="2024-02-28T00:00:00Z" purpose="Prescription">
       <p>Outstanding product! Great value for money. Highly recommend.</p>
       <p>Will buy again for sure.</p>
-    </div>
+    </product-review>
     `;
   }
 

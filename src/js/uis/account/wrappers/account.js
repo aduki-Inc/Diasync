@@ -128,15 +128,15 @@ export default class Account extends HTMLElement {
   }
 
   percentage = (total, current) => {
-  const percent = (current / total) * 100;
+    const percent = (current / total) * 100;
 
-  // if % is NaN, return 0
-  if (isNaN(percent)) return 0;
+    // if % is NaN, return 0
+    if (isNaN(percent)) return 0;
 
-  // Format percentage based on value
-  const decimalPlaces = percent < 10 ? 2 : percent < 100 ? 1 : 0;
-  return parseFloat(percent.toFixed(decimalPlaces));
-}
+    // Format percentage based on value
+    const decimalPlaces = percent < 10 ? 2 : percent < 100 ? 1 : 0;
+    return parseFloat(percent.toFixed(decimalPlaces));
+  }
 
   calculatePercentage = (current, last) => {
     const diff = current - last;
@@ -322,7 +322,7 @@ export default class Account extends HTMLElement {
                 <path d="M11.922 4.79004C16.6963 3.16245 19.0834 2.34866 20.3674 3.63261C21.6513 4.91656 20.8375 7.30371 19.21 12.078L18.1016 15.3292C16.8517 18.9958 16.2267 20.8291 15.1964 20.9808C14.9195 21.0216 14.6328 20.9971 14.3587 20.9091C13.3395 20.5819 12.8007 18.6489 11.7231 14.783C11.4841 13.9255 11.3646 13.4967 11.0924 13.1692C11.0134 13.0742 10.9258 12.9866 10.8308 12.9076C10.5033 12.6354 10.0745 12.5159 9.21705 12.2769C5.35111 11.1993 3.41814 10.6605 3.0909 9.64127C3.00292 9.36724 2.97837 9.08053 3.01916 8.80355C3.17088 7.77332 5.00419 7.14834 8.6708 5.89838L11.922 4.79004Z" stroke="currentColor" stroke-width="2" />
               </svg>
             </span>
-            <span class="text">Send</span>
+            <span class="text">Pay</span>
           </li>
           <li class="action manage" action="manage">
             <span class="icon">
@@ -440,38 +440,38 @@ export default class Account extends HTMLElement {
 
   getTransactions = () => {
     return /* html */`
-      <div is="transaction-item" id="TAC534436534" name="Fredrick Ochieng" account="THA763442H" account-kind="Holding"
+      <transaction-item id="TAC534436534" name="Fredrick Ochieng" account="THA763442H" account-kind="Holding"
         amount="2734.65" datetime="2021-09-12T12:00:00Z" image="https://randomuser.me/api/portraits/men/1.jpg"
         kind="received" status="completed" note="Payment for services rendered" in="true">
-      </div>
-      <div is="transaction-item" id="TAC534436535" name="Loan Account" account="THA763442H"
+      </transaction-item>
+      <transaction-item id="TAC534436535" name="Loan Account" account="THA763442H"
         amount="950.43" datetime="2021-09-13T14:00:00Z" account-kind="Loan"
         kind="repay" status="completed" note="Loan repayment" in="false">
-      </div>
-      <div is="transaction-item" id="TAC534436536" name="Alice Johnson" account="THA763442H" account-kind="Investment"
+      </transaction-item>
+      <transaction-item id="TAC534436536" name="Alice Johnson" account="THA763442H" account-kind="Investment"
         amount="9816.81" datetime="2021-09-14T16:00:00Z" image="https://randomuser.me/api/portraits/women/15.jpg"
         kind="deposit" status="completed" note="Deposit from client" in="true">
-      </div>
-      <div is="transaction-item" id="TAC534436537" name="Bob Brown" account="THA763442H"
+      </transaction-item>
+      <transaction-item id="TAC534436537" name="Bob Brown" account="THA763442H"
         amount="755.65" datetime="2021-09-15T18:00:00Z" account-kind="Holding"
         kind="send" status="completed" note="Payment for services rendered" in="false">
-      </div>
-      <div is="transaction-item" id="TAC534436542" name="Grace Harris" account="THA763442H" account-kind="Investment"
+      </transaction-item>
+      <transaction-item id="TAC534436542" name="Grace Harris" account="THA763442H" account-kind="Investment"
         amount="700.00" datetime="2021-09-20T16:00:00Z" image="https://randomuser.me/api/portraits/men/1.jpg"
         kind="apply" status="completed" note="Applied for loan" in="true">
-      </div>
-      <div is="transaction-item" id="TAC534436543" name="Henry Irving" account="THA763442H" account-kind="Investment"
+      </transaction-item>
+      <transaction-item id="TAC534436543" name="Henry Irving" account="THA763442H" account-kind="Investment"
         amount="800.00" datetime="2024-09-21T18:00:00Z" image="https://randomuser.me/api/portraits/men/11.jpg"
         kind="pay" status="completed" note="Payment for services rendered" in="false">
-      </div>
-      <div is="transaction-item" id="TAC534436544" name="Ivy Johnson" account="THA763442H"
+      </transaction-item>
+      <transaction-item id="TAC534436544" name="Ivy Johnson" account="THA763442H"
         amount="900.00" datetime="2021-09-22T20:00:00Z" account-kind="Revenue"
-        kind="withdraw" status="completed" note="Withdrawal from account" in="false"> 
-      </div>
-      <div is="transaction-item" id="TAC534436544" name="Mpesa Deposit" account="THA763442H"
+        kind="withdraw" status="completed" note="Withdrawal from account" in="false">
+      </transaction-item>
+      <transaction-item id="TAC534436544" name="Mpesa Deposit" account="THA763442H"
         amount="2358.00" datetime="2024-10-13T20:45:00Z" account-kind="Holding"
-        kind="Deposit" status="completed" note="Deposit from MPESA" in="true"> 
-      </div>
+        kind="Deposit" status="completed" note="Deposit from MPESA" in="true">
+      </transaction-item>
     `;
   }
 

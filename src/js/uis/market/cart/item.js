@@ -1,4 +1,4 @@
-export default class CartItem extends HTMLDivElement {
+export default class CartItem extends HTMLElement {
   constructor() {
     super();
     this.getTotal = this.getTotal.bind(this);

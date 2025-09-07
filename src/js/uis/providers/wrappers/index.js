@@ -5,7 +5,7 @@ import Specialist from "./specialist.js";
 // export register
 export default function wrappers() {
   customElements.define('provider-detail', Provider);
-  customElements.define('booking-wrapper', Booking, { extends: 'div' });
-  customElements.define('specialist-wrapper', Specialist, { extends: 'div' });
+  customElements.define('booking-wrapper', Booking);
+  customElements.define('specialist-wrapper', Specialist);
 }
 30

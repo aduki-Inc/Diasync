@@ -1,4 +1,4 @@
-export default class MpesaForm extends HTMLDivElement {
+export default class MpesaForm extends HTMLElement {
   constructor() {
     super();
     this.shadowObj = this.attachShadow({ mode: "open" });

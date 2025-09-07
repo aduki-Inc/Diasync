@@ -1,4 +1,4 @@
-export default class Highlights extends HTMLDivElement {
+export default class Highlights extends HTMLElement {
   constructor() {
     super();
 
@@ -117,7 +117,7 @@ export default class Highlights extends HTMLDivElement {
 
   getActions = () => {
     return /* html */`
-      <div is="provider-actions" kind="${this.getAttribute('kind')}" owner="${this.getAttribute('owner')}" name="Jane Clinic & Dental Care"></div>
+      <provider-actions kind="${this.getAttribute('kind')}" owner="${this.getAttribute('owner')}" name="Jane Clinic & Dental Care"></provider-actions>
     `
   }
 

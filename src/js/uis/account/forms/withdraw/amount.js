@@ -1,4 +1,4 @@
-export default class AmountForm extends HTMLDivElement {
+export default class AmountForm extends HTMLElement {
   constructor() {
     super();
     this.shadowObj = this.attachShadow({ mode: "open" });

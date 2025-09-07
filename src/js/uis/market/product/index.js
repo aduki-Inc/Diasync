@@ -5,8 +5,8 @@ import ServiceWrapper from "./service.js";
 
 // register the product
 export default function products() {
-  customElements.define('product-wrapper', ProductWrapper, { extends: 'div' });
-  customElements.define('product-review', ReviewWrapper, { extends: 'div' });
+  customElements.define('product-wrapper', ProductWrapper);
+  customElements.define('product-review', ReviewWrapper);
   customElements.define('product-detail', ProductDetail);
-  customElements.define('service-wrapper', ServiceWrapper, { extends: 'div' });
+  customElements.define('service-wrapper', ServiceWrapper);
 }

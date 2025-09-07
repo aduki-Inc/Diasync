@@ -39,6 +39,10 @@ const urls = {
     <provider-page kind="org" owner="true" verified="true" name="Marketplace" desc="This section provides a detailed overview of all the products available in the marketplace."></provider-page>
   `,
 
+  "/providers/provider": /* HTML */`
+    <provider-page kind="org" owner="false" verified="true" name="Marketplace" desc="This section provides a detailed overview of all the products available in the marketplace."></provider-page>
+  `,
+
   "/providers/specialists": /* HTML */`
     <specialists-container name="Specialists" kind="pharmacy" all="124">
       <p>Browse specialists available at partnered pharmacies. <br/> Search by name, specialty, or location.</p>

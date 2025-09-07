@@ -371,33 +371,33 @@ export default class ChatContainer extends HTMLElement {
   getMessages = () => {
     return /* html */`
       ${this.getDisclaimer()}
-      <div is="message-item" class="message" user-name="Dr. Sarah Mwangi" user-picture="https://randomuser.me/api/portraits/women/45.jpg" datetime="2025-01-05T09:00:00Z"
+      <message-item class="message" user-name="Dr. Sarah Mwangi" user-picture="https://randomuser.me/api/portraits/women/45.jpg" datetime="2025-01-05T09:00:00Z"
         you="false" verified="true" status="seen" active="true" kind="message">
         Good morning.
-      </div>
-      <div is="message-item" class="message" user-name="James Ochieng" user-picture="https://randomuser.me/api/portraits/men/32.jpg" datetime="2025-01-05T09:03:00Z"
+      </message-item>
+      <message-item class="message" user-name="James Ochieng" user-picture="https://randomuser.me/api/portraits/men/32.jpg" datetime="2025-01-05T09:03:00Z"
         you="true" verified="false" status="seen" active="false" kind="message">
         Hello Doctor. I've been experiencing persistent headaches for the past week, especially in the mornings. Also feeling quite fatigued lately.
-      </div>
-      <div is="message-item" class="message" user-name="Dr. Sarah Mwangi" user-picture="https://randomuser.me/api/portraits/women/45.jpg" datetime="2025-01-05T09:05:00Z"
+      </message-item>
+      <message-item class="message" user-name="Dr. Sarah Mwangi" user-picture="https://randomuser.me/api/portraits/women/45.jpg" datetime="2025-01-05T09:05:00Z"
         you="false" verified="true" status="delivered" active="true" kind="message">
         I understand your concern. Can you tell me more about the headaches? Are they throbbing, sharp, or dull? Any specific triggers you've noticed?
-      </div>
-      <div is="message-item" class="message" user-name="James Ochieng" user-picture="https://randomuser.me/api/portraits/men/32.jpg" datetime="2025-01-05T09:08:00Z"
+      </message-item>
+      <message-item class="message" user-name="James Ochieng" user-picture="https://randomuser.me/api/portraits/men/32.jpg" datetime="2025-01-05T09:08:00Z"
         you="true" verified="false" status="seen" active="false" kind="message"
         images="https://images.unsplash.com/photo-1559757148-5c350d0d3c56?q=80&w=1470&auto=format&fit=crop, https://images.unsplash.com/photo-1576091160550-2173dba999ef?q=80&w=1470&auto=format&fit=crop">
         They're mostly dull but persistent. I've attached photos of my blood pressure readings from home - they seem higher than usual. Could this be related?
-      </div>
-      <div is="message-item" class="message" user-name="Dr. Sarah Mwangi" user-picture="https://randomuser.me/api/portraits/women/45.jpg" datetime="2025-01-05T09:12:00Z"
+      </message-item>
+      <message-item class="message" user-name="Dr. Sarah Mwangi" user-picture="https://randomuser.me/api/portraits/women/45.jpg" datetime="2025-01-05T09:12:00Z"
         you="false" verified="true" status="delivered" active="true" kind="reply" to-you="true" reply-to="James Ochieng" reply-text="They're mostly dull but persistent. I've attached photos of my blood pressure readings from home"
         reactions='{ "from": null, "to": "care" }'>
         Thank you for sharing those readings. Yes, elevated blood pressure can definitely cause morning headaches and fatigue. Have you been taking any medications or supplements recently?
-      </div>
-      <div is="message-item" class="message" user-name="James Ochieng" user-picture="https://randomuser.me/api/portraits/men/32.jpg" datetime="2025-01-05T09:15:00Z"
+      </message-item>
+      <message-item class="message" user-name="James Ochieng" user-picture="https://randomuser.me/api/portraits/men/32.jpg" datetime="2025-01-05T09:15:00Z"
         you="true" verified="false" status="seen" active="false" kind="message">
         Just my usual multivitamin. No prescription medications. Should I be worried about these readings?
-      </div>
-      <div is="message-item" class="message" user-name="Dr. Sarah Mwangi" user-picture="https://randomuser.me/api/portraits/women/45.jpg" datetime="2025-01-05T09:18:00Z"
+      </message-item>
+      <message-item class="message" user-name="Dr. Sarah Mwangi" user-picture="https://randomuser.me/api/portraits/women/45.jpg" datetime="2025-01-05T09:18:00Z"
         you="false" verified="true" status="delivered" active="true" kind="message"
         attachments='[
           {
@@ -414,25 +414,25 @@ export default class ChatContainer extends HTMLElement {
           }
           ]'>
         Your readings are in the elevated range and need attention. I'm sending you some guidelines and lifestyle recommendations. We should schedule an in-person consultation within the next few days.
-      </div>
-      <div is="message-item" class="message" user-name="James Ochieng" user-picture="https://randomuser.me/api/portraits/men/32.jpg" datetime="2025-01-05T09:22:00Z"
+      </message-item>
+      <message-item class="message" user-name="James Ochieng" user-picture="https://randomuser.me/api/portraits/men/32.jpg" datetime="2025-01-05T09:22:00Z"
         you="true" verified="false" status="delivered" active="false" kind="message">
         Thank you Doctor. Can I book an appointment through Diasync for this week? Also, any immediate steps I should take?
-      </div>
-      <div is="message-item" class="message" user-name="Dr. Sarah Mwangi" user-picture="https://randomuser.me/api/portraits/women/45.jpg" datetime="2025-01-05T09:25:00Z"
+      </message-item>
+      <message-item class="message" user-name="Dr. Sarah Mwangi" user-picture="https://randomuser.me/api/portraits/women/45.jpg" datetime="2025-01-05T09:25:00Z"
         you="false" verified="true" status="delivered" active="true" kind="message"
         reactions='{ "from": null, "to": "thumbs_up" }'>
         Absolutely, yes. Please book through the Diasync appointment system. Meanwhile: reduce salt intake, stay hydrated, get adequate sleep, and monitor your BP twice daily. Call emergency services if you experience severe headache, chest pain, or vision changes.
-      </div>
-      <div is="message-item" class="message" user-name="James Ochieng" user-picture="https://randomuser.me/api/portraits/men/32.jpg" datetime="2025-01-05T09:28:00Z"
+      </message-item>
+      <message-item class="message" user-name="James Ochieng" user-picture="https://randomuser.me/api/portraits/men/32.jpg" datetime="2025-01-05T09:28:00Z"
         you="true" verified="false" status="sent" active="false" kind="reply" to-you="false" reply-to="Dr. Sarah" reply-text="reduce salt intake, stay hydrated, get adequate sleep, and monitor your BP twice daily"
         reactions='{ "from": "thumbs_up", "to": "care" }'>
         Perfect, I'll book the appointment right after this chat. Thank you for the quick response and guidance, Doctor. This gives me peace of mind.
-      </div>
-      <div is="message-item" class="message" user-name="Dr. Sarah Mwangi" user-picture="https://randomuser.me/api/portraits/women/45.jpg" datetime="2025-01-05T09:30:00Z"
+      </message-item>
+      <message-item class="message" user-name="Dr. Sarah Mwangi" user-picture="https://randomuser.me/api/portraits/women/45.jpg" datetime="2025-01-05T09:30:00Z"
         you="false" verified="true" status="seen" active="true" kind="message">
         You're very welcome! Early intervention is key. See you soon for the detailed consultation. Take care and don't hesitate to reach out if symptoms worsen.
-      </div>
+      </message-item>
       ${this.getTyping()}
     `;
   }
@@ -573,7 +573,7 @@ export default class ChatContainer extends HTMLElement {
 
   getImagesEditor = () => {
     return /* html */`
-      <div is="chat-images" class="images" id="images" url="/s/add"></div>
+      <chat-images class="images" id="images" url="/s/add"></chat-images>
     `;
   }
 

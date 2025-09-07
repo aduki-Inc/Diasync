@@ -10,7 +10,7 @@ export default function chats() {
   users();
   customElements.define("chats-section", ChatApp);
   customElements.define("chat-container", ChatContainer);
-  customElements.define("chat-item", ChatItem, { extends: "div" });
+  customElements.define("chat-item", ChatItem);
   customElements.define("message-item", Message, { extends: "div" });
   customElements.define("chat-images", ChatImages, { extends: "div" });
 }

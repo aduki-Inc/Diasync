@@ -1,29 +1,29 @@
-export default class MethodForm extends HTMLDivElement {
+export default class MethodForm extends HTMLElement {
   constructor() {
-		super();
-		this.shadowObj = this.attachShadow({ mode: "open" });
-		this.utils = window.app.utils;
-		this.render();
-	}
-	
-	render() {
-		this.shadowObj.innerHTML = this.getTemplate();
-	}
+    super();
+    this.shadowObj = this.attachShadow({ mode: "open" });
+    this.utils = window.app.utils;
+    this.render();
+  }
 
-	// noinspection JSUnusedGlobalSymbols
-	connectedCallback() {
-	}
-	
-	getTemplate = () => {
-		// Show HTML Here
-		return `
+  render() {
+    this.shadowObj.innerHTML = this.getTemplate();
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  connectedCallback() {
+  }
+
+  getTemplate = () => {
+    // Show HTML Here
+    return `
       ${this.getBody()}
       ${this.getStyles()}
     `;
-	}
-	
-	getBody = () => {
-		return /* html */`
+  }
+
+  getBody = () => {
+    return /* html */`
       <form class="form" id="depositForm" method="post">
         <div class="head">
           ${this.getHead()}
@@ -37,7 +37,7 @@ export default class MethodForm extends HTMLDivElement {
         </div>
       </form>
     `;
-	}
+  }
 
   getHead = () => {
     return /* html */`
@@ -104,7 +104,7 @@ export default class MethodForm extends HTMLDivElement {
       </div>
     `;
   }
-  
+
   getConset = () => {
     return /* html */`
       <p>
@@ -117,8 +117,8 @@ export default class MethodForm extends HTMLDivElement {
     `;
   }
 
-	getStyles() {
-		return /* css */`
+  getStyles() {
+    return /* css */`
 	    <style>
 	      *,
 	      *:after,
@@ -409,5 +409,5 @@ export default class MethodForm extends HTMLDivElement {
 				}
 	    </style>
     `;
-	}
+  }
 }

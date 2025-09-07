@@ -1,4 +1,4 @@
-export default class Specialist extends HTMLDivElement {
+export default class Specialist extends HTMLElement {
   constructor() {
     super();
     this.shadowObj = this.attachShadow({ mode: 'open' });

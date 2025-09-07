@@ -1,64 +1,64 @@
 import depositForms from "./deposit/index.js";
 export default class DepositForm extends HTMLElement {
   constructor() {
-		super();
+    super();
     this.registerForms();
-		this.shadowObj = this.attachShadow({ mode: "open" });
-		this.utils = window.app.utils;
+    this.shadowObj = this.attachShadow({ mode: "open" });
+    this.utils = window.app.utils;
     this.currency = "USD";
     this.usdAmount = 0;
     this.ammount = 0;
-		this.render();
-	}
+    this.render();
+  }
 
   registerForms() {
     depositForms();
   }
 
-	render() {
-		this.shadowObj.innerHTML = this.getTemplate();
-	}
+  render() {
+    this.shadowObj.innerHTML = this.getTemplate();
+  }
 
-	// noinspection JSUnusedGlobalSymbols
-	connectedCallback() {
-	}
-	
-	getTemplate = () => {
-		// Show HTML Here
-		return `
+  // noinspection JSUnusedGlobalSymbols
+  connectedCallback() {
+  }
+
+  getTemplate = () => {
+    // Show HTML Here
+    return `
       ${this.getBody()}
       ${this.getStyles()}
     `;
-	}
-	
-	getBody = () => {
-		return /* html */`
+  }
+
+  getBody = () => {
+    return /* html */`
       <div class="content">
         ${this.getAmountForm()}
       </div>
     `;
-	}
+  }
 
   getMethodForm = () => {
     return /* html */`
-      <div is="method-form"></div>
+      <method-form></method-form>
     `;
   }
 
   getAmountForm = () => {
     return /* html */`
-      <div is="amount-form" currency="USD" amount="0"></div>
+      <amount-form currency="USD" amount="0"></amount-form>
     `;
   }
 
   getMpesaForm = () => {
     return /* html */`
-      <div is="mpesa-form" number="${this.getAttribute("user-phone")}" amount="6925" currency="KES" usd-amount="45" eac="5.23"></div>
+      <mpesa-form number="${this.getAttribute("user-phone")}" amount="6925" currency="KES" usd-amount="45" eac="5.23"></mpesa-form>
     `;
   }
 
-	getStyles() {
-		return /* css */`
+  getStyles() {
+    return /* css */`
 	    <style>
 	      *,
 	      *:after,
@@ -176,5 +176,5 @@ export default class DepositForm extends HTMLElement {
 				}
 	    </style>
     `;
-	}
+  }
 }

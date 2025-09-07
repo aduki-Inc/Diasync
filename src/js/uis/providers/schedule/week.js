@@ -1,4 +1,4 @@
-export default class Week extends HTMLDivElement {
+export default class Week extends HTMLElement {
   constructor() {
     super();
     this.app = window.app;

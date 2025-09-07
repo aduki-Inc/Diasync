@@ -1,4 +1,4 @@
-export default class Transaction extends HTMLDivElement {
+export default class Transaction extends HTMLElement {
   constructor() {
     super();
     this.shadowObj = this.attachShadow({ mode: "open" });

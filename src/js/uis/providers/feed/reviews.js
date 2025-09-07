@@ -145,46 +145,46 @@ export default class Reviews extends HTMLElement {
 
   getReviewsItems = () => {
     return /* html */`
-    <div is="product-review" user-name="John Smith" user-picture="https://randomuser.me/api/portraits/men/11.jpg" number="5" date="2024-11-15T00:00:00Z" purpose="Diagnosed">
+    <product-review user-name="John Smith" user-picture="https://randomuser.me/api/portraits/men/11.jpg" number="5" date="2024-11-15T00:00:00Z" purpose="Diagnosed">
       <p>Excellent product! Exceeded my expectations. Highly recommended.</p>
       <p>Will definitely purchase again.</p>
-    </div>
-    <div is="product-review" user-name="Emily Johnson" user-picture="https://randomuser.me/api/portraits/women/12.jpg" number="4" date="2024-10-20T00:00:00Z" purpose="Diagnosed">
+    </product-review>
+    <product-review user-name="Emily Johnson" user-picture="https://randomuser.me/api/portraits/women/12.jpg" number="4" date="2024-10-20T00:00:00Z" purpose="Diagnosed">
       <p>Very satisfied with this product. Great quality and value for money.</p>
       <p>Would recommend to others.</p>
-    </div>
-    <div is="product-review" user-name="Michael Brown" user-picture="https://randomuser.me/api/portraits/men/13.jpg" number="3" date="2024-09-25T00:00:00Z" purpose="Purchase">
+    </product-review>
+    <product-review user-name="Michael Brown" user-picture="https://randomuser.me/api/portraits/men/13.jpg" number="3" date="2024-09-25T00:00:00Z" purpose="Purchase">
       <p>Good product but had some issues with delivery. Overall, happy with the purchase.</p>
       <p>May consider buying again.</p>
-    </div>
-    <div is="product-review" user-name="Jessica Davis" user-picture="https://randomuser.me/api/portraits/women/14.jpg" number="5" date="2024-08-30T00:00:00Z" purpose="Prescription">
+    </product-review>
+    <product-review user-name="Jessica Davis" user-picture="https://randomuser.me/api/portraits/women/14.jpg" number="5" date="2024-08-30T00:00:00Z" purpose="Prescription">
       <p>Amazing product! Works perfectly and as described. Highly recommend.</p>
       <p>Will definitely buy again.</p>
-    </div>
-    <div is="product-review" user-name="David Wilson" user-picture="https://randomuser.me/api/portraits/men/15.jpg" number="4" date="2024-07-05T00:00:00Z" purpose="Prescription">
+    </product-review>
+    <product-review user-name="David Wilson" user-picture="https://randomuser.me/api/portraits/men/15.jpg" number="4" date="2024-07-05T00:00:00Z" purpose="Prescription">
       <p>Very good product. Met all my expectations. Would recommend.</p>
       <p>Happy with the purchase.</p>
-    </div>
-    <div is="product-review" user-name="Sarah Miller" user-picture="https://randomuser.me/api/portraits/women/16.jpg" number="5" date="2024-06-10T00:00:00Z" purpose="Prescription">
+    </product-review>
+    <product-review user-name="Sarah Miller" user-picture="https://randomuser.me/api/portraits/women/16.jpg" number="5" date="2024-06-10T00:00:00Z" purpose="Prescription">
       <p>Outstanding product! Great quality and performance. Highly recommend.</p>
       <p>Will buy again for sure.</p>
-    </div>
-    <div is="product-review" user-name="James Martinez" user-picture="https://randomuser.me/api/portraits/men/17.jpg" number="4" date="2024-05-15T00:00:00Z" purpose="Prescription">
+    </product-review>
+    <product-review user-name="James Martinez" user-picture="https://randomuser.me/api/portraits/men/17.jpg" number="4" date="2024-05-15T00:00:00Z" purpose="Prescription">
       <p>Good product overall. Had a minor issue but customer service resolved it quickly.</p>
       <p>Would consider buying again.</p>
-    </div>
-    <div is="product-review" user-name="Linda Anderson" user-picture="https://randomuser.me/api/portraits/women/18.jpg" number="5" date="2024-04-20T00:00:00Z" purpose="Prescription">
+    </product-review>
+    <product-review user-name="Linda Anderson" user-picture="https://randomuser.me/api/portraits/women/18.jpg" number="5" date="2024-04-20T00:00:00Z" purpose="Prescription">
       <p>Excellent quality product. Very happy with the purchase. Highly recommend.</p>
       <p>Will definitely buy again.</p>
-    </div>
-    <div is="product-review" user-name="Robert Thomas" user-picture="https://randomuser.me/api/portraits/men/19.jpg" number="4" date="2024-03-25T00:00:00Z" purpose="Prescription">
+    </product-review>
+    <product-review user-name="Robert Thomas" user-picture="https://randomuser.me/api/portraits/men/19.jpg" number="4" date="2024-03-25T00:00:00Z" purpose="Prescription">
       <p>Very good product. Met my expectations. Would recommend to others.</p>
       <p>Happy with the purchase.</p>
-    </div>
-    <div is="product-review" user-name="Patricia Jackson" user-picture="https://randomuser.me/api/portraits/women/20.jpg" number="5" date="2024-02-28T00:00:00Z" purpose="Prescription">
+    </product-review>
+    <product-review user-name="Patricia Jackson" user-picture="https://randomuser.me/api/portraits/women/20.jpg" number="5" date="2024-02-28T00:00:00Z" purpose="Prescription">
       <p>Outstanding product! Great value for money. Highly recommend.</p>
       <p>Will buy again for sure.</p>
-    </div>
+    </product-review>
     `;
   }
 

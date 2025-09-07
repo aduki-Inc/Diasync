@@ -22,7 +22,7 @@ export default class WithdrawForm extends HTMLElement {
   // noinspection JSUnusedGlobalSymbols
   connectedCallback() {
   }
-  
+
   getTemplate = () => {
     // Show HTML Here
     return `
@@ -30,7 +30,7 @@ export default class WithdrawForm extends HTMLElement {
       ${this.getStyles()}
     `;
   }
-  
+
   getBody = () => {
     return /* html */`
       <div class="content">
@@ -41,25 +41,25 @@ export default class WithdrawForm extends HTMLElement {
 
   getMethodForm = () => {
     return /* html */`
-      <div is="withdraw-method" currency="EAC" balance="${this.getAttribute("balance")}" amount="0"></div>
+      <withdraw-method currency="EAC" balance="${this.getAttribute("balance")}" amount="0"></withdraw-method>
     `;
   }
 
   getAmountForm = () => {
     return /* html */`
-      <div is="withdraw-amount" balance="${this.getAttribute("balance")}" kind="mpesa"></div>
+      <withdraw-amount balance="${this.getAttribute("balance")}" kind="mpesa"></withdraw-amount>
     `;
   }
 
   getMpesaForm = () => {
     return /* html */`
-      <div is="withdraw-mpesa" balance="${this.getAttribute("balance")}" amount="4569" eac='4.68' currency="KES"></div>
+      <withdraw-mpesa balance="${this.getAttribute("balance")}" amount="4569" eac='4.68' currency="KES"></withdraw-mpesa>
     `;
   }
 
   getAgentForm = () => {
     return /* html */`
-      <div is="withdraw-agent" balance="${this.getAttribute("balance")}" amount="4569" eac='4.68' currency="KES"></div>
+      <withdraw-agent balance="${this.getAttribute("balance")}" amount="4569" eac='4.68' currency="KES"></withdraw-agent>
     `;
   }
 

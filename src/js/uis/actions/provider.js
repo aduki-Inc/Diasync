@@ -1,4 +1,4 @@
-export default class Provider extends HTMLDivElement {
+export default class Provider extends HTMLElement {
   constructor() {
     super();
     this.shadowObj = this.attachShadow({ mode: "open" });

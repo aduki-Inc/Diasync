@@ -1,4 +1,4 @@
-export default class ChatImages extends HTMLDivElement {
+export default class ChatImages extends HTMLElement {
   constructor() {
     super();
     this.app = window.app;
@@ -45,7 +45,7 @@ export default class ChatImages extends HTMLDivElement {
 
       // remove empty strings, null, 'null' and whose length is less than 5
       images = images.filter(image => image.trim() !== '' && image !== 'null' && image.length > 5);
-      
+
       images.forEach(imageUrl => {
         this.addImageToGallery(imageUrl);
       })
@@ -84,7 +84,7 @@ export default class ChatImages extends HTMLDivElement {
       let images = window.toBeChanged.getAttribute('images');
       let imagesArray = [];
 
-      if (images && images !== 'null'){
+      if (images && images !== 'null') {
         imagesArray = images.split(',');
       }
 
@@ -135,7 +135,7 @@ export default class ChatImages extends HTMLDivElement {
         this.addImageToGallery(data.url);
         this.addImageToAttribute(data.url);
         this.uploadCount++;
-        
+
         if (this.uploadCount >= this.maxUploads) {
           this.hideAddButton();
         } else {
@@ -264,7 +264,7 @@ export default class ChatImages extends HTMLDivElement {
     try {
       let images = this.getAttribute("images").split(',');
       images.push(imageUrl);
-      
+
       images = images.filter(image => image.trim() !== '' && image !== 'null' && image.length > 5);
 
       // set images attribute: array
@@ -289,9 +289,9 @@ export default class ChatImages extends HTMLDivElement {
   addImageLoadListener = img => {
     img.addEventListener('load', () => {
       // remove loader and blur(.loading) class)
-			img.parentElement.classList.remove('loading');
-			const loader = img.parentElement.querySelector('#btn-loader');
-			if(loader) { loader.remove(); }
+      img.parentElement.classList.remove('loading');
+      const loader = img.parentElement.querySelector('#btn-loader');
+      if (loader) { loader.remove(); }
     });
     img.addEventListener('error', () => {
       img.parentElement.classList.add('error');
@@ -355,8 +355,8 @@ export default class ChatImages extends HTMLDivElement {
     `
   }
 
-	getStyles() {
-		return /* css */`
+  getStyles() {
+    return /* css */`
 	    <style>
 	      *,
 	      *:after,
@@ -579,5 +579,5 @@ export default class ChatImages extends HTMLDivElement {
 				}
 	    </style>
     `;
-	}
+  }
 }

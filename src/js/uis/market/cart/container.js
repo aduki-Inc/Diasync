@@ -132,16 +132,16 @@ export default class CartContainer extends HTMLElement {
     return /* html */`
       <div class="cart-items">
         <div class="items">
-          <div is="cart-item" name="Paracetamol 500mg" location="Nairobi, Kenya" quantity="2" price="65.50" image-src="/src/img/products/drug1.jpg" store="HealthPlus Pharmacy" stock="120"></div>
-          <div is="cart-item" name="Amoxicillin 500mg" location="Nairobi, Kenya" quantity="1" price="172.50" image-src="/src/img/products/drug2.jpg" store="CityCare Pharmacy" stock="60"></div>
-          <div is="cart-item" name="Ibuprofen 200mg" location="Nairobi, Kenya" quantity="3" price="8966.75" image-src="/src/img/products/drug3.jpg" store="Wellness Pharmacy" stock="90"></div>
-          <div is="cart-item" name="Cetirizine 10mg" location="Nairobi, Kenya" quantity="1" price="4384.00" image-src="/src/img/products/drug4.jpg" store="GreenCross Pharmacy" stock="40"></div>
-          <div is="cart-item" name="Multivitamins 30s" location="Nairobi, Kenya" quantity="2" price="15.00" image-src="/src/img/products/drug5.jpg" store="HealthPlus Pharmacy" stock="30"></div>
-          <div is="cart-item" name="Omeprazole 20mg" location="Nairobi, Kenya" quantity="1" price="48.25" image-src="/src/img/products/drug1.jpg" store="CityCare Pharmacy" stock="20"></div>
-          <div is="cart-item" name="Metformin 500mg" location="Nairobi, Kenya" quantity="2" price="69.50" image-src="/src/img/products/drug2.jpg" store="Wellness Pharmacy" stock="50"></div>
-          <div is="cart-item" name="Loperamide 2mg" location="Nairobi, Kenya" quantity="1" price="423.25" image-src="/src/img/products/drug3.jpg" store="GreenCross Pharmacy" stock="100"></div>
-          <div is="cart-item" name="Azithromycin 250mg" location="Nairobi, Kenya" quantity="1" price="114.99" image-src="/src/img/products/drug4.jpg" store="HealthPlus Pharmacy" stock="15"></div>
-          <div is="cart-item" name="Salbutamol Inhaler" location="Nairobi, Kenya" quantity="1" price="221.00" image-src="/src/img/products/drug5.jpg" store="CityCare Pharmacy" stock="5"></div>
+          <cart-item name="Paracetamol 500mg" location="Nairobi, Kenya" quantity="2" price="65.50" image-src="/src/img/products/drug1.jpg" store="HealthPlus Pharmacy" stock="120"></cart-item>
+          <cart-item name="Amoxicillin 500mg" location="Nairobi, Kenya" quantity="1" price="172.50" image-src="/src/img/products/drug2.jpg" store="CityCare Pharmacy" stock="60"></cart-item>
+          <cart-item name="Ibuprofen 200mg" location="Nairobi, Kenya" quantity="3" price="8966.75" image-src="/src/img/products/drug3.jpg" store="Wellness Pharmacy" stock="90"></cart-item>
+          <cart-item name="Cetirizine 10mg" location="Nairobi, Kenya" quantity="1" price="4384.00" image-src="/src/img/products/drug4.jpg" store="GreenCross Pharmacy" stock="40"></cart-item>
+          <cart-item name="Multivitamins 30s" location="Nairobi, Kenya" quantity="2" price="15.00" image-src="/src/img/products/drug5.jpg" store="HealthPlus Pharmacy" stock="30"></cart-item>
+          <cart-item name="Omeprazole 20mg" location="Nairobi, Kenya" quantity="1" price="48.25" image-src="/src/img/products/drug1.jpg" store="CityCare Pharmacy" stock="20"></cart-item>
+          <cart-item name="Metformin 500mg" location="Nairobi, Kenya" quantity="2" price="69.50" image-src="/src/img/products/drug2.jpg" store="Wellness Pharmacy" stock="50"></cart-item>
+          <cart-item name="Loperamide 2mg" location="Nairobi, Kenya" quantity="1" price="423.25" image-src="/src/img/products/drug3.jpg" store="GreenCross Pharmacy" stock="100"></cart-item>
+          <cart-item name="Azithromycin 250mg" location="Nairobi, Kenya" quantity="1" price="114.99" image-src="/src/img/products/drug4.jpg" store="HealthPlus Pharmacy" stock="15"></cart-item>
+          <cart-item name="Salbutamol Inhaler" location="Nairobi, Kenya" quantity="1" price="221.00" image-src="/src/img/products/drug5.jpg" store="CityCare Pharmacy" stock="5"></cart-item>
         </div>
         <div class="totals">
           <p class="head">Total</p>

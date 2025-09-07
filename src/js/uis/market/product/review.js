@@ -1,4 +1,4 @@
-export default class ReviewWrapper extends HTMLDivElement {
+export default class ReviewWrapper extends HTMLElement {
   constructor() {
 
     // We are not even going to touch this.

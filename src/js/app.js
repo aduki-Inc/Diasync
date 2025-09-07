@@ -54,20 +54,20 @@ export default class AppMain extends HTMLElement {
     // this._loadInitialContent(); // Load content based on the current URL
   }
 
-    watchMql() {
-      this.mql.addEventListener('change', () => {
-        this.render();
-        this.setHeader(this.mql);
-      });
-    }
+  watchMql() {
+    this.mql.addEventListener('change', () => {
+      this.render();
+      this.setHeader(this.mql);
+    });
+  }
 
-    setHeader = data => {
-      const header = this.shadowObj.querySelector('header-section');
-      if (header) {
-        header.setAttribute('section-title', data.sectionTitle);
-        header.setAttribute('description', data.description);
-      }
+  setHeader = data => {
+    const header = this.shadowObj.querySelector('header-section');
+    if (header) {
+      header.setAttribute('section-title', data.sectionTitle);
+      header.setAttribute('description', data.description);
     }
+  }
 
   _loadInitialContent() {
     // Get the current path from the browser
@@ -379,7 +379,7 @@ export default class AppMain extends HTMLElement {
         ${this.getMobileHeader()}
         <section class="flow">
           <div id="content-container" class="content-container">
-            <chats-section all="628" unread="3" requests="2"></chats-section>
+            ${this.getProviderContainer()}
             <!--${this.getSpecialistsFeed()}-->
           </div>
         </section>
@@ -395,7 +395,7 @@ export default class AppMain extends HTMLElement {
         <section class="flow">
           <div id="content-container" class="content-container">
             <!-- ${this.getLoader()} -->
-            ${this.getProviderContainer()}
+            ${this.getSpecialistsFeed()}
           </div>
         </section>
         ${this.getSidebar()}
@@ -606,7 +606,7 @@ export default class AppMain extends HTMLElement {
             </li>
             <li class="products">
               <a href="/pharmacy/products">
-                <span class="text">Products</span>
+                <span class="text">Medicines</span>
               </a>
             </li>
             <li class="pharmacies">
@@ -645,7 +645,7 @@ export default class AppMain extends HTMLElement {
               <a href="/providers/services"><span class="text">Services</span></a>
             </li>
             <li class="hospitals">
-              <a href="/providers/hospitals"><span class="text">Hospitals</span></a>
+              <a href="/providers/provider"><span class="text">Provider</span></a>
             </li>
             <li class="specialists">
               <a href="/providers/specialists"><span class="text">Specialists</span></a>

@@ -1,4 +1,4 @@
-export default class ServiceWrapper extends HTMLDivElement {
+export default class ServiceWrapper extends HTMLElement {
   constructor() {
     super();
     this.shadowObj = this.attachShadow({ mode: 'open' });

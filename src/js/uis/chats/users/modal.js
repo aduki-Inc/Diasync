@@ -261,59 +261,59 @@ export default class UsersModal extends HTMLElement {
 
   getUsers = () => {
     return /* html */`
-      <div is="user-item" user-picture="https://api.dicebear.com/9.x/open-peeps/svg?seed=Aidan"
+      <user-item user-picture="https://api.dicebear.com/9.x/open-peeps/svg?seed=Aidan"
         user-name="Alice Johnson" you="false"
         bio="I have attached the needed documents below!" user-verified="true">
-      </div>
-      <div is="user-item" user-picture="https://api.dicebear.com/9.x/open-peeps/svg?seed=Oliver"
+      </user-item>
+      <user-item user-picture="https://api.dicebear.com/9.x/open-peeps/svg?seed=Oliver"
         user-name="Janet Doerinailsisgsgsgsg" you="true" bio="I'll be there soon, wait for me!"
         user-verified="true">
-      </div>
-      <div is="user-item" user-picture="https://randomuser.me/api/portraits/men/1.jpg"
+      </user-item>
+      <user-item user-picture="https://randomuser.me/api/portraits/men/1.jpg"
         user-name="Michael Scott" you="false"
         bio="That's what she said!, See for yourself!"
         images="https://images.unsplash.com/photo-1733077151673-c834c5613bbc?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D, https://plus.unsplash.com/premium_photo-1733514691529-da25716e449b?q=80&w=1471&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D, https://images.unsplash.com/photo-1719937051176-9b98352a6cf4?q=80&w=1472&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D">
-      </div>
-      <div is="user-item" user-picture="https://api.dicebear.com/9.x/adventurer/svg?seed=Amaya"
+      </user-item>
+      <user-item user-picture="https://api.dicebear.com/9.x/adventurer/svg?seed=Amaya"
         user-name="Jim Halpert" you="true"
         bio="Pranking Dwight again!" user-verified="true">
-      </div>
-      <div is="user-item" user-picture="https://randomuser.me/api/portraits/women/9.jpg"
+      </user-item>
+      <user-item user-picture="https://randomuser.me/api/portraits/women/9.jpg"
         user-name="Pam Beesly" you="false"
         bio="See you at the office." user-verified="false">
-      </div>
-      <div is="user-item" user-picture="https://randomuser.me/api/portraits/men/10.jpg"
+      </user-item>
+      <user-item user-picture="https://randomuser.me/api/portraits/men/10.jpg"
         user-name="Jim Halpert" you="true"
         bio="Pranking Dwight again!" user-verified="false">
-      </div>
-      <div is="user-item" user-picture="https://randomuser.me/api/portraits/women/11.jpg"
+      </user-item>
+      <user-item user-picture="https://randomuser.me/api/portraits/women/11.jpg"
         user-name="Angela Martin" unread="3" you="false"
         bio="Cat party at my place." user-verified="true">
-      </div>
-      <div is="user-item" user-picture="https://randomuser.me/api/portraits/men/12.jpg"
+      </user-item>
+      <user-item user-picture="https://randomuser.me/api/portraits/men/12.jpg"
         user-name="Dwight Schrute" you="true"
         bio="Bears. Beets. Battlestar Galactica." user-verified="true"> 
-      </div>
-      <div is="user-item" user-picture="https://randomuser.me/api/portraits/women/13.jpg"
+      </user-item>
+      <user-item user-picture="https://randomuser.me/api/portraits/women/13.jpg"
         user-name="Kelly Kapoor" you="false"
         bio="Fashion show at lunch!" user-verified="false">
-      </div>
-      <div is="user-item" user-picture="https://randomuser.me/api/portraits/men/14.jpg"
+      </user-item>
+      <user-item user-picture="https://randomuser.me/api/portraits/men/14.jpg"
         user-name="Ryan Howard" you="false"
         bio="Just got promoted!" user-verified="false">
-      </div>
-      <div is="user-item" user-picture="https://randomuser.me/api/portraits/women/15.jpg"
+      </user-item>
+      <user-item user-picture="https://randomuser.me/api/portraits/women/15.jpg"
         user-name="Phyllis Vance" you="false"
         bio="Knitting club meeting." user-verified="true">
-      </div>
-      <div is="user-item" user-picture="https://randomuser.me/api/portraits/men/16.jpg"
+      </user-item>
+      <user-item user-picture="https://randomuser.me/api/portraits/men/16.jpg"
         user-name="Stanley Hudson" you="false"
         bio="Did I stutter?"  user-verified="true">
-      </div>
-      <div is="user-item" user-picture="https://randomuser.me/api/portraits/women/17.jpg"
+      </user-item>
+      <user-item user-picture="https://randomuser.me/api/portraits/women/17.jpg"
         user-name="Meredith Palmer" unread="1" you="false"
         bio="Party at my place!" user-verified="false">
-      </div>
+      </user-item>
     `;
   }
 

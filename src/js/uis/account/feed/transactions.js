@@ -171,38 +171,38 @@ export default class TransactionsFeed extends HTMLElement {
 
   getTransactions = () => {
     return /* html */`
-      <div is="transaction-item" id="TAC534436534" name="Fredrick Ochieng" account="EAC763442H" account-kind="Holding"
+      <transaction-item id="TAC534436534" name="Fredrick Ochieng" account="EAC763442H" account-kind="Holding"
         amount="2734.65" datetime="2021-09-12T12:00:00Z" image="https://randomuser.me/api/portraits/men/1.jpg"
         kind="received" status="completed" note="Payment for services rendered" in="true">
-      </div>
-      <div is="transaction-item" id="TAC534436535" name="Loan Account" account="EAC763442H"
+      </transaction-item>
+      <transaction-item id="TAC534436535" name="Loan Account" account="EAC763442H"
         amount="950.43" datetime="2021-09-13T14:00:00Z" account-kind="Loan"
         kind="repay" status="completed" note="Loan repayment" in="false">
-      </div>
-      <div is="transaction-item" id="TAC534436536" name="Alice Johnson" account="EAC763442H" account-kind="Investment"
+      </transaction-item>
+      <transaction-item id="TAC534436536" name="Alice Johnson" account="EAC763442H" account-kind="Investment"
         amount="9816.81" datetime="2021-09-14T16:00:00Z" image="https://randomuser.me/api/portraits/women/15.jpg"
         kind="deposit" status="completed" note="Deposit from client" in="true">
-      </div>
-      <div is="transaction-item" id="TAC534436537" name="Bob Brown" account="EAC763442H"
+      </transaction-item>
+      <transaction-item id="TAC534436537" name="Bob Brown" account="EAC763442H"
         amount="755.65" datetime="2021-09-15T18:00:00Z" account-kind="Holding"
         kind="send" status="completed" note="Payment for services rendered" in="false">
-      </div>
-      <div is="transaction-item" id="TAC534436542" name="Grace Harris" account="EAC763442H" account-kind="Investment"
+      </transaction-item>
+      <transaction-item id="TAC534436542" name="Grace Harris" account="EAC763442H" account-kind="Investment"
         amount="700.00" datetime="2021-09-20T16:00:00Z" image="https://randomuser.me/api/portraits/men/1.jpg"
         kind="apply" status="completed" note="Applied for loan" in="true">
-      </div>
-      <div is="transaction-item" id="TAC534436543" name="Henry Irving" account="EAC763442H" account-kind="Investment"
+      </transaction-item>
+      <transaction-item id="TAC534436543" name="Henry Irving" account="EAC763442H" account-kind="Investment"
         amount="800.00" datetime="2024-09-21T18:00:00Z" image="https://randomuser.me/api/portraits/men/11.jpg"
         kind="pay" status="completed" note="Payment for services rendered" in="false">
-      </div>
-      <div is="transaction-item" id="TAC534436544" name="Ivy Johnson" account="EAC763442H"
+      </transaction-item>
+      <transaction-item id="TAC534436544" name="Ivy Johnson" account="EAC763442H"
         amount="900.00" datetime="2021-09-22T20:00:00Z" account-kind="Revenue"
-        kind="withdraw" status="completed" note="Withdrawal from account" in="false"> 
-      </div>
-      <div is="transaction-item" id="TAC534436544" name="Mpesa Deposit" account="EAC763442H"
+        kind="withdraw" status="completed" note="Withdrawal from account" in="false">
+      </transaction-item>
+      <transaction-item id="TAC534436544" name="Mpesa Deposit" account="EAC763442H"
         amount="2358.00" datetime="2024-10-13T20:45:00Z" account-kind="Holding"
-        kind="Deposit" status="completed" note="Deposit from MPESA" in="true"> 
-      </div>
+        kind="Deposit" status="completed" note="Deposit from MPESA" in="true">
+      </transaction-item>
     `;
   }
 

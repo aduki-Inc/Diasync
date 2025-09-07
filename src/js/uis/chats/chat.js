@@ -1,4 +1,4 @@
-export default class ChatItem extends HTMLDivElement {
+export default class ChatItem extends HTMLElement {
   constructor() {
     super();
     this.shadow = this.attachShadow({ mode: 'open' });

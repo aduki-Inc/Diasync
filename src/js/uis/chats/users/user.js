@@ -1,4 +1,4 @@
-export default class UserItem extends HTMLDivElement {
+export default class UserItem extends HTMLElement {
   constructor() {
     super();
     this.shadow = this.attachShadow({ mode: 'open' });
@@ -24,12 +24,12 @@ export default class UserItem extends HTMLDivElement {
   }
 
   formatDateTime = str => {
-		const date = new Date(str);
+    const date = new Date(str);
 
-		// get th, st, nd, rd for the date
-		const day = date.getDate();
-		const dayStr = day === 1 || day === 21 || day === 31 ? 'st' : day === 2 || day === 22 ? 'nd' : day === 3 || day === 23 ? 'rd' : 'th';
-		const diff = new Date() - date;
+    // get th, st, nd, rd for the date
+    const day = date.getDate();
+    const dayStr = day === 1 || day === 21 || day === 31 ? 'st' : day === 2 || day === 22 ? 'nd' : day === 3 || day === 23 ? 'rd' : 'th';
+    const diff = new Date() - date;
 
     // if we are in the same minute: Just now
     if (diff < 1000 * 60) {
@@ -82,11 +82,11 @@ export default class UserItem extends HTMLDivElement {
     }
 
     // if we are in a different year: 12th Jan 2021 at 11:59 PM
-		return /* html */`
+    return /* html */`
       ${date.getDate()}${dayStr} ${date.toLocaleString('default', { month: 'short' })} ${date.getFullYear()}
     `;
-	}
-  
+  }
+
   getLapseTime = date => {
     try {
       date = new Date(date);

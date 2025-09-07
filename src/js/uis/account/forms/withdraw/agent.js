@@ -1,4 +1,4 @@
-export default class AgentForm extends HTMLDivElement {
+export default class AgentForm extends HTMLElement {
   constructor() {
     super();
     this.shadowObj = this.attachShadow({ mode: "open" });

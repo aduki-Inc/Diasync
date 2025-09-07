@@ -1,4 +1,4 @@
-export default class Book extends HTMLDivElement {
+export default class Book extends HTMLElement {
   constructor() {
     super();
     this.shadowObj = this.attachShadow({ mode: 'open' });
@@ -185,7 +185,7 @@ export default class Book extends HTMLDivElement {
           </div>
         </div>
         <div class="schedule">
-          <div is="week-schedule" provider-name="HealthCare Plus Pharmacy"></div>
+          <week-schedule provider-name="HealthCare Plus Pharmacy"></week-schedule>
         </div>
       </div>
       ${this.getBookings()}

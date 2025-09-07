@@ -151,7 +151,7 @@ export default class Provider extends HTMLElement {
   }
 
   getBanner = (owner, mql) => {
-    if(mql && mql.matches) {
+    if (mql && mql.matches) {
       return /* html */`
         <div class="banner">
           ${this.getBannerEdit(owner)}
@@ -273,7 +273,6 @@ export default class Provider extends HTMLElement {
     `
   }
 
-
   getSpecialistTabs = kind => {
     if (kind === 'specialist') {
       return /* html */`
@@ -299,7 +298,7 @@ export default class Provider extends HTMLElement {
               <path d="M21 17C21 13.6863 18.3137 11 15 11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
             </svg>
           </span>
-          <span class="text">Doctors</span>
+          <span class="text">Specialists</span>
         </li>
       `
     }
@@ -349,13 +348,13 @@ export default class Provider extends HTMLElement {
 
   getHighlights = () => {
     return /* html */`
-      <div is="provider-highlights" kind="${this.getAttribute('kind')}" owner="${this.getAttribute('owner')}" provider-name="Jane Clinic & Dental Care"></div>
+      <provider-highlights kind="${this.getAttribute('kind')}" owner="${this.getAttribute('owner')}" provider-name="Jane Clinic & Dental Care"></provider-highlights>
     `
   }
 
   getSchedule = () => {
     return /* html */`
-      <div is="book-schedule" kind="${this.getAttribute('kind')}" owner="${this.getAttribute('owner')}" provider-name="Jane Clinic & Dental Care"></div>
+      <book-schedule kind="${this.getAttribute('kind')}" owner="${this.getAttribute('owner')}" provider-name="Jane Clinic & Dental Care"></book-schedule>
     `
   }
 

@@ -3,6 +3,6 @@ import Book from "./book.js";
 
 // register the product
 export default function schedule() {
-  customElements.define('week-schedule', Week, { extends: 'div' });
-  customElements.define('book-schedule', Book, { extends: 'div' });
+  customElements.define('week-schedule', Week);
+  customElements.define('book-schedule', Book);
 }

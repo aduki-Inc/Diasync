@@ -1,4 +1,4 @@
-export default class ProductWrapper extends HTMLDivElement {
+export default class ProductWrapper extends HTMLElement {
   constructor() {
     super();
     this.app = window.app;
