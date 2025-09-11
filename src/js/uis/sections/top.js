@@ -1,7 +1,8 @@
-export default class Header extends HTMLElement {
+export default class TopHeader extends HTMLElement {
   constructor() {
     super();
     this.shadow = this.attachShadow({ mode: 'open' });
+    this.mql = window.matchMedia('(max-width: 700px)');
     this.user = this.getUserData();
     this.render();
   }
@@ -15,17 +16,29 @@ export default class Header extends HTMLElement {
     if (name === 'section-title' || name === 'description') {
       const header = this.shadow.querySelector('header');
       if (header) {
-        header.querySelector('.title').textContent = this.getAttribute('section-title') || 'Kuluhiro';
-        header.querySelector('.subtitle').textContent = this.getAttribute('description') || 'Welcome to Kuluhiro';
+        header.querySelector('.title').textContent = this.getAttribute('section-title') || 'Diasync';
+        header.querySelector('.subtitle').textContent = this.getAttribute('description') || 'Welcome to Diasync';
       }
     }
   }
 
   render() {
-    this.shadow.innerHTML = this.getTemplate();
+    this.shadow.innerHTML = this.getTemplate(this.mql);
+  }
+
+  // get user data from local storage
+  getUserData() {
+    try {
+      const userData = window.sessionStorage.getItem('user');
+      return userData ? JSON.parse(userData) : null;
+    } catch (error) {
+      console.error('Error retrieving user data from sessionStorage:', error);
+      return null;
+    }
   }
 
   connectedCallback() {
+    this.watchMql();
     this.setupEventListeners();
     this.initTheme();
   }
@@ -74,18 +87,13 @@ export default class Header extends HTMLElement {
     }
   }
 
-  // get user data from local storage
-  getUserData() {
-    try {
-      const userData = window.sessionStorage.getItem('user');
-      return userData ? JSON.parse(userData) : null;
-    } catch (error) {
-      console.error('Error retrieving user data from sessionStorage:', error);
-      return null;
-    }
+  watchMql() {
+    this.mql.addEventListener('change', () => {
+      this.render();
+    });
   }
 
-  getTemplate() {
+  getTemplate = mql => {
     return /* html */`
       ${this.getHeader()}
       ${this.getStyles()}
@@ -100,13 +108,6 @@ export default class Header extends HTMLElement {
           <span class="subtitle">${this.getAttribute('description')}</span>
         </div>
         <ul class="links">
-          <li class="link cart">
-            <svg id="other" width="24" height="25" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path fill-rule="evenodd" clip-rule="evenodd" d="M7.43787 7.4209C7.44386 4.91878 9.47628 2.8949 11.9793 2.8997C14.4811 2.90569 16.5052 4.93856 16.4999 7.44022C16.4999 7.44065 16.4999 7.44107 16.4999 7.44149L15.7499 7.4397L16.4999 7.44022V10.4717C16.4999 10.8859 16.1641 11.2217 15.7499 11.2217C15.3357 11.2217 14.9999 10.8859 14.9999 10.4717V7.4397L14.9999 7.4379C15.0039 5.76426 13.6501 4.4039 11.9764 4.39969C10.3019 4.39668 8.94233 5.75028 8.93787 7.42364V10.4717C8.93787 10.8859 8.60208 11.2217 8.18787 11.2217C7.77365 11.2217 7.43787 10.8859 7.43787 10.4717L7.43787 7.4209Z" fill="currentColor"></path>
-              <path fill-rule="evenodd" clip-rule="evenodd" d="M5.38521 10.2834C4.24823 11.1733 3.69995 12.6443 3.69995 15.2075C3.69995 17.7702 4.2482 19.2409 5.38518 20.1307C6.57922 21.0652 8.60338 21.5155 11.969 21.5155C15.3345 21.5155 17.3587 21.0652 18.5527 20.1307C19.6897 19.2409 20.238 17.7702 20.238 15.2075C20.238 12.6443 19.6897 11.1733 18.5527 10.2834C17.3587 9.34881 15.3345 8.8985 11.969 8.8985C8.60338 8.8985 6.57924 9.34881 5.38521 10.2834ZM4.46069 9.10214C6.08517 7.83069 8.57053 7.3985 11.969 7.3985C15.3674 7.3985 17.8527 7.83069 19.4772 9.10214C21.1587 10.4182 21.738 12.4767 21.738 15.2075C21.738 17.9378 21.1587 19.996 19.4772 21.312C17.8527 22.5833 15.3674 23.0155 11.969 23.0155C8.57052 23.0155 6.08519 22.5833 4.46072 21.312C2.7792 19.996 2.19995 17.9378 2.19995 15.2075C2.19995 12.4767 2.77918 10.4182 4.46069 9.10214Z" fill="currentColor"></path>
-            </svg>
-            <span class="text">Cart</span>
-          </li>
           <li class="link updates">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" color="currentColor" fill="none">
               <path id="animate" d="M22 5.5C22 7.433 20.433 9 18.5 9C16.567 9 15 7.433 15 5.5C15 3.567 16.567 2 18.5 2C20.433 2 22 3.567 22 5.5Z" stroke="currentColor" stroke-width="1.8" />
@@ -135,19 +136,12 @@ export default class Header extends HTMLElement {
             </svg>
             <span class="text">Settings</span>
           </li>
-          <!--<li class="link profile">
+          <li class="link profile">
             <div class="image">
               ${this.getPicture(this.user?.picture)}
             </div>
             <span class="text">Profile</span>
           </li>
-           <li class="link more">
-            <span class="icon">
-              <span class="sp"></span>
-              <span class="sp"></span>
-            </span>
-            <span class="text">More</span>
-          </li>-->
         </ul>
       </header>
     `
@@ -156,7 +150,7 @@ export default class Header extends HTMLElement {
   getPicture = url => {
     if (!this.user || !this.user.picture) {
       return /* html */`
-        <img src="https://randomuser.me/api/portraits/men/41.jpg" alt="Default Profile Picture" />
+        <img src="https://randomuser.me/api/portraits/men/1.jpg" alt="Default Profile Picture" />
       `;
     }
     return /* html */`
@@ -171,14 +165,19 @@ export default class Header extends HTMLElement {
           display: flex;
           max-width: 100%;
           width: 100%;
+          height: 100dvh;
+          max-height: 100vh;
           display: flex;
-          position: fixed;
-          top: 0;
-          right: 0;
-          left: 0;
-          padding: 0 10px;
+          flex-direction: column;
+          align-items: start;
+          padding: 0 10px 0 0;
           background: var(--background);
-          z-index: 50;
+          border-bottom: var(--border);
+          gap: 0;
+          position: sticky;
+          top: 0;
+          z-index: 10;
+          backdrop-filter: blur(10px);
         }
 
         * {
@@ -186,32 +185,39 @@ export default class Header extends HTMLElement {
           font-family: var(--font-main), sans-serif;
         }
 
+        /* Content Wrapper */
+        .content-wrapper {
+          width: 100%;
+          max-width: 100%;
+          padding: 0;
+          display: flex;
+          flex-direction: column;
+        }
+
         /* Header Styles */
         header.header {
-          height: 60px;
-          max-height: 60px;
+          height: 70px;
+          max-height: 70px;
           width: 100%;
-          border-bottom: var(--border);
+          padding: 25px 0;
           display: flex;
           align-items: center;
           justify-content: space-between;
           gap: 20px;
-          padding: 5px 0;
-          backdrop-filter: blur(10px);
         }
 
         header.header > div.header-title {
           flex: 1;
-          width: calc(100% - 250px);
+          width: calc(100% - 230px);
           display: flex;
           flex-direction: column;
-          padding: 0;
+          padding: 2px;
           transition: all 0.3s ease;
         }
 
         header.header > div.header-title > h1.title {
           font-family: var(--font-main), sans-serif;
-          font-size: 1.3rem;
+          font-size: 1.2rem;
           font-weight: 500;
           line-height: 1.4;
           color: var(--text-color);
@@ -224,14 +230,13 @@ export default class Header extends HTMLElement {
         }
 
         header.header > div.header-title > span.subtitle {
-          font-family: var(--font-read), sans-serif;
+          font-family: var(--font-text), sans-serif;
           font-size: 0.8rem;
           font-weight: 400;
           line-height: 1;
           color: var(--gray-color);
           margin: 0;
           padding: 0;
-          display: block;
           overflow: hidden;
           text-overflow: ellipsis;
           white-space: nowrap;
@@ -241,7 +246,7 @@ export default class Header extends HTMLElement {
           display: flex;
           align-items: center;
           gap: 15px;
-          margin: 5px 0 0;
+          margin: 0;
           padding: 0;
           list-style: none;
         }
@@ -260,12 +265,14 @@ export default class Header extends HTMLElement {
           display: flex;
           justify-content: center;
           justify-content: center;
+          cursor: pointer;
           transition: all 0.2s ease;
           color: var(--text-color);
           position: relative;
         }
 
         header.header > ul.links > li.link:hover {
+          background: var(--tab-background);
           color: var(--accent-color);
         }
 
@@ -324,10 +331,10 @@ export default class Header extends HTMLElement {
           border-left: var(--border);
         }
 
-        /*header.header > ul.links > li.link:hover > span.text {
+        header.header > ul.links > li.link:hover > span.text {
           display: block;
           animation: fadeInTooltip 0.2s ease-in-out;
-        }*/
+        }
 
         @keyframes fadeInTooltip {
           from {
@@ -384,16 +391,6 @@ export default class Header extends HTMLElement {
         header.header > ul.links > li.link > svg {
           width: 24px;
           height: 24px;
-          color: inherit;
-        }
-
-        header.header > ul.links > li.link.cart > svg {
-          width: 24px;
-          height: 24px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          margin-bottom: 3px;
           color: inherit;
         }
 

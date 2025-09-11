@@ -41,7 +41,7 @@ export default class ChatItem extends HTMLElement {
     if (you) unread = '';
     return /* html */`
       <div class="wrapper ${unread} ${opened}">
-        <div class="image">
+        <div class="image ${this.textToBoolean(this.getAttribute('active'))}">
           ${this.getActive(this.textToBoolean(this.getAttribute('active')))}
           <div class="avatar">
             ${this.getImage(this.getAttribute('user-picture'))}
@@ -312,7 +312,14 @@ export default class ChatItem extends HTMLElement {
           min-width: 45px;
           min-height: 45px;
           border-radius: 50px;
+          border: var(--action-border);
+          border-width: 2px;
+          padding: 2px;
           position: relative;
+        }
+
+        .wrapper > .image.true {
+          border-color: var(--accent-color);
         }
 
         .wrapper > .image > .avatar {
@@ -372,7 +379,7 @@ export default class ChatItem extends HTMLElement {
           min-width: 8px;
           min-height: 8px;
           border-radius: 50%;
-          background: var(--accent-linear);
+          background: var(--accent-color);
         }
 
         .wrapper > .image > .online-status > .inactive {

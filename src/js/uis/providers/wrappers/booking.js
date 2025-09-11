@@ -171,7 +171,7 @@ export default class Booking extends HTMLElement {
           </div>
           <div class="right">
             ${this.getInfo()}
-            ${this.getDetails()}
+            ${this.getDetails(mql)}
           </div>
         </div>
       `;
@@ -182,7 +182,7 @@ export default class Booking extends HTMLElement {
             ${this.getDay()}
             ${this.getInfo()}
           </div>
-          ${this.getDetails()}
+          ${this.getDetails(mql)}
           ${this.getActions()}
         </div>
       `;
@@ -230,7 +230,8 @@ export default class Booking extends HTMLElement {
     `;
   }
 
-  getDetails = () => {
+  getDetails = mql => {
+    if (mql.matches) return '';
     return /* html */`
       <div class="details">
         <h4 class="name">${this.getAttribute('name') || 'Service Name'}</h4>
@@ -290,18 +291,30 @@ export default class Booking extends HTMLElement {
   }
 
   getActions = () => {
+    // mql to match between 1000 to 1190
+    const mql = window.matchMedia("(max-width: 1190px)");
     return /* html */`
       <div class="actions">
         <a href="/user/booking" class="action view" id="view-action" data-action="view">view</a>
         <span class="action edit" id="edit-action" action="edit">
           <span class="text">edit</span>
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="currentColor" fill="none">
-            <path d="M18 9.00005C18 9.00005 13.5811 15 12 15C10.4188 15 6 9 6 9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
-          </svg>
+          ${this.getIcon(mql)}
           ${this.getEditDropdown(this.getAttribute('status') || '')}
         </span>
       </div>
     `;
+  }
+
+  getIcon = mql => {
+    if (!mql.matches) {
+      return /* html */`
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="currentColor" fill="none">
+          <path d="M18 9.00005C18 9.00005 13.5811 15 12 15C10.4188 15 6 9 6 9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg>
+      `;
+    }
+
+    return '';
   }
 
   getMoreAction = mql => {
@@ -492,10 +505,13 @@ export default class Booking extends HTMLElement {
           display: flex;
           flex-flow: column;
           align-items: start;
-          justify-content: center;
+          justify-content: flex-start;
           padding: 0;
-          gap: 8px;
+          gap: 3px;
           width: calc(100% - 70px);
+
+          /* prevent items from wrapping */
+          flex-wrap: nowrap;
         }
 
         div.info > .time, div.info > .location {
@@ -539,6 +555,10 @@ export default class Booking extends HTMLElement {
           max-width: 100%;
           display: flex;
           align-items: center;
+
+          /* prevent items from wrapping */
+          flex-wrap: nowrap;
+          gap: 5px;
         }
 
         div.info > .time > .separator {
@@ -556,7 +576,12 @@ export default class Booking extends HTMLElement {
           font-weight: 500;
           line-height: 1;
           margin: 0;
+          display: flex;
           padding: 0;
+
+          /* prevent items from wrapping */
+          flex-wrap: nowrap;
+          gap: 0;
         }
 
         div.details {
@@ -838,42 +863,169 @@ export default class Booking extends HTMLElement {
           text-transform: none;
         }
 
-        /* mobile */ 
-        @media screen and (max-width: 700px) {
+        @media screen and (max-width: 1350px) {
+          div.left {
+            display: flex;
+            width: 35%;
+            min-width: 35%;
+            gap: 10px;
+          }
+
+          div.details {
+            padding: 0;
+            display: flex;
+            flex-flow: column;
+            align-items: start;
+            gap: 5px;
+            height: 100%;
+            width: 35%;
+            min-width: 35%;
+          }
+
+          div.info > div.time > .time-text {
+            font-family: var(--font-main), sans-serif;
+            color: var(--text-color);
+            font-size: 0.9rem;
+            font-weight: 500;
+            line-height: 1;
+            margin: 0;
+            display: flex;
+            padding: 0;
+
+            /* prevent items from wrapping */
+            flex-wrap: nowrap;
+            gap: 0;
+          }
+
+          div.info > div.location > svg {
+            width: 14px;
+            height: 14px;
+          }
+
+          div.info > div.location > span.address {
+            font-family: var(--font-read), sans-serif;
+            color: var(--gray-color);
+            display: inline-block;
+            font-size: 0.9rem;
+            font-weight: 400;
+            line-height: 1;
+            width: calc(100% - 21px);
+            max-width: calc(100% - 21px);
+          }
+        }
+
+        @media screen and (max-width: 1190px) {
           div.content {
-            border: none;
+            border: var(--border);
             display: flex;
             flex-flow: row nowrap;
             align-items: center;
             justify-content: start;
-            border-bottom: var(--border);
             width: 100%;
-            cursor: default !important;
+            cursor: pointer;
             gap: 10px;
             padding: 10px 5px;
-            border-radius: 0;
+            border-radius: 12px;
           }
 
-          /* approved hover effect: but not for cancelled or pending */
-          div.content:hover {
-            background: var(--background);
-            border: none;
-            border-bottom: var(--border);
-            /* border-bottom: var(--approved-border); */
+          div.left {
+            display: flex;
+            width: 40%;
+            min-width: 40%;
+            gap: 10px;
           }
 
-          div.content.cancelled {
-            background: var(--background);
-            border: none;
-            border-bottom: var(--border);
-            /* border-bottom: var(--cancelled-border); */
+          div.day {
+            padding: 2px 10px;
+            width: 50px;
+            min-width: 50px;
+            display: flex;
+            flex-flow: column;
+            align-items: center;
+            justify-content: center;
+            border-right: var(--border);
+            gap: 5px;
           }
 
-          div.content.pending {
-            background: var(--background);
+          div.day > .day-text {
+            font-family: var(--font-main), sans-serif;
+            color: var(--gray-color);
+            font-size: 0.8rem;
+            font-weight: 500;
+            line-height: 1;
+            margin: 0;
+            padding: 0;
+          }
+
+          div.day > .day-number {
+            font-family: var(--font-main), sans-serif;
+            color: var(--text-color);
+            font-size: 1.2rem;
+            font-weight: 700;
+            line-height: 1;
+            margin: 0;
+            padding: 0;
+          }
+
+          div.info {
+            display: flex;
+            flex-flow: column;
+            align-items: start;
+            justify-content: flex-start;
+            padding: 0;
+            gap: 5px;
+            width: calc(100% - 60px);
+
+            /* prevent items from wrapping */
+            flex-wrap: nowrap;
+          }
+
+          div.details {
+            height: 100%;
+            width: 35%;
+            min-width: 35%;
+          }
+
+          div.actions {
+            height: 100%;
+            display: flex;
+            font-family: var(--font-main), sans-serif;
+            width: 100%;
+            flex-flow: row;
+            align-items: flex-start;
+            align-self: flex-start;
+            justify-content: end;
+            gap: 10px;
+            padding: 0;
+          }
+
+          div.actions > .action {
+            border: var(--action-border);
+            padding: 5px 15px;
+            font-size: 0.9rem;
+          }
+
+          div.actions > .action.view {
+            padding: 5px 10px;
             border: none;
-            border-bottom: var(--border);
-            /* border-bottom: var(--pending-border); */
+            font-weight: 500;
+          }
+
+          div.actions > .action.edit {
+            padding: 4px 10px 4px;
+          }
+
+          div.actions > .action.edit > .edit-dropdown {
+            top: 38px;
+          }
+        }
+
+        /* mobile */
+        @media screen and (max-width: 700px) {
+          div.content {
+            display: flex;
+            cursor: default !important;
+            gap: 10px;
           }
 
           div.left {
@@ -886,24 +1038,19 @@ export default class Booking extends HTMLElement {
           }
 
           div.day {
-            padding: 5px 5px;
+            padding: 0 5px;
             height: 100%;
             min-height: 100%;
             width: 50px;
-            display: flex;
-            flex-flow: column;
-            align-items: flex-start;
-            justify-content: center;
-            border-right: var(--border);
-            border-right-style: dashed;
-            gap: 20px;
           }
 
           div.right {
             display: flex;
             flex-flow: column;
             align-items: start;
+            justify-content: center;
             gap: 5px;
+            height: 100%;
             width: calc(100% - 60px);
             max-width: calc(100% - 60px);
           }
@@ -914,7 +1061,7 @@ export default class Booking extends HTMLElement {
             align-items: start;
             justify-content: center;
             padding: 0;
-            gap: 2px;
+            gap: 5px;
             width: 100%;
           }
 
@@ -926,7 +1073,7 @@ export default class Booking extends HTMLElement {
             gap: 2px;
             font-family: var(--font-main), sans-serif;
             color: var(--gray-color);
-            font-size: 0.9rem;
+            font-size: 1rem;
             font-weight: 400;
             line-height: 1;
             width: 100%;
@@ -936,10 +1083,12 @@ export default class Booking extends HTMLElement {
           div.info > div.location > svg {
             width: 14px;
             height: 14px;
+            display: inline-block;
+            margin-bottom: 2px;
           }
 
           div.info > div.location > span.address {
-            font-family: var(--font-read), sans-serif;
+            font-family: var(--font-main), sans-serif;
             color: var(--gray-color);
             display: inline-block;
             font-size: 0.8rem;
@@ -974,7 +1123,7 @@ export default class Booking extends HTMLElement {
           div.info > div.time > .time-text {
             font-family: var(--font-main), sans-serif;
             color: var(--text-color);
-            font-size: 0.8rem;
+            font-size: 0.9rem;
             font-weight: 500;
             line-height: 1;
             margin: 0;
@@ -999,91 +1148,6 @@ export default class Booking extends HTMLElement {
             background: var(--text-color);
             color: inherit;
             border-radius: 50%;
-          }
-
-          div.details {
-            padding: 0;
-            display: flex;
-            flex-flow: column;
-            align-items: start;
-            gap: 5px;
-            width: 100%;
-          }
-
-          div.details > h4.name {
-            font-family: var(--font-main), sans-serif;
-            color: var(--text-color);
-            font-size: 0.8rem;
-            font-weight: 400;
-            line-height: 1;
-            margin: 0;
-            padding: 0;
-
-            /* add ellipsis if too long */
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            width: 100%;
-          }
-
-          div.details > p.description {
-            font-family: var(--font-read), sans-serif;
-            color: var(--gray-color);
-            font-size: 0.9rem;
-            font-weight: 400;
-            line-height: 1;
-            margin: 0;
-            padding: 0;
-
-            /* add ellipsis if too long */
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            width: 100%;
-          }
-
-          div.details > div.bottom {
-            display: flex;
-            flex-flow: row nowrap;
-            align-items: center;
-            justify-content: flex-start;
-            gap: 10px;
-            width: 100%;
-          }
-
-          div.details > div.bottom > .users {
-            display: flex;
-            flex-flow: row nowrap;
-            align-items: center;
-            justify-content: start;
-            gap: -30px;
-          }
-
-          div.details > div.bottom > .users > .avatar {
-            width: 25px;
-            height: 25px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            border: 2px solid var(--background);
-            background-color: var(--gray-color);
-          }
-
-          div.details > div.bottom > .price {
-            border-left: var(--border);
-            font-family: var(--font-main), sans-serif;
-            color: var(--text-color);
-            font-size: 0.9rem;
-            font-weight: 500;
-            line-height: 1;
-            padding: 0 0 0 10px;
-            display: flex;
-            flex-flow: row nowrap;
-            align-items: center;
-            justify-content: start;
-            gap: 2px;
           }
         }
       </style>

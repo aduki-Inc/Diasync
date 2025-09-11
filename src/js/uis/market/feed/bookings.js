@@ -4,6 +4,7 @@ export default class Bookings extends HTMLElement {
     this.shadowObj = this.attachShadow({ mode: "open" });
     this.app = window.app;
     this.mql = window.matchMedia("(max-width: 700px)");
+    this.tabMql = window.matchMedia('(max-width: 1100px)');
     this.utils = window.app.utils;
 
     this.render();
@@ -16,13 +17,21 @@ export default class Bookings extends HTMLElement {
   }
 
   connectedCallback() {
+    this.activateActions()
+    this.watchMql(this.tabMql)
+  }
+
+  watchMql = mql => {
+    mql.addEventListener('change', () => {
+      this.render();
+      this.activateActions()
+    });
+  }
+
+  activateActions = () => {
     const tabs = this.shadowObj.querySelector("ul.tabs");
-
-    if (tabs) {
-      this.activateTabController(tabs);
-    }
-
-    this.setHeader(this.mql);
+    if (tabs) this.activateTabController(tabs);
+    this.setHeader();
   }
 
   activateTabController = tabs => {
@@ -61,13 +70,11 @@ export default class Bookings extends HTMLElement {
     this.active_tab = activeTab;
   }
 
-  setHeader = mql => {
-    if (mql.matches) {
-      this.app.setHeader({
-        sectionTitle: 'Bookings',
-        description: 'Your bookings',
-      });
-    }
+  setHeader = () => {
+    this.app.setHeader({
+      sectionTitle: 'Bookings',
+      description: 'Your bookings',
+    });
   }
 
   getTemplate = () => {
@@ -87,7 +94,7 @@ export default class Bookings extends HTMLElement {
   getInfo = () => {
     return /* html */`
       <div class="content">
-        ${this.getHead(this.mql)}
+        ${this.getHead(this.tabMql, this.mql)}
         <div class="sticky">
           ${this.getTabs(this.mql)}
         </div>
@@ -96,8 +103,9 @@ export default class Bookings extends HTMLElement {
     `;
   }
 
-  getHead = mql => {
-    if (mql && mql.matches) return '';
+  getHead = (tabMql, mobileMql) => {
+    if (mobileMql.matches) return '';
+    if (tabMql.matches) return '';
     return /* html */`
       <div class="head">
         <h3 class="title">${this.getAttribute("name")}</h3>
@@ -106,29 +114,15 @@ export default class Bookings extends HTMLElement {
     `;
   }
 
-  getTabs = mql => {
-    if (mql && mql.matches) {
-      return /* html */`
-        <ul class="tabs">
-          <li class="tab upcoming active">Upcoming</li>
-          <li class="tab pending">Pending</li>
-          <li class="tab cancelled">Cancelled</li>
-          <li class="tab past">Past</li>
-        </ul>
-      `;
-    } else {
-      return /* html */`
-        <ul class="tabs">
-          <li class="tab all active">All</li>
-          <li class="tab upcoming">Upcoming</li>
-          <li class="tab pending">Pending</li>
-          <li class="tab cancelled">Cancelled</li>
-          <li class="tab past">Past</li>
-          <li class="tab recurring">Recurring</li>
-          <li class="tab rescheduled">Rescheduled</li>
-        </ul>
-      `
-    }
+  getTabs = () => {
+    return /* html */`
+      <ul class="tabs">
+        <li class="tab upcoming active">Upcoming</li>
+        <li class="tab pending">Pending</li>
+        <li class="tab cancelled">Cancelled</li>
+        <li class="tab past">Past</li>
+      </ul>
+    `;
   }
 
   getBookings = () => {
@@ -346,20 +340,15 @@ export default class Bookings extends HTMLElement {
         }
 
         ul.tabs > li.tab {
-          display: flex;
-          flex-flow: row nowrap;
-          align-items: center;
-          gap: 8px;
-          padding: 5px 10px;
-          cursor: pointer;
-          font-size: 1rem;
-          font-weight: 500;
+          padding: 6px 15px;
+          background: var(--gray-background);
+          border-radius: 10px;
+          border: none;
           color: var(--text-color);
-          font-family: var(--font-main), sans-serif;
-          line-height: 1.3;
-          white-space: nowrap;
-          border-radius: 8px;
-          transition: color 0.3s ease-in-out;
+          cursor: pointer;
+          font-size: 0.8rem;
+          font-weight: 500;
+          transition: all 0.2s ease;
           user-select: none;
           -webkit-user-select: none;
           -moz-user-select: none;
@@ -368,44 +357,23 @@ export default class Bookings extends HTMLElement {
           -webkit-backface-visibility: hidden;
           -moz-backface-visibility: hidden;
           -ms-backface-visibility: hidden;
-          position: relative;
         }
 
-        ul.tabs > li.tab > span.icon {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          color: inherit;
-        }
-
-        ul.tabs > li.tab > span.icon > svg {
-          width: 20px;
-          height: 20px;
-          color: inherit;
-          transition: color 0.3s ease-in-out;
-        }
-
-        ul.tabs > li.tab.reviews > span.icon > svg {
-          width: 18px;
-          height: 18px;
-        }
-
-        ul.tabs > li.tab.services > span.icon > svg {
-          width: 19px;
-          height: 19px;
-        }
-
-        ul.tabs > li.tab.active,
         ul.tabs > li.tab:hover {
+          background: var(--hover-background);
           color: var(--accent-color);
-          background: var(--gray-background);
-          font-weight: 600;
         }
 
-        ul.tabs > li.tab:hover {
-          backdrop-filter: blur(10px);
-          -webkit-backdrop-filter: blur(10px);
-          transition: background 0.3s ease-in-out;
+        ul.tabs > li.tab.active {
+          background: var(--accent-linear);
+          color: var(--white-color);
+          border-color: var(--accent-color);
+        }
+
+        ul.tabs > li.tab:disabled {
+          opacity: 0.6;
+          cursor: not-allowed;
+          pointer-events: none;
         }
 
         div.bookings {
@@ -446,6 +414,29 @@ export default class Bookings extends HTMLElement {
           padding: 0;
         }
 
+        @media screen and (max-width: 1100px) {
+          .content {
+            padding: 5px 0;
+            display: flex;
+            flex-flow: column;
+            gap: 0;
+            width: 100%;
+          }
+
+          div.sticky {
+            display: flex;
+            flex-flow: column;
+            gap: 8px;
+            margin: 0;
+            width: 100%;
+            z-index: 10;
+            position: sticky;
+            top: 0px;
+            padding: 0;
+            background: var(--background);
+          }
+        }
+
         @media screen and (max-width: 700px) {
           :host {
             border: none;
@@ -468,7 +459,7 @@ export default class Bookings extends HTMLElement {
             padding: 0;
             display: flex;
             flex-flow: column;
-            gap: 0;
+            gap: 10px;
             width: 100%;
           }
 
@@ -537,52 +528,13 @@ export default class Bookings extends HTMLElement {
           }
 
           ul.tabs > li.tab {
-            display: flex;
-            flex-flow: row nowrap;
-            align-items: center;
-            gap: 8px;
-            padding: 5px 10px;
             cursor: default !important;
-            font-size: 0.9rem;
-            font-weight: 500;
-            color: var(--text-color);
-            font-family: var(--font-read), sans-serif;
-            line-height: 1.3;
-            white-space: nowrap;
-            border-radius: 8px;
-            transition: color 0.3s ease-in-out;
-            user-select: none;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            backface-visibility: hidden;
-            -webkit-backface-visibility: hidden;
-            -moz-backface-visibility: hidden;
-            -ms-backface-visibility: hidden;
-            position: relative;
-          }
-
-          ul.tabs > li.tab:hover.active,
-          ul.tabs > li.tab.active {
-            color: var(--accent-color);
-            background: var(--gray-background);
-            font-weight: 600;
-          }
-
-          ul.tabs > li.tab:hover {
-            /* Undo all hover styles except for active */
-            background: unset;
-            color: var(--text-color);
-            font-weight: 500;
-            backdrop-filter: none;
-            -webkit-backdrop-filter: none;
-            transition: none;
           }
 
           div.bookings {
             display: flex;
             flex-flow: column;
-            gap: 0;
+            gap: 10px;
             padding: 0 10px;
             width: 100%;
           }
@@ -596,8 +548,7 @@ export default class Bookings extends HTMLElement {
             font-weight: 600;
             line-height: 1;
             margin: 0;
-            padding: 10px 0;
-            border-bottom: var(--border);
+            padding: 2px;
           }
         }
 	    </style>

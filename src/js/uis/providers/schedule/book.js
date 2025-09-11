@@ -428,6 +428,7 @@ export default class Book extends HTMLElement {
 
         :host {
           width: 100%;
+          max-width: 100%;
           display: flex;
           flex-flow: column;
           align-items: flex-start;
@@ -440,7 +441,7 @@ export default class Book extends HTMLElement {
         div.content-container {
           width: 100%;
           display: flex;
-          flex-flow: row nowrap;
+          flex-flow: column;
           gap: 30px;
           margin: 0;
           padding: 0;
@@ -452,8 +453,7 @@ export default class Book extends HTMLElement {
           align-items: flex-start;
           justify-content: start;
           gap: 10px;
-          min-width: 50%;
-          max-width: 50%;
+          width: 100%;
           margin: 0;
           padding: 0;
         }
@@ -466,8 +466,7 @@ export default class Book extends HTMLElement {
           gap: 10px;
           width: 100%;
           padding: 0;
-          min-width: calc(50% - 30px);
-          max-width: calc(50% - 30px);
+          width: 100%;
         }
 
         div.stats-content {

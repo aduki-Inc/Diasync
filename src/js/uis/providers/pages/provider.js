@@ -34,17 +34,15 @@ export default class Provider extends HTMLElement {
   watchMql() {
     this.mql.addEventListener('change', () => {
       this.render();
-      this.setHeader(this.mql);
+      this.setHeader();
     });
   }
 
-  setHeader = mql => {
-    if (mql.matches) {
-      this.app.setHeader({
-        sectionTitle: 'Provider',
-        description: 'Jane Clinic & Dental Care',
-      });
-    }
+  setHeader = () => {
+    this.app.setHeader({
+      sectionTitle: 'Provider',
+      description: 'Jane Clinic & Dental Care',
+    });
   }
 
   activateTabs = () => {
@@ -239,7 +237,7 @@ export default class Provider extends HTMLElement {
 		`
   }
 
-  getTabs = kind => {
+  getTabs = () => {
     return /* html */`
       <ul class="tabs">
         <li class="tab highlights active" section="highlights">
@@ -259,7 +257,6 @@ export default class Provider extends HTMLElement {
           </span>
           <span class="text">Services</span>
         </li>
-        ${this.getSpecialistTabs(kind)}
         <li class="tab reviews" section="reviews">
           <span class="icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="currentColor" fill="none">
@@ -442,6 +439,8 @@ export default class Provider extends HTMLElement {
         div.banner > div.logo > div.image > img {
           width: 112px;
           height: 112px;
+          max-width: 112px;
+          min-height: 112px;
           padding: 4px;
           object-fit: cover;
           border-radius: 50%;

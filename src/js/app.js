@@ -13,7 +13,8 @@ export default class AppMain extends HTMLElement {
     window.app = this;
     this.utils = utils();
     this.urls = urls;
-    this.mql = window.matchMedia('(max-width: 660px)');
+    this.mql = window.matchMedia('(max-width: 700px)');
+    this.tabMql = window.matchMedia('(max-width: 1100px)');
     this.initTheme();
     this.render();
     this.currentUrl = this.getAttribute('url');
@@ -29,8 +30,6 @@ export default class AppMain extends HTMLElement {
   render() {
     // this.shadowObj.innerHTML = this.getTemplate(this.isAuthenticated()); // re enable this when backend & authentication is implemented
     this.shadowObj.innerHTML = this.getTemplate(); // For now, render as plain UI
-    // watch for media query changes
-    this.watchMeta();
   }
 
   isAuthenticated() {
@@ -40,32 +39,49 @@ export default class AppMain extends HTMLElement {
   }
 
   initTheme() {
-    // Get saved theme from localStorage, default to light
     const savedTheme = localStorage.getItem('user-theme') || 'light';
-
-    // Set the theme on document
     document.documentElement.setAttribute('data-theme', savedTheme);
   }
 
   connectedCallback() {
-    // this.setUpEvents();
+    this.setUpEvents();
+    this.watchMql();
+    this.watchTabMql();
+  }
+
+  setUpEvents = () => {
+    // set display to flex
+    this.style.setProperty('display', 'flex')
     this._setupSpecialNavs();
-    this._setupNavLinks(); // Add navigation link event handlers
+    this._setupNavLinks();
     // this._loadInitialContent(); // Load content based on the current URL
   }
 
   watchMql() {
     this.mql.addEventListener('change', () => {
       this.render();
-      this.setHeader(this.mql);
+      this.setUpEvents();
+    });
+  }
+
+  watchTabMql() {
+    this.tabMql.addEventListener('change', () => {
+      this.render();
+      this.setUpEvents();
     });
   }
 
   setHeader = data => {
     const header = this.shadowObj.querySelector('header-section');
+    const topHeader = this.shadowObj.querySelector('top-section');
     if (header) {
       header.setAttribute('section-title', data.sectionTitle);
       header.setAttribute('description', data.description);
+    }
+
+    if (topHeader) {
+      topHeader.setAttribute('section-title', data.sectionTitle);
+      topHeader.setAttribute('description', data.description);
     }
   }
 
@@ -154,11 +170,6 @@ export default class AppMain extends HTMLElement {
           const parentLi = navItem.closest('ul.dropdown')?.closest('li');
           if (parentLi) {
             parentLi.classList.add('active');
-
-            // Expand the dropdown if it's collapsed
-            if (parentLi.classList.contains('collapsed')) {
-              this._expandDropdown(parentLi);
-            }
           }
         }
       }
@@ -169,52 +180,27 @@ export default class AppMain extends HTMLElement {
     return contentContainer.innerHTML;
   }
 
-  setUpEvents = () => {
-    // set display to flex
-    this.style.setProperty('display', 'flex')
-    const container = this.shadowObj.querySelector('section.flow > div#content-container.content-container');
-    const currentPath = window.location.pathname;
-
-    // Only initialize default content if we're at the root or there's no specific content for this path
-    if (container && (currentPath === '/' || !this.urls[currentPath])) {
-      container.innerHTML = this.getLoader();
-    }
-  }
-
   hideNav = () => {
     const nav = this.shadowObj.querySelector('section.nav.mobile');
-
     if (nav) nav.style.setProperty('display', 'none');
   }
 
   showNav = () => {
     const nav = this.shadowObj.querySelector('section.nav.mobile');
-
     if (nav) nav.style.setProperty('display', 'flex');
-  }
-
-  watchMeta = () => {
-    this.mql.addEventListener('change', () => {
-      this.render();
-      // this.setUpEvents();
-    })
   }
 
   showToast = (success, message) => {
     // check if the toast is already open
     const toastEl = document.querySelector('#toast');
     if (toastEl) toastEl.remove();
-
     // create the toast element
     const toast = this.getToast(success, message);
-
     // append the toast to the body
     document.body.insertAdjacentHTML('beforeend', toast);
-
     // add the show class to the toast
     const addedToast = document.querySelector('#toast');
     addedToast.classList.add('show');
-
     // remove the toast after 5 seconds
     setTimeout(() => {
       addedToast.classList.remove('show');
@@ -373,37 +359,23 @@ export default class AppMain extends HTMLElement {
   }
 
   getBody = () => {
-    const mql = window.matchMedia('(max-width: 660px)');
-    if (mql.matches) {
-      return /* html */`
-        ${this.getMobileHeader()}
-        <section class="flow">
-          <div id="content-container" class="content-container">
-            <!--<chats-section all="628" unread="3" requests="2"></chats-section>-->
-            ${this.getProductFeed()}
-          </div>
-        </section>
-        <section class="nav">
-          ${this.getMobileNav()}
-        </section>
-      `;
-    }
-    else {
-      // Only show navigation if authenticated
-      return /* html */`
-        ${this.getMainNav()}
-        <section class="flow">
-          <div id="content-container" class="content-container">
-            <!-- ${this.getLoader()} -->
-            ${this.getSpecialistsFeed()}
-          </div>
-        </section>
-        ${this.getSidebar()}
-      `;
-    }
+    return /* html */`
+      ${this.getMobileHeader(this.mql)}
+      ${this.getMainNav(this.mql)}
+      <section class="flow">
+        ${this.getTopSection(this.tabMql, this.mql)}
+        <div id="content-container" class="content-container">
+          <!-- ${this.getLoader()} -->
+          ${this.getProviderContainer()}
+        </div>
+      </section>
+      ${this.getMobileNav(this.mql)}
+      ${this.getSidebar(this.tabMql)}
+    `;
   }
 
-  getMainNav = () => {
+  getMainNav = mql => {
+    if (mql.matches) return '';
     return /* html */`
       <section class="nav">
         ${this.getLogoNav()}
@@ -430,68 +402,84 @@ export default class AppMain extends HTMLElement {
     `;
   }
 
-  getMobileHeader = () => {
+  getMobileHeader = mql => {
+    if (!mql.matches) return '';
     return /* html */`
       <header-section section-title="Chats" description="Your chats and updates."></header-section>
     `;
   }
 
-  getMobileNav = () => {
+  getTopSection = (tabmql, mql) => {
+    if (tabmql.matches) {
+      if (mql.matches) return '';
+
+      return /* html */`
+        <top-section section-title="Chats" description="Your chats and updates."></top-section>
+      `;
+    }
+
+    return '';
+  }
+
+  getMobileNav = mql => {
+    if (!mql.matches) return '';
     return /* html */`
-      <div class="mobile-nav">
-        <div class="icons">
-          <span class="icon home active">
-            <span class="bar"></span>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="currentColor" fill="none">
-              <path d="M12 17H12.009" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-              <path d="M20 8.5V13.5C20 17.2712 20 19.1569 18.8284 20.3284C17.6569 21.5 15.7712 21.5 12 21.5C8.22876 21.5 6.34315 21.5 5.17157 20.3284C4 19.1569 4 17.2712 4 13.5V8.5" stroke="currentColor" stroke-width="1.8" />
-              <path d="M22 10.5L17.6569 6.33548C14.9902 3.77849 13.6569 2.5 12 2.5C10.3431 2.5 9.00981 3.77849 6.34315 6.33548L2 10.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
-            </svg>
-            <span class="text">Home</span>
-          </span>
-          <span class="icon book">
-            <span class="bar"></span>
-            <svg id="other" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path fill-rule="evenodd" clip-rule="evenodd" d="M2.74976 12.7756C2.74976 5.81959 5.06876 3.50159 12.0238 3.50159C18.9798 3.50159 21.2988 5.81959 21.2988 12.7756C21.2988 19.7316 18.9798 22.0496 12.0238 22.0496C5.06876 22.0496 2.74976 19.7316 2.74976 12.7756Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
-              <path d="M3.02515 9.32397H21.0331" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
-              <path d="M16.4285 13.261H16.4375" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
-              <path d="M12.0291 13.261H12.0381" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
-              <path d="M7.62135 13.261H7.63035" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
-              <path d="M16.4285 17.1129H16.4375" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
-              <path d="M12.0291 17.1129H12.0381" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
-              <path d="M7.62135 17.1129H7.63035" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
-              <path d="M16.033 2.05005V5.31205" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
-              <path d="M8.02466 2.05005V5.31205" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
-            </svg>
-           <span class="text">Book</span>
-          </span>
-          <span class="icon search">
-            <span class="bar"></span>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="#000000" fill="none">
-              <path d="M17 17L21 21" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-              <path d="M19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11C3 15.4183 6.58172 19 11 19C15.4183 19 19 15.4183 19 11Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-            </svg>
-            <span class="text">Search</span>
-          </span>
-          <span class="icon pharmacy">
-						<span class="bar"></span>
-						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="currentColor" fill="none">
-              <path d="M5.5 15.5C3.28795 14.6166 2 12.4328 2 10.1746C2 7.24571 4.31698 4.35135 5.94326 2.68056C6.82649 1.77315 8.17351 1.77315 9.05674 2.68056C9.54874 3.18602 9.96485 3.80348 10.5 4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
-              <path d="M8 14.9263C8 11.3698 10.9489 7.85521 13.0187 5.82639C14.1428 4.72454 15.8572 4.72454 16.9813 5.82639C19.0511 7.85521 22 11.3698 22 14.9263C22 18.4134 19.3492 22 15 22C10.6508 22 8 18.4134 8 14.9263Z" stroke="currentColor" stroke-width="1.8"></path>
-              <path d="M18.5 15.5C18.5 17.7091 17 18.5 15.5 18.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
-            </svg>
-						<span class="text">Meds</span>
-					</span>
-				  <span class="icon manage">
-				    <span class="bar"></span>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="currentColor" fill="none">
-              <path d="M7.5 12H13.5M7.5 8H10.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
-              <path d="M8.5 20C9.55038 20.8697 10.8145 21.4238 12.2635 21.5188C13.4052 21.5937 14.5971 21.5936 15.7365 21.5188C16.1288 21.4931 16.5565 21.4007 16.9248 21.251C17.3345 21.0845 17.5395 21.0012 17.6437 21.0138C17.7478 21.0264 17.8989 21.1364 18.2011 21.3563C18.7339 21.744 19.4051 22.0225 20.4005 21.9986C20.9038 21.9865 21.1555 21.9804 21.2681 21.7909C21.3808 21.6013 21.2405 21.3389 20.9598 20.8141C20.5706 20.0862 20.324 19.2529 20.6977 18.5852C21.3413 17.6315 21.8879 16.5021 21.9678 15.2823C22.0107 14.6269 22.0107 13.9481 21.9678 13.2927C21.9146 12.4799 21.7173 11.7073 21.4012 11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
-              <path d="M12.345 17.4868C15.9006 17.2526 18.7328 14.4069 18.9658 10.8344C19.0114 10.1353 19.0114 9.41131 18.9658 8.71219C18.7328 5.13969 15.9006 2.29401 12.345 2.05985C11.132 1.97997 9.86553 1.98013 8.65499 2.05985C5.09943 2.29401 2.26725 5.13969 2.0342 8.71219C1.9886 9.41131 1.9886 10.1353 2.0342 10.8344C2.11908 12.1356 2.69992 13.3403 3.38372 14.3576C3.78076 15.0697 3.51873 15.9586 3.10518 16.735C2.807 17.2948 2.65791 17.5747 2.77762 17.7769C2.89732 17.9791 3.16472 17.9856 3.69951 17.9985C4.75712 18.024 5.47028 17.7269 6.03638 17.3134C6.35744 17.0788 6.51798 16.9615 6.62862 16.9481C6.73926 16.9346 6.957 17.0234 7.39241 17.2011C7.78374 17.3608 8.23812 17.4593 8.65499 17.4868C9.86553 17.5665 11.132 17.5666 12.345 17.4868Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"></path>
-            </svg>
-						<span class="text">Chats</span>
-					</span>
-      </div>
+      <section class="nav">
+        <div class="mobile-nav">
+          <div class="icons">
+            <span class="icon home active">
+              <span class="bar"></span>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="currentColor" fill="none">
+                <path d="M12 17H12.009" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                <path d="M20 8.5V13.5C20 17.2712 20 19.1569 18.8284 20.3284C17.6569 21.5 15.7712 21.5 12 21.5C8.22876 21.5 6.34315 21.5 5.17157 20.3284C4 19.1569 4 17.2712 4 13.5V8.5" stroke="currentColor" stroke-width="1.8" />
+                <path d="M22 10.5L17.6569 6.33548C14.9902 3.77849 13.6569 2.5 12 2.5C10.3431 2.5 9.00981 3.77849 6.34315 6.33548L2 10.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+              </svg>
+              <span class="text">Home</span>
+            </span>
+            <span class="icon book">
+              <span class="bar"></span>
+              <svg id="other" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M2.74976 12.7756C2.74976 5.81959 5.06876 3.50159 12.0238 3.50159C18.9798 3.50159 21.2988 5.81959 21.2988 12.7756C21.2988 19.7316 18.9798 22.0496 12.0238 22.0496C5.06876 22.0496 2.74976 19.7316 2.74976 12.7756Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+                <path d="M3.02515 9.32397H21.0331" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+                <path d="M16.4285 13.261H16.4375" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+                <path d="M12.0291 13.261H12.0381" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+                <path d="M7.62135 13.261H7.63035" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+                <path d="M16.4285 17.1129H16.4375" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+                <path d="M12.0291 17.1129H12.0381" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+                <path d="M7.62135 17.1129H7.63035" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+                <path d="M16.033 2.05005V5.31205" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+                <path d="M8.02466 2.05005V5.31205" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+              </svg>
+            <span class="text">Book</span>
+            </span>
+            <span class="icon search">
+              <span class="bar"></span>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="#000000" fill="none">
+                <path d="M17 17L21 21" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                <path d="M19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11C3 15.4183 6.58172 19 11 19C15.4183 19 19 15.4183 19 11Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+              </svg>
+              <span class="text">Search</span>
+            </span>
+            <span class="icon pharmacy">
+              <span class="bar"></span>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="currentColor" fill="none">
+                <path d="M5.5 15.5C3.28795 14.6166 2 12.4328 2 10.1746C2 7.24571 4.31698 4.35135 5.94326 2.68056C6.82649 1.77315 8.17351 1.77315 9.05674 2.68056C9.54874 3.18602 9.96485 3.80348 10.5 4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
+                <path d="M8 14.9263C8 11.3698 10.9489 7.85521 13.0187 5.82639C14.1428 4.72454 15.8572 4.72454 16.9813 5.82639C19.0511 7.85521 22 11.3698 22 14.9263C22 18.4134 19.3492 22 15 22C10.6508 22 8 18.4134 8 14.9263Z" stroke="currentColor" stroke-width="1.8"></path>
+                <path d="M18.5 15.5C18.5 17.7091 17 18.5 15.5 18.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+              </svg>
+              <span class="text">Meds</span>
+            </span>
+            <span class="icon manage">
+              <span class="bar"></span>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="currentColor" fill="none">
+                <path d="M7.5 12H13.5M7.5 8H10.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+                <path d="M8.5 20C9.55038 20.8697 10.8145 21.4238 12.2635 21.5188C13.4052 21.5937 14.5971 21.5936 15.7365 21.5188C16.1288 21.4931 16.5565 21.4007 16.9248 21.251C17.3345 21.0845 17.5395 21.0012 17.6437 21.0138C17.7478 21.0264 17.8989 21.1364 18.2011 21.3563C18.7339 21.744 19.4051 22.0225 20.4005 21.9986C20.9038 21.9865 21.1555 21.9804 21.2681 21.7909C21.3808 21.6013 21.2405 21.3389 20.9598 20.8141C20.5706 20.0862 20.324 19.2529 20.6977 18.5852C21.3413 17.6315 21.8879 16.5021 21.9678 15.2823C22.0107 14.6269 22.0107 13.9481 21.9678 13.2927C21.9146 12.4799 21.7173 11.7073 21.4012 11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+                <path d="M12.345 17.4868C15.9006 17.2526 18.7328 14.4069 18.9658 10.8344C19.0114 10.1353 19.0114 9.41131 18.9658 8.71219C18.7328 5.13969 15.9006 2.29401 12.345 2.05985C11.132 1.97997 9.86553 1.98013 8.65499 2.05985C5.09943 2.29401 2.26725 5.13969 2.0342 8.71219C1.9886 9.41131 1.9886 10.1353 2.0342 10.8344C2.11908 12.1356 2.69992 13.3403 3.38372 14.3576C3.78076 15.0697 3.51873 15.9586 3.10518 16.735C2.807 17.2948 2.65791 17.5747 2.77762 17.7769C2.89732 17.9791 3.16472 17.9856 3.69951 17.9985C4.75712 18.024 5.47028 17.7269 6.03638 17.3134C6.35744 17.0788 6.51798 16.9615 6.62862 16.9481C6.73926 16.9346 6.957 17.0234 7.39241 17.2011C7.78374 17.3608 8.23812 17.4593 8.65499 17.4868C9.86553 17.5665 11.132 17.5666 12.345 17.4868Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"></path>
+              </svg>
+              <span class="text">Chats</span>
+            </span>
+        </div>
+      </section>
     `;
   }
 
@@ -735,18 +723,16 @@ export default class AppMain extends HTMLElement {
               <path d="M3.17467 16.1411C1.60844 14.5749 1.60844 12.0355 3.17467 10.4693L10.4693 3.17467C12.0355 1.60844 14.5749 1.60844 16.1411 3.17467L20.8253 7.85891C22.3916 9.42514 22.3916 11.9645 20.8253 13.5307L13.5307 20.8253C11.9645 22.3916 9.42514 22.3916 7.85891 20.8253L3.17467 16.1411Z" stroke="currentColor" stroke-width="1.8" />
               <path d="M4 22H20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
             </svg>
-            <span class="text">Subscriptions</span>
+            <span class="text">Billing</span>
           </a>
         </li>
         <li class="dependents">
           <a href="/dependents">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="currentColor" fill="none">
-              <path d="M13 11C13 8.79086 11.2091 7 9 7C6.79086 7 5 8.79086 5 11C5 13.2091 6.79086 15 9 15C11.2091 15 13 13.2091 13 11Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-              <path d="M11.0386 7.55773C11.0131 7.37547 11 7.18927 11 7C11 4.79086 12.7909 3 15 3C17.2091 3 19 4.79086 19 7C19 9.20914 17.2091 11 15 11C14.2554 11 13.5584 10.7966 12.9614 10.4423" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-              <path d="M15 21C15 17.6863 12.3137 15 9 15C5.68629 15 3 17.6863 3 21" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-              <path d="M21 17C21 13.6863 18.3137 11 15 11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+              <path d="M16.3083 4.38394C15.7173 4.38394 15.4217 4.38394 15.1525 4.28405C15.1151 4.27017 15.0783 4.25491 15.042 4.23828C14.781 4.11855 14.5721 3.90959 14.1541 3.49167C13.1922 2.52977 12.7113 2.04882 12.1195 2.00447C12.04 1.99851 11.96 1.99851 11.8805 2.00447C11.2887 2.04882 10.8077 2.52977 9.84585 3.49166C9.42793 3.90959 9.21897 4.11855 8.95797 4.23828C8.92172 4.25491 8.88486 4.27017 8.84747 4.28405C8.57825 4.38394 8.28273 4.38394 7.69171 4.38394H7.58269C6.07478 4.38394 5.32083 4.38394 4.85239 4.85239C4.38394 5.32083 4.38394 6.07478 4.38394 7.58269V7.69171C4.38394 8.28273 4.38394 8.57825 4.28405 8.84747C4.27017 8.88486 4.25491 8.92172 4.23828 8.95797C4.11855 9.21897 3.90959 9.42793 3.49166 9.84585C2.52977 10.8077 2.04882 11.2887 2.00447 11.8805C1.99851 11.96 1.99851 12.04 2.00447 12.1195C2.04882 12.7113 2.52977 13.1922 3.49166 14.1541C3.90959 14.5721 4.11855 14.781 4.23828 15.042C4.25491 15.0783 4.27017 15.1151 4.28405 15.1525C4.38394 15.4217 4.38394 15.7173 4.38394 16.3083V16.4173C4.38394 17.9252 4.38394 18.6792 4.85239 19.1476C5.32083 19.6161 6.07478 19.6161 7.58269 19.6161H7.69171C8.28273 19.6161 8.57825 19.6161 8.84747 19.716C8.88486 19.7298 8.92172 19.7451 8.95797 19.7617C9.21897 19.8815 9.42793 20.0904 9.84585 20.5083C10.8077 21.4702 11.2887 21.9512 11.8805 21.9955C11.96 22.0015 12.0399 22.0015 12.1195 21.9955C12.7113 21.9512 13.1922 21.4702 14.1541 20.5083C14.5721 20.0904 14.781 19.8815 15.042 19.7617C15.0783 19.7451 15.1151 19.7298 15.1525 19.716C15.4217 19.6161 15.7173 19.6161 16.3083 19.6161H16.4173C17.9252 19.6161 18.6792 19.6161 19.1476 19.1476C19.6161 18.6792 19.6161 17.9252 19.6161 16.4173V16.3083C19.6161 15.7173 19.6161 15.4217 19.716 15.1525C19.7298 15.1151 19.7451 15.0783 19.7617 15.042C19.8815 14.781 20.0904 14.5721 20.5083 14.1541C21.4702 13.1922 21.9512 12.7113 21.9955 12.1195C22.0015 12.0399 22.0015 11.96 21.9955 11.8805C21.9512 11.2887 21.4702 10.8077 20.5083 9.84585C20.0904 9.42793 19.8815 9.21897 19.7617 8.95797C19.7451 8.92172 19.7298 8.88486 19.716 8.84747C19.6161 8.57825 19.6161 8.28273 19.6161 7.69171V7.58269C19.6161 6.07478 19.6161 5.32083 19.1476 4.85239C18.6792 4.38394 17.9252 4.38394 16.4173 4.38394H16.3083Z" stroke="currentColor" stroke-width="1.8"></path>
+              <path d="M15.5 12C15.5 13.933 13.933 15.5 12 15.5C10.067 15.5 8.5 13.933 8.5 12C8.5 10.067 10.067 8.5 12 8.5C13.933 8.5 15.5 10.067 15.5 12Z" stroke="currentColor" stroke-width="1.8"></path>
             </svg>
-            <span class="text">Dependents</span>
+            <span class="text">Settings</span>
           </a>
         </li>
         <li class="after-care">
@@ -773,7 +759,8 @@ export default class AppMain extends HTMLElement {
     `;
   }
 
-  getSidebar = () => {
+  getSidebar = mql => {
+    if (mql.matches) return '';
     return /* html */`
       <section class="sidebar">
        <sidebar-section section-title="Chats & Updates" description="Stay connected with your contacts and receive updates."></sidebar-section>
@@ -829,10 +816,17 @@ export default class AppMain extends HTMLElement {
     `;
   }
 
+  // Chats
+  getChats = () => {
+    return /* html */`
+      <chats-section all="628" unread="3" requests="2"></chats-section>
+    `;
+  }
+
   // Provider
   getProviderContainer = () => {
     return /* html */`
-      <provider-page kind="org" owner="true" verified="true" name="Marketplace" desc="This section provides a detailed overview of all the products available in the marketplace."></provider-page>
+      <provider-page kind="org" owner="false" verified="true" name="Marketplace" desc="This section provides a detailed overview of all the products available in the marketplace."></provider-page>
     `;
   }
 
@@ -951,35 +945,6 @@ export default class AppMain extends HTMLElement {
         <p>Store pickup and delivery available where permitted. For prescription verification, upload a valid prescription at checkout or visit the pharmacy for in-person verification.</p>
       </product-detail>
     `;
-  }
-
-  _expandDropdown(parentLi) {
-    if (!parentLi) return;
-
-    // Remove collapsed class and add active class to show vertical line
-    parentLi.classList.remove('collapsed');
-    parentLi.classList.add('active');
-
-    // Get the dropdown and expand it
-    const dropdown = parentLi.querySelector('ul.dropdown');
-    if (dropdown) {
-      // Set max height to scrollHeight to show the dropdown
-      dropdown.style.maxHeight = (dropdown.scrollHeight + 7) + 'px';
-    }
-
-    // Close other dropdowns
-    const specialNavUls = this.shadowRoot.querySelectorAll('section.nav > ul.nav.special');
-    specialNavUls.forEach(ul => {
-      const item = ul.querySelector('li');
-      if (item && item !== parentLi) {
-        item.classList.add('collapsed');
-        item.classList.remove('active');
-        const otherDropdown = item.querySelector('ul.dropdown');
-        if (otherDropdown) {
-          otherDropdown.style.maxHeight = '0px';
-        }
-      }
-    });
   }
 
   getStyles() {
@@ -1424,7 +1389,6 @@ export default class AppMain extends HTMLElement {
           display: none;
         }
 
-
         /* Latency Panel Styles */
         section.sidebar {
           width: 500px;
@@ -1456,52 +1420,6 @@ export default class AppMain extends HTMLElement {
           flex-flow: column;
           gap: 0;
           padding: 0;
-        }
-
-        /* Mobile section unavailable */
-        section.mobile {
-          width: 100%;
-          height: 100dvh;
-          display: flex;
-          flex-flow: column;
-          align-items: center;
-          justify-content: center;
-          gap: 5px;
-          padding: 0 10px;
-        }
-
-        section.mobile > h1.mobile-title {
-          width: 100%;
-          padding: 0;
-          margin: 0;
-          text-align: center;
-          font-family: var(--font-text), sans-serif;
-          font-size: 1.5rem;
-          font-weight: 600;
-          line-height: 1.5;
-          color: var(--accent-color);
-        }
-
-        section.mobile > p.mobile-description {
-          width: 100%;
-          padding: 0;
-          margin: 0;
-          font-family: var(--font-main), sans-serif;
-          font-size: 1rem;
-          text-align: center;
-          font-weight: 400;
-          color: var(--text-color);
-        }
-
-        section.mobile > p.mobile-warning {
-          width: 100%;
-          padding: 10px 0;
-          margin: 0;
-          text-align: center;
-          font-family: var(--font-read), sans-serif;
-          font-size: 0.9rem;
-          font-weight: 400;
-          color: var(--alt-color);
         }
 
         footer.footer {
@@ -1582,6 +1500,134 @@ export default class AppMain extends HTMLElement {
 
         footer.footer > ul.links > li > a:hover {
           color: var(--anchor-color);
+        }
+
+        @media all and (max-width: 1550px) {
+          :host {
+            font-size: 16px;
+            width: 100%;
+            min-width: 100%;
+            max-width: 100%;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            gap: 15px;
+          }
+
+          section.nav {
+            width: 200px;
+            display: flex;
+            flex-flow: column;
+            gap: 5px;
+            padding: 10px 0 20px 10px;
+            height: 100dvh;
+            max-height: 100dvh;
+            overflow-y: scroll;
+            scrollbar-width: none;
+            position: sticky;
+            top: 0;
+          }
+
+          section.flow {
+            width: calc(100% - (200px + 400px));
+          }
+
+          /* Latency Panel Styles */
+          section.sidebar {
+            width: 450px;
+          }
+        }
+
+        @media all and (max-width: 1300px) {
+          :host {
+            font-size: 16px;
+            width: 100%;
+            min-width: 100%;
+            max-width: 100%;
+          }
+
+          section.nav {
+            width: 165px;
+            min-width: 165px;
+            display: flex;
+            flex-flow: column;
+            gap: 5px;
+            padding: 10px 0 20px 10px;
+            height: 100dvh;
+            max-height: 100dvh;
+            overflow-y: scroll;
+            scrollbar-width: none;
+            position: sticky;
+            top: 0;
+          }
+
+          section.flow {
+            width: calc(100% - (200px + 350px));
+          }
+
+          /* Latency Panel Styles */
+          section.sidebar {
+            width: 400px;
+          }
+        }
+
+        @media all and (max-width: 1230px) {
+          :host {
+            font-size: 16px;
+            width: 100%;
+            min-width: 100%;
+            max-width: 100%;
+          }
+
+          section.flow {
+            width: calc(100% - (185px + 300px));
+          }
+
+          /* Latency Panel Styles */
+          section.sidebar {
+            width: 350px;
+          }
+        }
+
+        @media all and (max-width: 1100px) {
+          :host {
+            gap: 20px;
+          }
+
+          section.flow {
+            width: calc(100% - 195px);
+            padding-right: 10px;
+          }
+
+          /* Latency Panel Styles */
+          section.sidebar {
+            display: none;
+            visibility: hidden;
+          }
+        }
+
+        @media all and (max-width: 900px) {
+          :host {
+            gap: 20px;
+          }
+
+          section.nav {
+            width: 140px;
+            min-width: 140px;
+            gap: 5px;
+            padding: 10px 0 20px 10px;
+          }
+
+          section.flow {
+            width: calc(100% - 165px);
+            padding-right: 10px;
+          }
+
+          /* Latency Panel Styles */
+          section.sidebar {
+            display: none;
+            visibility: hidden;
+          }
         }
 
         /* Mobile Styles */

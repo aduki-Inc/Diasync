@@ -21,6 +21,13 @@ export default class ChatApp extends HTMLElement {
     });
   }
 
+  setHeader = () => {
+    this.app.setHeader({
+      sectionTitle: 'Your Chats',
+      description: 'Your chats and updates',
+    });
+  }
+
   connectedCallback() {
     this.watchMql();
     this.setUpEventListeners();
@@ -28,9 +35,9 @@ export default class ChatApp extends HTMLElement {
 
   setUpEventListeners = () => {
     const tabs = this.shadow.querySelector("ul.tabs");
-
     // if tabs exist, activate the tab controller
     if (tabs) this.activateTabController(tabs);
+    this.setHeader()
   }
 
   activateTabController = tabs => {

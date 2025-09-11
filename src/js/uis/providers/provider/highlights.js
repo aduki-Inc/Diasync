@@ -35,9 +35,21 @@ export default class Highlights extends HTMLElement {
     return /* html */`
       ${this.getHeader()}
       ${this.getActions()}
-      ${this.getStats()}
-      ${this.getBookings()}
+      ${this.getContent(this.owner)}
     `
+  }
+
+  getContent = owner => {
+    if (owner) {
+      return /* html */`
+        ${this.getStats()}
+        ${this.getBookings()}
+      `
+    } else {
+      return /* html */`
+        ${this.getSchedule()}
+      `
+    }
   }
 
   getHeader = () => {
@@ -50,8 +62,6 @@ export default class Highlights extends HTMLElement {
         </div>
         <div class="description">
           <p>Your trusted neighborhood clinic and dental care center, staffed by experienced medical and dental professionals who provide a broad range of services from routine checkups and preventive dentistry to minor procedures and chronic condition management. </p>
-          <p> We combine modern equipment with a gentle, patient-focused approach to make every visit comfortable and effective.</p>
-          <p>We offer comprehensive health consultations, personalized care plans, and wellness support designed to help you maintain and improve your overall wellbeing. </p>
         </div>
       </div>
     `
@@ -127,6 +137,12 @@ export default class Highlights extends HTMLElement {
     `
   }
 
+  getSchedule = () => {
+    return /* html */`
+      <book-schedule kind="${this.getAttribute('kind')}" owner="${this.getAttribute('owner')}" provider-name="Jane Clinic & Dental Care"></book-schedule>
+    `
+  }
+
   getStyles() {
     return /* css */`
       <style>
@@ -137,6 +153,7 @@ export default class Highlights extends HTMLElement {
         :host {
           padding: 0;
           width: 100%;
+          max-width: 100%;
           display: flex;
           flex-flow: column;
           gap: 0;
